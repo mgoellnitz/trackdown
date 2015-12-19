@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Trackdown by mgoellnitz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Trackdown</h1>
+      <h2 class="project-tagline">TrackDown - Issue Tracking with plain Markdown. If you are missing the &quot;git clone&quot; for your tickets from github.com or bitbucket.org, then this is for you. A lightweight Ticketing System for distributed and unconnected small Teams.</h2>
+      <a href="https://github.com/mgoellnitz/trackdown" class="btn">View on GitHub</a>
+      <a href="https://github.com/mgoellnitz/trackdown/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/mgoellnitz/trackdown/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="trackdown" class="anchor" href="#trackdown" aria-hidden="true"><span class="octicon octicon-link"></span></a>TrackDown</h1>
+
+<p><a href="https://github.com/mgoellnitz/trackdown/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mgoellnitz/trackdown.svg" alt="License"></a></p>
+
+<p>Issue Tracking with plain <a href="https://daringfireball.net/projects/markdown/">Markdown</a>.</p>
+
+<p>In short: You are missing the "git clone" for your tickets from <a href="https://github.com/">github.com</a>
+or <a href="https://bitbucket.org/">bitbucket.org</a> or where we already have this for code and wiki?</p>
+
+<p>You need issue tracking which works for distributed and potentially disconnected
+situations together with your distributed version control <a href="http://git-scm.com/">GIT</a> and e.g. your
+also distributed wiki editing through <a href="http://git-scm.com/">GIT</a> as well?</p>
+
+<p>Then this here is for you!</p>
+
+<p>It is not intended for large, permanently online or connected teams and heavy flows
+of tickets though, since you will be having only one file a plain <a href="https://daringfireball.net/projects/markdown/">Markdown</a>
+with your issues - and optionally other stuff - collected in it.</p>
+
+<h1>
+<a id="the-format" class="anchor" href="#the-format" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Format</h1>
+
+<p>While sticking to only partly structured <a href="https://daringfireball.net/projects/markdown/">Markdown</a> the following elements
+should be maintainable with TrackDown:</p>
+
+<ul>
+<li>ID</li>
+<li>Title</li>
+<li>Status</li>
+<li>Commits</li>
+<li>Target Version</li>
+<li>Severity</li>
+<li>Affected Versions</li>
+<li>Description</li>
+<li>Comments</li>
+</ul>
+
+<p>These fields are mapped to the following source structure</p>
+
+<pre><code>  ## ID Title (status)
+
+  ### severity priority
+
+  ### Target Version (optional)
+
+  affected versions: 1.0, 1.1 (optional - structured)
+
+  ### Description (optional)
+
+  description
+
+  ### Comments (optional)
+
+  comments (structured)
+
+  ### Commits (auto generated)
+
+  The headline commits at level three is optional. The commit messages are inserted
+  just as the last part of the issue's level two text area.
+</code></pre>
+
+<p>The really fixed non optional parts of this are</p>
+
+<pre><code>  ## ID Title (status)
+
+  (Commit messages inserted here before the next ticket)
+</code></pre>
+
+<h2>
+<a id="field-values" class="anchor" href="#field-values" aria-hidden="true"><span class="octicon octicon-link"></span></a>Field Values</h2>
+
+<h3>
+<a id="id" class="anchor" href="#id" aria-hidden="true"><span class="octicon octicon-link"></span></a>ID</h3>
+
+<p>Any combination of (english) upper- and lower-case letters and digits.</p>
+
+<h3>
+<a id="title" class="anchor" href="#title" aria-hidden="true"><span class="octicon octicon-link"></span></a>Title</h3>
+
+<p>Any expressible in Markdown.</p>
+
+<h3>
+<a id="status" class="anchor" href="#status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Status</h3>
+
+<p>Anything expressible in Markdown. Automatically set values are "in progress" if
+you start committing for a certain ID and "resolved", if you are using a prefix
+of "fixes ID" or "resolves ID".</p>
+
+<p>Other intended values inlude "new", where the issue is just files, and "closed"
+when the solution is brought into production.</p>
+
+<h3>
+<a id="target-version" class="anchor" href="#target-version" aria-hidden="true"><span class="octicon octicon-link"></span></a>Target Version</h3>
+
+<p>Anything expressible in Markdown.</p>
+
+<pre><code>  Future-Work Will be evaluated to calculate your project's roadmap
+</code></pre>
+
+<h3>
+<a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h3>
+
+<p>Anything expressible in Markdown.</p>
+
+<h3>
+<a id="affected-versions" class="anchor" href="#affected-versions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Affected Versions</h3>
+
+<p>Anything expressible in Markdown. Is expected to describe which version are
+affected by the issue (if this is possible to say).</p>
+
+<h3>
+<a id="comments" class="anchor" href="#comments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comments</h3>
+
+<p>Anything expressible in Markdown.</p>
+
+<h3>
+<a id="severity" class="anchor" href="#severity" aria-hidden="true"><span class="octicon octicon-link"></span></a>Severity</h3>
+
+<p>Anything expressible in Markdown.</p>
+
+<h1>
+<a id="commands-in-the-commit-messages" class="anchor" href="#commands-in-the-commit-messages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Commands in the commit messages</h1>
+
+<p>Right now TrackDown understands only two commands in the commit messages.</p>
+
+<h2>
+<a id="refs-id" class="anchor" href="#refs-id" aria-hidden="true"><span class="octicon octicon-link"></span></a>refs <em>id</em>
+</h2>
+
+<p>Reference the commit in the list of commits at the end of the issue text.</p>
+
+<p>This command changes the state to "in progress" from anything like new, nothing,
+or even resolved</p>
+
+<pre><code>  (Future work: lifts the issue up to the top of the list)
+</code></pre>
+
+<h2>
+<a id="resolvesfixes-id" class="anchor" href="#resolvesfixes-id" aria-hidden="true"><span class="octicon octicon-link"></span></a>resolves|fixes <em>id</em>
+</h2>
+
+<p>Reference the commit in the list of commits at the end of the issue text.</p>
+
+<p>This command changes the state to "resolved" from anything like new, nothing, or
+in progress</p>
+
+<pre><code>  (Future work: moves the issue to the top the part of the list where the resolved issues reside)
+</code></pre>
+
+<h1>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h1>
+
+<p>There are two ways to setup TrackDown. The default way is to use it in a
+separate branch of you source code repository and have it editable in your IDE
+through a symbolic link to the issue collection file which is maintained by you
+through direct typing or the commit hook integration.</p>
+
+<p>The second way is to use the file at a different location - e.g. in the wiki of
+the project instead of the source code repository, which is described later.</p>
+
+<h2>
+<a id="initialize-the-repository" class="anchor" href="#initialize-the-repository" aria-hidden="true"><span class="octicon octicon-link"></span></a>Initialize the Repository</h2>
+
+<p>If you want to track the issues in a trackdown branch of your source code
+repository, you need to modify the <a href="http://git-scm.com/">GIT</a> repository accordingly. To initialize
+a <a href="http://git-scm.com/">GIT</a> repository that way call the script</p>
+
+<pre><code>  trackdown.sh init
+</code></pre>
+
+<p>This creates the TrackDown thread for the issue tracking. You have to manually
+propagate this thread to your upstream repositories. TrackDown does not
+interfere with your remote workflow.</p>
+
+<pre><code>  git push original trackdown
+</code></pre>
+
+<p>Initialization must only to be executed once for a repository and all of its
+fork and clones.</p>
+
+<p>If you want to use the issue collection file from a different location, leave
+out this step.</p>
+
+<h2>
+<a id="repository-integration" class="anchor" href="#repository-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Repository Integration</h2>
+
+<p>Regardless of the location of the issue collection file, for each clone of the
+repository you have to set up the TrackDown tooling to be able to use it
+integrated with your source code <a href="http://git-scm.com/">GIT</a> commits.</p>
+
+<p>To start using TrackDown for the respective clone you have to issue</p>
+
+<pre><code>  trackdown.sh use
+</code></pre>
+
+<p>when using the TrackDown branch in the source code repository or</p>
+
+<pre><code>  trackdown.sh use &lt;path/to/issues.md&gt;
+</code></pre>
+
+<p>like in</p>
+
+<pre><code>  trackdown-use.sh ../wiki/issues.md
+</code></pre>
+
+<p>when using TrackDown with the issue collection file at a different location.
+Automatic commit and push (see below) will be switched of in the latter case.</p>
+
+<p>This creates a gitignored link issues.md in the root directory of your project
+pointing to the issue collection file and it will configure a post-commit hook
+for <a href="http://git-scm.com/">GIT</a>.</p>
+
+<p>After this step you can edit the issue collection file following the format
+mentioned here.</p>
+
+<h1>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h1>
+
+<p>The source tree contains a directory named .trackdown.</p>
+
+<p>This directory contains a file named config. There are some options in this
+file, which you can change.</p>
+
+<p>Example config file for TrackDown:</p>
+
+<pre><code>  autocommit=true
+  autopush=false
+  location=../wiki/issues.md
+</code></pre>
+
+<pre><code>  (Future Work: It also contains a file named trackdown.sh update for TrackDown updates)
+</code></pre>
+
+<h2>
+<a id="auto-commit-all-issue-collection-changes" class="anchor" href="#auto-commit-all-issue-collection-changes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Auto Commit all Issue Collection Changes</h2>
+
+<p>Automatically commits the new change to the trackdown branch. If you didn't
+change the default location where your normal source code repository contains
+the trackdown branch will want to leave the unchanged to true.</p>
+
+<p>In other scenarios you may switch it to false.</p>
+
+<h2>
+<a id="auto-push-all-issue-collection-commits" class="anchor" href="#auto-push-all-issue-collection-commits" aria-hidden="true"><span class="octicon octicon-link"></span></a>Auto Push all Issue Collection Commits</h2>
+
+<p>Automatically pushes after each commit to the upstream repository. If you didn't
+changethe default locations where your normal source code repository is the
+upstream repositoryof your issue collection you will want to leave the unchanged
+to <em>true</em>.</p>
+
+<p>In other scenarios you may switch it to false. E.g. if the issue collection is
+part of your project wiki then automatically pushing might lead to remote
+operations whichis not desirable.</p>
+
+<h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<p>Just copy the files from bin to you /usr/local/bin or somewhere else on your $PATH
+for now. Perhaps we will add something more convenient later.</p>
+
+<h1>
+<a id="issues" class="anchor" href="#issues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Issues</h1>
+
+<h2>
+<a id="roadmap-related-features-need-to-be-implemented" class="anchor" href="#roadmap-related-features-need-to-be-implemented" aria-hidden="true"><span class="octicon octicon-link"></span></a>ROADMAP related features need to be implemented.</h2>
+
+<p>TrackDown is promised to deal with a sorting features for issues to group them into
+Sprints, Release, or the like. This feature is completely missing right now.</p>
+
+<h2>
+<a id="copy-release-notes" class="anchor" href="#copy-release-notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>COPY release notes.</h2>
+
+<p>When closing a release or sprint, it should be possible to copy all the resolved
+issues to a new <a href="https://daringfireball.net/projects/markdown/">Markdown</a> file to remove the from the issues collection
+and have a contribution to release notes.</p>
+
+<h2>
+<a id="multiissue-there-can-be-only-one-issue-per-ticket" class="anchor" href="#multiissue-there-can-be-only-one-issue-per-ticket" aria-hidden="true"><span class="octicon octicon-link"></span></a>MULTIISSUE There can be only one issue per ticket.</h2>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/mgoellnitz/trackdown">Trackdown</a> is maintained by <a href="https://github.com/mgoellnitz">mgoellnitz</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
