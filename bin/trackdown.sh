@@ -23,27 +23,28 @@ DIR=`dirname $0`
 # use command
 if [ "$CMD" = "use" ] ; then
 
-cp $DIR/trackdown-hook.sh .git/hooks/post-commit
-chmod 755 .git/hooks/post-commit
-if [ -z "$ISSUES" ] ; then
-  ISSUES=".git/trackdown/issues.md"
-  cd .git
-  # git clone --single-branch --branch trackdown .. trackdown
-  git clone --branch trackdown .. trackdown
-  cd ..
-  echo "autocommit=true" > .trackdown/config
-  echo "autopush=true" >>  .trackdown/config
-  echo "location=.git/trackdown/issues.md" >>  .trackdown/config
-else
-  echo "autocommit=false" > .trackdown/config
-  echo "autopush=false" >>  .trackdown/config
-  echo "location=$ISSUES" >>  .trackdown/config
-fi
-ln -s $ISSUES issues.md
-echo "/.trackdown" >> .gitignore
-echo "issues.md" >> .gitignore
+  cp $DIR/trackdown-hook.sh .git/hooks/post-commit
+  chmod 755 .git/hooks/post-commit
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=".git/trackdown/issues.md"
+    cd .git
+    # git clone --single-branch --branch trackdown .. trackdown
+    git clone --branch trackdown .. trackdown
+    cd ..
+    echo "autocommit=true" > .trackdown/config
+    echo "autopush=true" >>  .trackdown/config
+    echo "location=.git/trackdown/issues.md" >>  .trackdown/config
+  else
+    echo "autocommit=false" > .trackdown/config
+    echo "autopush=false" >>  .trackdown/config
+   echo "location=$ISSUES" >>  .trackdown/config
+  fi
+  ln -s $ISSUES issues.md
+  echo "/.trackdown" >> .gitignore
+  echo "issues.md" >> .gitignore
 
 fi
+
 
 # ls command to list potential issues in the collection
 if [ "$CMD" = "ls" ] ; then
@@ -60,17 +61,18 @@ if [ "$CMD" = "ls" ] ; then
 
 fi
 
+
 # init command
 if [ "$CMD" = "init" ] ; then
 
-git stash
-BRANCH=`git branch|grep '*'|cut -d ' ' -f 2`
-git checkout --orphan trackdown
-git rm -rf .
-touch issues.md
-git add issues.md
-git commit -m "Empty issues collection" issues.md
-git checkout $BRANCH
-git stash apply
+  git stash
+  BRANCH=`git branch|grep '*'|cut -d ' ' -f 2`
+  git checkout --orphan trackdown
+  git rm -rf .
+  touch issues.md
+  git add -f issues.md
+  git commit -m "Empty issues collection" issues.md
+  git checkout $BRANCH
+  git stash apply
 
 fi
