@@ -1,0 +1,15 @@
+/*
+ *
+ * Dummy gradle file to be able to edit sources easily from within my IDE netbeans.
+ *
+ */
+apply plugin: 'java'
+
+sourceSets {
+  main {
+    resources {
+      srcDir '.'
+      exclude '**/*.gradle'
+    }
+  }
+}
