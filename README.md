@@ -5,7 +5,7 @@
 Issue Tracking with plain [Markdown][markdown].
 
 In short: You are missing the "git clone" for your tickets from [github.com][github]
-or [bitbucket.org][bitbucket] or where we already have this for code and wiki?
+or [bitbucket.org][bitbucket] where we already have this for code and wiki?
 
 You need issue tracking which works for distributed and potentially disconnected
 situations together with your distributed version control [GIT][git] and e.g. your
