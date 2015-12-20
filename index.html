@@ -61,11 +61,11 @@ should be maintainable with TrackDown:</p>
 
 <pre><code>  ## ID Title (status)
 
-  ### severity priority
+  *Target Version (optional)*
 
-  ### Target Version (optional)
+  ### severity (optional) priority (optional)
 
-  affected versions: 1.0, 1.1 (optional - structured)
+  affected versions: 1.0, 1.1 (optional)
 
   ### Description (optional)
 
@@ -170,6 +170,55 @@ in progress</p>
 </code></pre>
 
 <h1>
+<a id="command-line-tools" class="anchor" href="#command-line-tools" aria-hidden="true"><span class="octicon octicon-link"></span></a>Command Line Tools</h1>
+
+<p>In addition to the init and integration tools the following commands are available</p>
+
+<h2>
+<a id="roadmap" class="anchor" href="#roadmap" aria-hidden="true"><span class="octicon octicon-link"></span></a>Roadmap</h2>
+
+<p>The command</p>
+
+<pre><code>  trackdown.sh roadmap
+</code></pre>
+
+<p>prints out a complete roadmap of the project if you entered "target version"s for
+you issues sorted by "target verions".</p>
+
+<p>The term "target version" could also be read as "release" or "sprint" or anything
+which describes your development process best.</p>
+
+<h2>
+<a id="list" class="anchor" href="#list" aria-hidden="true"><span class="octicon octicon-link"></span></a>List</h2>
+
+<p>The command <code>ls</code> is used to show all issues from a given "target version" like in</p>
+
+<pre><code>  trackdown.sh ls 1.1
+</code></pre>
+
+<p>where all issues intended to be completed in "target version" 1.1 are listet.</p>
+
+<p>The term "target version" could also be read as "release" or "sprint" or anything
+which describes your development process best.</p>
+
+<h2>
+<a id="issues" class="anchor" href="#issues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Issues</h2>
+
+<p>The command</p>
+
+<pre><code>  trackdown.sh issues
+</code></pre>
+
+<p>list all potential issues in the issues collection. Potential means in this case,
+that there may be some false positives if you not only collect issues with this
+tool.</p>
+
+<p>Optionally you can add a path to an issues collection file as a parameter like in</p>
+
+<pre><code>  trackdown.sh use ../wiki/issues.md
+</code></pre>
+
+<h1>
 <a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h1>
 
 <p>There are two ways to setup TrackDown. The default way is to use it in a
@@ -222,7 +271,7 @@ integrated with your source code <a href="http://git-scm.com/">GIT</a> commits.<
 
 <p>like in</p>
 
-<pre><code>  trackdown-use.sh ../wiki/issues.md
+<pre><code>  trackdown.sh use ../wiki/issues.md
 </code></pre>
 
 <p>when using TrackDown with the issue collection file at a different location.
@@ -238,7 +287,7 @@ mentioned here.</p>
 <h1>
 <a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h1>
 
-<p>The source tree contains a directory named .trackdown.</p>
+<p>The source repository contains a directory named .trackdown.</p>
 
 <p>This directory contains a file named config. There are some options in this
 file, which you can change.</p>
@@ -281,13 +330,7 @@ operations whichis not desirable.</p>
 for now. Perhaps we will add something more convenient later.</p>
 
 <h1>
-<a id="issues" class="anchor" href="#issues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Issues</h1>
-
-<h2>
-<a id="roadmap-related-features-need-to-be-implemented" class="anchor" href="#roadmap-related-features-need-to-be-implemented" aria-hidden="true"><span class="octicon octicon-link"></span></a>ROADMAP related features need to be implemented.</h2>
-
-<p>TrackDown is promised to deal with a sorting features for issues to group them into
-Sprints, Release, or the like. This feature is completely missing right now.</p>
+<a id="issues-1" class="anchor" href="#issues-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Issues</h1>
 
 <h2>
 <a id="copy-release-notes" class="anchor" href="#copy-release-notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>COPY release notes.</h2>
