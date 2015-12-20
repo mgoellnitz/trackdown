@@ -38,11 +38,11 @@ These fields are mapped to the following source structure
 ```
   ## ID Title (status)
 
-  ### severity priority
+  *Target Version (optional)*
 
-  ### Target Version (optional)
+  ### severity (optional) priority (optional)
 
-  affected versions: 1.0, 1.1 (optional - structured)
+  affected versions: 1.0, 1.1 (optional)
 
   ### Description (optional)
 
@@ -113,6 +113,7 @@ Anything expressible in Markdown.
 
 # Commands in the commit messages
 
+
 Right now TrackDown understands only two commands in the commit messages.
 
 ## refs *id*
@@ -126,7 +127,6 @@ or even resolved
   (Future work: lifts the issue up to the top of the list)
 ```
 
-
 ## resolves|fixes *id*
 
 Reference the commit in the list of commits at the end of the issue text.
@@ -136,6 +136,58 @@ in progress
 
 ```
   (Future work: moves the issue to the top the part of the list where the resolved issues reside)
+```
+
+
+# Command Line Tools
+
+In addition to the init and integration tools the following commands are available
+
+## Roadmap
+
+The command
+
+```
+  trackdown.sh roadmap
+```
+
+prints out a complete roadmap of the project if you entered "target version"s for
+you issues sorted by "target verions".
+
+The term "target version" could also be read as "release" or "sprint" or anything
+which describes your development process best.
+
+
+## List
+
+The command `ls` is used to show all issues from a given "target version" like in
+
+```
+  trackdown.sh ls 1.1
+```
+
+where all issues intended to be completed in "target version" 1.1 are listet.
+
+The term "target version" could also be read as "release" or "sprint" or anything
+which describes your development process best.
+
+
+## Issues
+
+The command
+
+```
+  trackdown.sh issues
+```
+
+list all potential issues in the issues collection. Potential means in this case,
+that there may be some false positives if you not only collect issues with this
+tool.
+
+Optionally you can add a path to an issues collection file as a parameter like in
+
+```
+  trackdown.sh use ../wiki/issues.md
 ```
 
 
@@ -196,7 +248,7 @@ when using the TrackDown branch in the source code repository or
 like in
 
 ```
-  trackdown-use.sh ../wiki/issues.md
+  trackdown.sh use ../wiki/issues.md
 ```
 
 when using TrackDown with the issue collection file at a different location.
@@ -212,7 +264,7 @@ mentioned here.
 
 # Configuration
 
-The source tree contains a directory named .trackdown.
+The source repository contains a directory named .trackdown.
 
 This directory contains a file named config. There are some options in this
 file, which you can change.
@@ -238,7 +290,6 @@ the trackdown branch will want to leave the unchanged to true.
 
 In other scenarios you may switch it to false.
 
-
 ## Auto Push all Issue Collection Commits
 
 Automatically pushes after each commit to the upstream repository. If you didn't
@@ -258,11 +309,6 @@ for now. Perhaps we will add something more convenient later.
 
 
 # Issues
-
-## ROADMAP related features need to be implemented.
-
-TrackDown is promised to deal with a sorting features for issues to group them into
-Sprints, Release, or the like. This feature is completely missing right now.
 
 ## COPY release notes.
 

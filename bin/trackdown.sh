@@ -46,8 +46,38 @@ if [ "$CMD" = "use" ] ; then
 fi
 
 
-# ls command to list potential issues in the collection
+# ls command to list potential issues in the collection for a certain release
 if [ "$CMD" = "ls" ] ; then
+
+  # Location of the issues file
+  ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=".git/trackdown/issues.md"
+  fi
+  grep -B2 "^\*$2\*" $ISSUES|grep "^\#\#\ "
+
+fi
+
+
+# ls command to list potential issues in the collection for a certain release
+if [ "$CMD" = "roadmap" ] ; then
+
+  # Location of the issues file
+  ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=".git/trackdown/issues.md"
+  fi
+  for r in `grep "^\*[A-Za-z0-9\.]*\*" $ISSUES|cut -d '*' -f 2|uniq|sort` ; do
+    echo "${r}:"
+    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "
+    echo ""
+  done
+
+fi
+
+
+# issues command to list all potential issues in the collection
+if [ "$CMD" = "issues" ] ; then
 
   # Location of the issues file
   ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
