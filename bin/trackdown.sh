@@ -20,28 +20,26 @@ CMD=$1
 ISSUES=$2
 DIR=`dirname $0`
 
-# use command
-if [ "$CMD" = "use" ] ; then
+# usage command
+if [ -z "$CMD" ] ; then
 
-  cp $DIR/trackdown-hook.sh .git/hooks/post-commit
-  chmod 755 .git/hooks/post-commit
-  if [ -z "$ISSUES" ] ; then
-    ISSUES=".git/trackdown/issues.md"
-    cd .git
-    # git clone --single-branch --branch trackdown .. trackdown
-    git clone --branch trackdown .. trackdown
-    cd ..
-    echo "autocommit=true" > .trackdown/config
-    echo "autopush=true" >>  .trackdown/config
-    echo "location=.git/trackdown/issues.md" >>  .trackdown/config
-  else
-    echo "autocommit=false" > .trackdown/config
-    echo "autopush=false" >>  .trackdown/config
-   echo "location=$ISSUES" >>  .trackdown/config
-  fi
-  ln -s $ISSUES issues.md
-  echo "/.trackdown" >> .gitignore
-  echo "issues.md" >> .gitignore
+  MYNAME=`basename $0`
+  echo "Usage:"
+  echo ""
+  echo "$MYNAME roadmap"
+  echo "  print roadmap"
+  echo ""
+  echo "$MYNAME ls v"
+  echo "  list issues for version v"
+  echo ""
+  echo "$MYNAME issues"
+  echo "  list all potential issues"
+  echo ""
+  echo "$MYNAME use [collections file]"
+  echo "  setup clone for issue tracking (optional with non default file)"
+  echo ""
+  echo "$MYNAME init"
+  echo "  init issue tracking within GIT branch"
 
 fi
 
@@ -67,9 +65,11 @@ if [ "$CMD" = "roadmap" ] ; then
   if [ -z "$ISSUES" ] ; then
     ISSUES=".git/trackdown/issues.md"
   fi
+  echo "# Roadmap"
+  echo ""
   for r in `grep "^\*[A-Za-z0-9\.]*\*" $ISSUES|cut -d '*' -f 2|uniq|sort` ; do
-    echo "${r}:"
-    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "
+    echo "## ${r}:"
+    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'
     echo ""
   done
 
@@ -88,6 +88,32 @@ if [ "$CMD" = "issues" ] ; then
     ISSUES=".git/trackdown/issues.md"
   fi
   grep "^\#\#\ " $ISSUES | sed -e "s/^##\ /- /g"
+
+fi
+
+
+# use command
+if [ "$CMD" = "use" ] ; then
+
+  cp $DIR/trackdown-hook.sh .git/hooks/post-commit
+  chmod 755 .git/hooks/post-commit
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=".git/trackdown/issues.md"
+    cd .git
+    # git clone --single-branch --branch trackdown .. trackdown
+    git clone --branch trackdown .. trackdown
+    cd ..
+    echo "autocommit=true" > .trackdown/config
+    echo "autopush=true" >>  .trackdown/config
+    echo "location=.git/trackdown/issues.md" >>  .trackdown/config
+  else
+    echo "autocommit=false" > .trackdown/config
+    echo "autopush=false" >>  .trackdown/config
+   echo "location=$ISSUES" >>  .trackdown/config
+  fi
+  ln -s $ISSUES issues.md
+  echo "/.trackdown" >> .gitignore
+  echo "issues.md" >> .gitignore
 
 fi
 

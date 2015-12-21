@@ -83,7 +83,7 @@ Anything expressible in Markdown. Automatically set values are "in progress" if
 you start committing for a certain ID and "resolved", if you are using a prefix
 of "fixes ID" or "resolves ID".
 
-Other intended values inlude "new", where the issue is just files, and "closed"
+Other intended values include "new", where the issue is just files, and "closed"
 when the solution is brought into production.
 
 ### Target Version
@@ -152,7 +152,7 @@ The command
 ```
 
 prints out a complete roadmap of the project if you entered "target version"s for
-you issues sorted by "target verions".
+you issues sorted by "target versions" in [Markdown][markdown] format.
 
 The term "target version" could also be read as "release" or "sprint" or anything
 which describes your development process best.
@@ -166,7 +166,7 @@ The command `ls` is used to show all issues from a given "target version" like i
   trackdown.sh ls 1.1
 ```
 
-where all issues intended to be completed in "target version" 1.1 are listet.
+where all issues intended to be completed in "target version" 1.1 are listed.
 
 The term "target version" could also be read as "release" or "sprint" or anything
 which describes your development process best.
@@ -294,7 +294,7 @@ In other scenarios you may switch it to false.
 
 Automatically pushes after each commit to the upstream repository. If you didn't
 changethe default locations where your normal source code repository is the
-upstream repositoryof your issue collection you will want to leave the unchanged
+upstream repository of your issue collection you will want to leave the unchanged
 to *true*.
 
 In other scenarios you may switch it to false. E.g. if the issue collection is
