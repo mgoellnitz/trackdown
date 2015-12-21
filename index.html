@@ -114,7 +114,7 @@ when the solution is brought into production.</p>
 <h3>
 <a id="target-version" class="anchor" href="#target-version" aria-hidden="true"><span class="octicon octicon-link"></span></a>Target Version</h3>
 
-<p>Anything expressible in Markdown.</p>
+<p>Onyl digits, letters and dots. No spaces allowed.</p>
 
 <pre><code>  Future-Work Will be evaluated to calculate your project's roadmap
 </code></pre>
@@ -141,7 +141,74 @@ affected by the issue (if this is possible to say).</p>
 <p>Anything expressible in Markdown.</p>
 
 <h1>
-<a id="commands-in-the-commit-messages" class="anchor" href="#commands-in-the-commit-messages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Commands in the commit messages</h1>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h1>
+
+<p>There are two ways to setup TrackDown. The default way is to use it in a
+separate branch of you source code repository and have it editable in your IDE
+through a symbolic link to the issue collection file which is maintained by you
+through direct typing or the commit hook integration.</p>
+
+<p>The second way is to use the file at a different location - e.g. in the wiki of
+the project instead of the source code repository, which is described later.</p>
+
+<h2>
+<a id="initialize-the-repository" class="anchor" href="#initialize-the-repository" aria-hidden="true"><span class="octicon octicon-link"></span></a>Initialize the Repository</h2>
+
+<p>If you want to track the issues in a trackdown branch of your source code repository
+and not in any other location of your chosing, you need to modify the <a href="http://git-scm.com/">GIT</a>
+repository accordingly. You source code repository must contain at least one commit
+for this to work. To initialize a <a href="http://git-scm.com/">GIT</a> repository that way, call the script</p>
+
+<pre><code>  trackdown.sh init
+</code></pre>
+
+<p>This creates the TrackDown thread for the issue tracking. You have to manually
+propagate this thread to your upstream repositories. TrackDown does not
+interfere with your remote workflow.</p>
+
+<pre><code>  git push original trackdown
+</code></pre>
+
+<p>Initialization must only to be executed once for a repository and all of its
+fork and clones.</p>
+
+<p>If you want to use the issue collection file from a different location, leave
+out this step.</p>
+
+<h2>
+<a id="repository-integration" class="anchor" href="#repository-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Repository Integration</h2>
+
+<p>Regardless of the location of the issue collection file, for each clone of the
+repository you have to set up the TrackDown tooling to be able to use it
+integrated with your source code <a href="http://git-scm.com/">GIT</a> commits.</p>
+
+<p>To start using TrackDown for the respective clone you have to issue</p>
+
+<pre><code>  trackdown.sh use
+</code></pre>
+
+<p>when using the TrackDown branch in the source code repository or</p>
+
+<pre><code>  trackdown.sh use &lt;path/to/issues.md&gt;
+</code></pre>
+
+<p>like in</p>
+
+<pre><code>  trackdown.sh use ../wiki/issues.md
+</code></pre>
+
+<p>when using TrackDown with the issue collection file at a different location.
+Automatic commit and push (see below) will be switched of in the latter case.</p>
+
+<p>This creates a gitignored link issues.md in the root directory of your project
+pointing to the issue collection file and it will configure a post-commit hook
+for <a href="http://git-scm.com/">GIT</a>.</p>
+
+<p>After this step you can edit the issue collection file following the format
+mentioned here.</p>
+
+<h1>
+<a id="commands-in-the-commit-messages" class="anchor" href="#commands-in-the-commit-messages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Commands in the Commit Messages</h1>
 
 <p>Right now TrackDown understands only two commands in the commit messages.</p>
 
@@ -209,80 +276,14 @@ which describes your development process best.</p>
 <pre><code>  trackdown.sh issues
 </code></pre>
 
-<p>list all potential issues in the issues collection. Potential means in this case,
+<p>list all potential issues in the issue collection. Potential means in this case,
 that there may be some false positives if you not only collect issues with this
 tool.</p>
 
-<p>Optionally you can add a path to an issues collection file as a parameter like in</p>
+<p>Optionally you can add a path to an issue collection file as a parameter like in</p>
 
 <pre><code>  trackdown.sh use ../wiki/issues.md
 </code></pre>
-
-<h1>
-<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h1>
-
-<p>There are two ways to setup TrackDown. The default way is to use it in a
-separate branch of you source code repository and have it editable in your IDE
-through a symbolic link to the issue collection file which is maintained by you
-through direct typing or the commit hook integration.</p>
-
-<p>The second way is to use the file at a different location - e.g. in the wiki of
-the project instead of the source code repository, which is described later.</p>
-
-<h2>
-<a id="initialize-the-repository" class="anchor" href="#initialize-the-repository" aria-hidden="true"><span class="octicon octicon-link"></span></a>Initialize the Repository</h2>
-
-<p>If you want to track the issues in a trackdown branch of your source code
-repository, you need to modify the <a href="http://git-scm.com/">GIT</a> repository accordingly. To initialize
-a <a href="http://git-scm.com/">GIT</a> repository that way call the script</p>
-
-<pre><code>  trackdown.sh init
-</code></pre>
-
-<p>This creates the TrackDown thread for the issue tracking. You have to manually
-propagate this thread to your upstream repositories. TrackDown does not
-interfere with your remote workflow.</p>
-
-<pre><code>  git push original trackdown
-</code></pre>
-
-<p>Initialization must only to be executed once for a repository and all of its
-fork and clones.</p>
-
-<p>If you want to use the issue collection file from a different location, leave
-out this step.</p>
-
-<h2>
-<a id="repository-integration" class="anchor" href="#repository-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Repository Integration</h2>
-
-<p>Regardless of the location of the issue collection file, for each clone of the
-repository you have to set up the TrackDown tooling to be able to use it
-integrated with your source code <a href="http://git-scm.com/">GIT</a> commits.</p>
-
-<p>To start using TrackDown for the respective clone you have to issue</p>
-
-<pre><code>  trackdown.sh use
-</code></pre>
-
-<p>when using the TrackDown branch in the source code repository or</p>
-
-<pre><code>  trackdown.sh use &lt;path/to/issues.md&gt;
-</code></pre>
-
-<p>like in</p>
-
-<pre><code>  trackdown.sh use ../wiki/issues.md
-</code></pre>
-
-<p>when using TrackDown with the issue collection file at a different location.
-Automatic commit and push (see below) will be switched of in the latter case.</p>
-
-<p>This creates a gitignored link issues.md in the root directory of your project
-pointing to the issue collection file and it will configure a post-commit hook
-for <a href="http://git-scm.com/">GIT</a>.</p>
-
-<p>After this step you can edit the issue collection file following the format
-mentioned here.</p>
 
 <h1>
 <a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h1>
@@ -336,7 +337,7 @@ for now. Perhaps we will add something more convenient later.</p>
 <a id="copy-release-notes" class="anchor" href="#copy-release-notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>COPY release notes.</h2>
 
 <p>When closing a release or sprint, it should be possible to copy all the resolved
-issues to a new <a href="https://daringfireball.net/projects/markdown/">Markdown</a> file to remove the from the issues collection
+issues to a new <a href="https://daringfireball.net/projects/markdown/">Markdown</a> file to remove the from the issue collection
 and have a contribution to release notes.</p>
 
 <h2>
