@@ -84,6 +84,20 @@ if [ ! -z "$STATUS" ] ; then
     echo $AUTHOR $DATE >>$ISSUES
     git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES
   fi
+
+  ROADMAP=`dirname $ISSUES`
+  ROADMAP=${ROADMAP}/roadmap.md
+  echo "# Roadmap" >$ROADMAP
+  echo "" >>$ROADMAP
+  for r in `grep "^\*[A-Za-z0-9\._]*\*" $ISSUES|cut -d '*' -f 2|uniq|sort` ; do
+    TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
+    RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(resolved)'|wc -l`
+    echo "## ${r} - $[$RESOLVED * 100 / $TOTAL]% completed - $RESOLVED / $TOTAL:" >> $ROADMAP
+    echo "" >> $ROADMAP
+    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g' >> $ROADMAP
+    echo "" >> $ROADMAP
+  done
+
   AUTOCOMMIT=`grep autocommit=true .trackdown/config`
   # echo "AUTOCOMMIT: $AUTOCOMMIT"
   if [ ! -z "$AUTOCOMMIT" ] ; then
@@ -91,7 +105,8 @@ if [ ! -z "$STATUS" ] ; then
     TRACKDOWN=`dirname $ISSUES`
     cd $TRACKDOWN
     echo "TrackDown: committing"
-    git commit -m "Commited for issues #$ID" issues.md > /dev/null
+    git commit -m "Committed for issue #$ID" issues.md > /dev/null
+    git commit -m "Committed for issue #$ID" roadmap.md > /dev/null
     cd $WD
     AUTOPUSH=`grep autopush=true .trackdown/config`
     # echo "AUTOPUSH: $AUTOPUSH"

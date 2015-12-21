@@ -88,7 +88,7 @@ when the solution is brought into production.
 
 ### Target Version
 
-Anything expressible in Markdown.
+Onyl digits, letters and dots. No spaces allowed.
 
 ```
   Future-Work Will be evaluated to calculate your project's roadmap
@@ -111,8 +111,78 @@ Anything expressible in Markdown.
 
 Anything expressible in Markdown.
 
-# Commands in the commit messages
 
+# Setup
+
+There are two ways to setup TrackDown. The default way is to use it in a
+separate branch of you source code repository and have it editable in your IDE
+through a symbolic link to the issue collection file which is maintained by you
+through direct typing or the commit hook integration.
+
+The second way is to use the file at a different location - e.g. in the wiki of
+the project instead of the source code repository, which is described later.
+
+## Initialize the Repository
+
+If you want to track the issues in a trackdown branch of your source code repository
+and not in any other location of your chosing, you need to modify the [GIT][git]
+repository accordingly. You source code repository must contain at least one commit
+for this to work. To initialize a [GIT][git] repository that way, call the script
+
+```
+  trackdown.sh init
+```
+
+This creates the TrackDown thread for the issue tracking. You have to manually
+propagate this thread to your upstream repositories. TrackDown does not
+interfere with your remote workflow.
+
+```
+  git push original trackdown
+```
+
+Initialization must only to be executed once for a repository and all of its
+fork and clones.
+
+If you want to use the issue collection file from a different location, leave
+out this step.
+
+## Repository Integration
+
+Regardless of the location of the issue collection file, for each clone of the
+repository you have to set up the TrackDown tooling to be able to use it
+integrated with your source code [GIT][git] commits.
+
+To start using TrackDown for the respective clone you have to issue
+
+```
+  trackdown.sh use
+```
+
+when using the TrackDown branch in the source code repository or
+
+```
+  trackdown.sh use <path/to/issues.md>
+```
+
+like in
+
+```
+  trackdown.sh use ../wiki/issues.md
+```
+
+when using TrackDown with the issue collection file at a different location.
+Automatic commit and push (see below) will be switched of in the latter case.
+
+This creates a gitignored link issues.md in the root directory of your project
+pointing to the issue collection file and it will configure a post-commit hook
+for [GIT][git].
+
+After this step you can edit the issue collection file following the format
+mentioned here.
+
+
+# Commands in the Commit Messages
 
 Right now TrackDown understands only two commands in the commit messages.
 
@@ -180,86 +250,15 @@ The command
   trackdown.sh issues
 ```
 
-list all potential issues in the issues collection. Potential means in this case,
+list all potential issues in the issue collection. Potential means in this case,
 that there may be some false positives if you not only collect issues with this
 tool.
 
-Optionally you can add a path to an issues collection file as a parameter like in
+Optionally you can add a path to an issue collection file as a parameter like in
 
 ```
   trackdown.sh use ../wiki/issues.md
 ```
-
-
-# Setup
-
-There are two ways to setup TrackDown. The default way is to use it in a
-separate branch of you source code repository and have it editable in your IDE
-through a symbolic link to the issue collection file which is maintained by you
-through direct typing or the commit hook integration.
-
-The second way is to use the file at a different location - e.g. in the wiki of
-the project instead of the source code repository, which is described later.
-
-
-## Initialize the Repository
-
-If you want to track the issues in a trackdown branch of your source code
-repository, you need to modify the [GIT][git] repository accordingly. To initialize
-a [GIT][git] repository that way call the script
-
-```
-  trackdown.sh init
-```
-
-This creates the TrackDown thread for the issue tracking. You have to manually
-propagate this thread to your upstream repositories. TrackDown does not
-interfere with your remote workflow.
-
-```
-  git push original trackdown
-```
-
-Initialization must only to be executed once for a repository and all of its
-fork and clones.
-
-If you want to use the issue collection file from a different location, leave
-out this step.
-
-
-## Repository Integration
-
-Regardless of the location of the issue collection file, for each clone of the
-repository you have to set up the TrackDown tooling to be able to use it
-integrated with your source code [GIT][git] commits.
-
-To start using TrackDown for the respective clone you have to issue
-
-```
-  trackdown.sh use
-```
-
-when using the TrackDown branch in the source code repository or
-
-```
-  trackdown.sh use <path/to/issues.md>
-```
-
-like in
-
-```
-  trackdown.sh use ../wiki/issues.md
-```
-
-when using TrackDown with the issue collection file at a different location.
-Automatic commit and push (see below) will be switched of in the latter case.
-
-This creates a gitignored link issues.md in the root directory of your project
-pointing to the issue collection file and it will configure a post-commit hook
-for [GIT][git].
-
-After this step you can edit the issue collection file following the format
-mentioned here.
 
 
 # Configuration
@@ -313,7 +312,7 @@ for now. Perhaps we will add something more convenient later.
 ## COPY release notes.
 
 When closing a release or sprint, it should be possible to copy all the resolved
-issues to a new [Markdown][markdown] file to remove the from the issues collection
+issues to a new [Markdown][markdown] file to remove the from the issue collection
 and have a contribution to release notes.
 
 ## MULTIISSUE There can be only one issue per ticket.

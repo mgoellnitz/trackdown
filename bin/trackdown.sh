@@ -67,8 +67,11 @@ if [ "$CMD" = "roadmap" ] ; then
   fi
   echo "# Roadmap"
   echo ""
-  for r in `grep "^\*[A-Za-z0-9\.]*\*" $ISSUES|cut -d '*' -f 2|uniq|sort` ; do
-    echo "## ${r}:"
+  for r in `grep "^\*[A-Za-z0-9\._]*\*" $ISSUES|cut -d '*' -f 2|uniq|sort` ; do
+    TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
+    RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(resolved)'|wc -l`
+    echo "## ${r} - $[$RESOLVED * 100 / $TOTAL]% completed - $RESOLVED / $TOTAL:"
+    echo ""
     grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'
     echo ""
   done
@@ -95,8 +98,17 @@ fi
 # use command
 if [ "$CMD" = "use" ] ; then
 
+  if [ ! -d .git ] ; then
+    echo "Not in a GIT repository. Exiting."
+    exit
+  fi
+  if [ `git branch -l|wc -l` = 0 ] ; then
+    echo "GIT repository missing commits. Exiting."
+    exit
+  fi
   cp $DIR/trackdown-hook.sh .git/hooks/post-commit
   chmod 755 .git/hooks/post-commit
+  mkdir .trackdown
   if [ -z "$ISSUES" ] ; then
     ISSUES=".git/trackdown/issues.md"
     cd .git
@@ -109,11 +121,13 @@ if [ "$CMD" = "use" ] ; then
   else
     echo "autocommit=false" > .trackdown/config
     echo "autopush=false" >>  .trackdown/config
-   echo "location=$ISSUES" >>  .trackdown/config
+    echo "location=$ISSUES" >>  .trackdown/config
   fi
   ln -s $ISSUES issues.md
+  ln -s `dirname $ISSUES`/roadmap.md roadmap.md
   echo "/.trackdown" >> .gitignore
   echo "issues.md" >> .gitignore
+  echo "roadmap.md" >> .gitignore
 
 fi
 
@@ -121,13 +135,23 @@ fi
 # init command
 if [ "$CMD" = "init" ] ; then
 
+  if [ ! -d .git ] ; then
+    echo "Not in a GIT repository. Exiting."
+    exit
+  fi
+  if [ `git log|wc -l` = 0 ] ; then
+    echo "GIT repository missing commits. Exiting."
+    exit
+  fi
   git stash
   BRANCH=`git branch|grep '*'|cut -d ' ' -f 2`
   git checkout --orphan trackdown
   git rm -rf .
   touch issues.md
+  touch roadmap.md
   git add -f issues.md
-  git commit -m "Empty issues collection" issues.md
+  git add -f roadmap.md
+  git commit -m "Empty issues collection" issues.md roadmap.md
   git checkout $BRANCH
   git stash apply
 
