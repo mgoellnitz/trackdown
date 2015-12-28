@@ -18,6 +18,28 @@ of tickets though, since you will be having only one file a plain [Markdown][mar
 with your issues - and optionally other stuff - collected in it.
 
 
+# Design
+
+While TrackDown does not define an issue related workflow, it has some intended workflow
+elements which are supported:
+
+The issues are defined and maintained in a single [Markdown][markdown] file following
+the format given here.
+
+The commit hook of TrackDown reads the commit messages and modifies that issue collection
+if your commit messages relate to some of the issues.
+
+Additionally a roadmap file is automatically maintained for your tickets.
+
+The issue collection this way is held local on your machine and not remote in the
+database of a tracking system. (Which is something also [Fossil][fossil] supports.)
+Like with the source code, it is pushed to remote repositories if needed (or possible).
+The simple [Markdown][markdown] format and the usage of [GIT][git] as a backend
+support distributed, shared editing and later merging of the issues and the related
+notes in the issue collection. (This is where the parallel with [Fossil][fossil]
+ends).
+
+
 # The Format
 
 While sticking to only partly structured [Markdown][markdown] the following elements
@@ -184,7 +206,10 @@ mentioned here.
 
 # Commands in the Commit Messages
 
-Right now TrackDown understands only two commands in the commit messages.
+Right now TrackDown understands only two commands in the commit messages. It relies
+on a git implementation which is capable if executing the script hooks. JGit
+is lacking this (for the post commit hooks used here) and as a result NetBeans and
+Eclipse cannot use this mimik.
 
 ## refs *id*
 
@@ -298,24 +323,30 @@ to *true*.
 
 In other scenarios you may switch it to false. E.g. if the issue collection is
 part of your project wiki then automatically pushing might lead to remote
-operations whichis not desirable.
+operations which is not desirable.
 
 
 # Installation
 
-Just copy the files from bin to you /usr/local/bin or somewhere else on your $PATH
-for now. Perhaps we will add something more convenient later.
+Just copy the files from bin/ to a place on your $PATH for now. Perhaps we will
+add something more convenient later.
+
+Of course this way the remaining Windows users are locked out.
 
 
 # Issues
 
 ## COPY release notes.
 
+*1.0*
+
 When closing a release or sprint, it should be possible to copy all the resolved
 issues to a new [Markdown][markdown] file to remove the from the issue collection
 and have a contribution to release notes.
 
 ## MULTIISSUE There can be only one issue per ticket.
+
+*nth*
 
 [markdown]: https://daringfireball.net/projects/markdown/
 [git]: http://git-scm.com/
