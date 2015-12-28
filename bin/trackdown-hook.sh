@@ -89,7 +89,7 @@ if [ ! -z "$STATUS" ] ; then
   ROADMAP=${ROADMAP}/roadmap.md
   echo "# Roadmap" >$ROADMAP
   echo "" >>$ROADMAP
-  for r in `grep "^\*[A-Za-z0-9\._]*\*" $ISSUES|cut -d '*' -f 2|uniq|sort` ; do
+  for r in `grep "^\*[A-Za-z0-9\._]*\*" $ISSUES|cut -d '*' -f 2|sort|uniq` ; do
     TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
     RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(resolved)'|wc -l`
     echo "## ${r} - $[$RESOLVED * 100 / $TOTAL]% completed - $RESOLVED / $TOTAL:" >> $ROADMAP
