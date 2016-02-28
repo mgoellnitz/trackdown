@@ -336,6 +336,19 @@ Of course this way the remaining Windows users are locked out.
 
 # Issues
 
+Right now we have three collections/iterations/sprints in this issue list:
+
+*1.0* This should be accomplished before an 1.0 release.
+*nth* This feature is nice to have but can be left out.
+*oos* This issue is relevant but out of the scope of this project.
+
+## Doesn't interoperate with NetBeans
+
+*oos*
+
+While some IDE integrations rely on the git command line tooling and thus work
+perfectly together with this project, NetBeans decided to use the
+
 ## COPY release notes.
 
 *1.0*
@@ -344,9 +357,11 @@ When closing a release or sprint, it should be possible to copy all the resolved
 issues to a new [Markdown][markdown] file to remove the from the issue collection
 and have a contribution to release notes.
 
-## MULTIISSUE There can be only one issue per ticket.
+## MULTIISSUE There can be only one issue per commit.
 
 *nth*
+
+Right now we only support the extraction of one issues ID per git commit.
 
 [markdown]: https://daringfireball.net/projects/markdown/
 [git]: http://git-scm.com/
