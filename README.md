@@ -347,7 +347,8 @@ Right now we have three collections/iterations/sprints in this issue list:
 *oos*
 
 While some IDE integrations rely on the git command line tooling and thus work
-perfectly together with this project, NetBeans decided to use the
+perfectly together with this project, NetBeans decided to use the JGit library,
+which onyl supports a subsets of the git hooks - and not the ones we use here.
 
 ## COPY release notes.
 
