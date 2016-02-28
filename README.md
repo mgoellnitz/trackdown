@@ -338,9 +338,9 @@ Of course this way the remaining Windows users are locked out.
 
 Right now we have three collections/iterations/sprints in this issue list:
 
-*1.0* This should be accomplished before an 1.0 release.
-*nth* This feature is nice to have but can be left out.
-*oos* This issue is relevant but out of the scope of this project.
+- *1.0* This should be accomplished before an 1.0 release.
+- *nth* This feature is nice to have but can be left out.
+- *oos* This issue is relevant but out of the scope of this project.
 
 ## Doesn't interoperate with NetBeans
 
