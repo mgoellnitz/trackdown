@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015 Martin Goellnitz
+# Copyright 2015-2016 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@ if [ -z "$CMD" ] ; then
   echo ""
   echo "$MYNAME issues"
   echo "  list all potential issues"
+  echo ""
+  echo "$MYNAME sync"
+  echo "  directly sync issues GIT with upstream (rarely usefull)"
   echo ""
   echo "$MYNAME use [collections file]"
   echo "  setup clone for issue tracking (optional with non default file)"
@@ -129,6 +132,33 @@ if [ "$CMD" = "use" ] ; then
   echo "issues.md" >> .gitignore
   echo "roadmap.md" >> .gitignore
 
+fi
+
+
+# sync command
+if [ "$CMD" = "sync" ] ; then
+
+  if [ ! -d .git ] ; then
+    echo "Not in a GIT repository. Exiting."
+    exit
+  fi
+
+  ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=".git/trackdown/issues.md"
+  fi
+  WD=`pwd`
+  TRACKDOWN=`dirname $ISSUES`
+  cd $TRACKDOWN
+  if [ `git branch -l|wc -l` = 0 ] ; then
+    echo "GIT repository missing commits. Exiting."
+  else
+    git fetch
+    git rebase
+    git gc
+    git push
+  fi
+  cd $WD
 fi
 
 
