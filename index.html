@@ -22,7 +22,8 @@
       <h1>
 <a id="trackdown" class="anchor" href="#trackdown" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TrackDown</h1>
 
-<p><a href="https://github.com/mgoellnitz/trackdown/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mgoellnitz/trackdown.svg" alt="License"></a></p>
+<p><a href="https://github.com/mgoellnitz/trackdown/releases/latest"><img src="https://img.shields.io/github/release/mgoellnitz/trackdown.svg" alt="Latest Release"></a>
+<a href="https://github.com/mgoellnitz/trackdown/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mgoellnitz/trackdown.svg" alt="License"></a></p>
 
 <p>Issue Tracking with plain <a href="https://daringfireball.net/projects/markdown/">Markdown</a>.</p>
 
@@ -30,13 +31,13 @@
 or <a href="https://bitbucket.org/">bitbucket.org</a> where we already have this for code and wiki?</p>
 
 <p>You need issue tracking which works for distributed and potentially disconnected
-situations together with your distributed version control <a href="http://git-scm.com/">GIT</a> and e.g. your
-also distributed wiki editing through <a href="http://git-scm.com/">GIT</a> as well?</p>
+situations together with your distributed version control <a href="http://git-scm.com/">GIT</a> and e.g. 
+also your distributed wiki editing through <a href="http://git-scm.com/">GIT</a> as well?</p>
 
 <p>Then this here is for you!</p>
 
 <p>It is not intended for large, permanently online or connected teams and heavy 
-flows of tickets though, since you will be having only one file a plain 
+flows of tickets though, since you will be having only one file with plain 
 <a href="https://daringfireball.net/projects/markdown/">Markdown</a> with your issues - and optionally other stuff - collected 
 in it.</p>
 
@@ -238,10 +239,11 @@ mentioned here.</p>
 <a id="commands-in-the-commit-messages" class="anchor" href="#commands-in-the-commit-messages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands in the Commit Messages</h1>
 
 <p>Right now TrackDown understands only two commands in the commit messages. It 
-relies on a git implementation which is capable if executing the script hooks. </p>
+relies on a <a href="http://git-scm.com/">GIT</a> implementation which is capable if executing the script 
+hooks. </p>
 
-<p>JGit is lacking this (for the post commit hooks used here) and as a result 
-NetBeans and Eclipse cannot use this mimik!</p>
+<p><a href="https://eclipse.org/jgit/">JGit </a> is lacking this (for the post commit hooks used here) and as a 
+result NetBeans and Eclipse cannot use this mimik!</p>
 
 <h2>
 <a id="refs-id" class="anchor" href="#refs-id" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>refs <em>id</em>
@@ -369,18 +371,85 @@ add something more convenient later.</p>
 
 <p>Of course this way the remaining Windows users are locked out.</p>
 
+<h2>
+<a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Prerequisites</h2>
+
+<p>TrackDown relies on a <a href="http://git-scm.com/">GIT</a> installation available on the path.</p>
+
+<h2>
+<a id="compatibility" class="anchor" href="#compatibility" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compatibility</h2>
+
+<p>TrackDown ist tested to work on Ubuntu 12.04 and newer. It is expected to work
+on similar Linux systems and MacOS systems.</p>
+
+<p>There are no plans to support Windows systems except where Un*x like layers as
+cygwin are in use.</p>
+
 <h1>
 <a id="related-projects" class="anchor" href="#related-projects" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Related Projects</h1>
 
 <p>I only came accross relates projects which have certain limitations or are 
-unmaintained.</p>
+unmaintained. In each case the limitations have an extent that kept me from
+using these systems except for very small or test projects.</p>
 
 <h2>
-<a id="related-projects-with-limitations" class="anchor" href="#related-projects-with-limitations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Related Projects with Limitations</h2>
+<a id="fossil-scm" class="anchor" href="#fossil-scm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Fossil SCM</h2>
+
+<p>What I liked about fossil is, that it brings the three core elements of development</p>
 
 <ul>
-<li>Fossil</li>
+<li>Source Code</li>
+<li>Documentation or Notes (Wiki)</li>
+<li>Issues</li>
 </ul>
+
+<p>local to my machine for distributed development or disconnected situations.</p>
+
+<p>You don't have to maintain backups since the remote instances are your backups 
+if the source code, wiki and ticketing state.</p>
+
+<p>It does not have a wiki capable of shared editing with later merging like the
+<a href="http://git-scm.com/">GIT</a> based wikis of <a href="https://github.com/">github.com</a> or <a href="https://bitbucket.org/">bitbucket.org</a>.</p>
+
+<p>Also it is not possible to the contents of the wiki outside the <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a> 
+context e.g. for a documentation web site, since you cannot export the wikis
+raw data. (Yes, <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a> provides means to usr the wiki directly as
+a documentation site system, which is similar but not exactly the same.)</p>
+
+<p>The drawback is, that it does all these things  by creating a nearly closed shop 
+system not open to re-use of these elements and not open to external tooling 
+outside the <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a> scripting facility.</p>
+
+<p>Additionally I have to keep the <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a> internal web server running for
+each repository I am using, to be able to read the notes and issues for a project.</p>
+
+<h2>
+<a id="bitbucketorg" class="anchor" href="#bitbucketorg" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>bitbucket.org</h2>
+
+<p><a href="https://bitbucket.org/">Bitbucket.org</a> a brilliant tool for Open Source or small projects.<br>
+It has decent VCS solutions, a WIKI which can be used distributed through 
+<a href="http://git-scm.com/">GIT</a>.</p>
+
+<p>The only thing I'm missing is the distributed offline work for ticketing.</p>
+
+<p>So in this case it is possible to leave out the ticketing of <a href="https://bitbucket.org/">bitbucket.org</a> 
+and use TrackDown with <a href="https://bitbucket.org/">bitbucket.org</a> as the <a href="http://git-scm.com/">GIT</a> based 
+storage backend.</p>
+
+<h2>
+<a id="trac" class="anchor" href="#trac" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Trac</h2>
+
+<p>A few years ago a colleague stated that he is running a local VM for each 
+project, he is involved with, to take notes, track issues, and maintain source 
+code.</p>
+
+<p>Of course this does not imply shared use of the Trac service or disconnected use.</p>
+
+<p>Also while Trac is a brilliant tool, this leaves me with the necessity to 
+maintain the locally running instances and take backups of them in addition to 
+the project VCS and source code repositories. This is not the case for the 
+<a href="http://git-scm.com/">GIT</a> based solutions in this list, which have a remote repository as a 
+backup wiki and source code.</p>
 
 <h2>
 <a id="unmaintained-related-projects" class="anchor" href="#unmaintained-related-projects" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Unmaintained related Projects</h2>
@@ -404,13 +473,28 @@ unmaintained.</p>
 </ul>
 
 <h2>
-<a id="doesnt-interoperate-with-netbeans" class="anchor" href="#doesnt-interoperate-with-netbeans" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Doesn't interoperate with NetBeans</h2>
+<a id="netbeans-interoperation-not-working-due-to-missing-hook-implementation-in-jgit" class="anchor" href="#netbeans-interoperation-not-working-due-to-missing-hook-implementation-in-jgit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>NETBEANS interoperation not working due to missing hook implementation in <a href="https://eclipse.org/jgit/">JGit</a>
+</h2>
 
 <p><em>oos</em></p>
 
-<p>While some IDE integrations rely on the git command line tooling and thus work
-perfectly together with this project, NetBeans decided to use the JGit library,
-which onyl supports a subsets of the git hooks - and not the ones we use here.</p>
+<p>While some IDE integrations rely on the <a href="http://git-scm.com/">GIT</a> command line tooling and thus 
+work perfectly together with this project, NetBeans decided to use the <a href="https://eclipse.org/jgit/">JGit</a> 
+library, which only supports a subsets of the <a href="http://git-scm.com/">GIT</a> hooks - and not the 
+ones we  use here.</p>
+
+<h2>
+<a id="root-directory-of-the-source-code-must-be-a-valid-roadmap-and-issue-file-location-in-progress" class="anchor" href="#root-directory-of-the-source-code-must-be-a-valid-roadmap-and-issue-file-location-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ROOT directory of the source code must be a valid roadmap and issue file location (in progress)</h2>
+
+<p><em>1.0</em></p>
+
+<p>Due to forced set of symbolic links in the root directory of the source code
+respository to the roadmap and issue collection file, the 'use' step fails.</p>
+
+<p>Martin Goellnitz  /    Tue Sep 6 21:29:12 2016 +0200</p>
+
+<pre><code>refs #ROOT - make root directory of source code a valid place for the issue collection file and roadmap file
+</code></pre>
 
 <h2>
 <a id="copy-release-notes" class="anchor" href="#copy-release-notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>COPY release notes.</h2>
@@ -418,15 +502,15 @@ which onyl supports a subsets of the git hooks - and not the ones we use here.</
 <p><em>1.0</em></p>
 
 <p>When closing a release or sprint, it should be possible to copy all the resolved
-issues to a new <a href="https://daringfireball.net/projects/markdown/">Markdown</a> file to remove the from the issue collection
-and have a contribution to release notes.</p>
+issues to a new <a href="https://daringfireball.net/projects/markdown/">Markdown</a> file to remove them from the issue 
+collection and have a contribution to release notes.</p>
 
 <h2>
 <a id="multiissue-there-can-be-only-one-issue-per-commit" class="anchor" href="#multiissue-there-can-be-only-one-issue-per-commit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>MULTIISSUE There can be only one issue per commit.</h2>
 
 <p><em>nth</em></p>
 
-<p>Right now we only support the extraction of one issues ID per git commit.</p>
+<p>Right now we only support the extraction of one issues ID per <a href="http://git-scm.com/">GIT</a> commit.</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/mgoellnitz/trackdown">Trackdown</a> is maintained by <a href="https://github.com/mgoellnitz">mgoellnitz</a>.</span>
