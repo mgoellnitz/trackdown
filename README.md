@@ -8,13 +8,13 @@ In short: You are missing the "git clone" for your tickets from [github.com][git
 or [bitbucket.org][bitbucket] where we already have this for code and wiki?
 
 You need issue tracking which works for distributed and potentially disconnected
-situations together with your distributed version control [GIT][git] and e.g. your
-also distributed wiki editing through [GIT][git] as well?
+situations together with your distributed version control [GIT][git] and e.g. 
+also your distributed wiki editing through [GIT][git] as well?
 
 Then this here is for you!
 
 It is not intended for large, permanently online or connected teams and heavy 
-flows of tickets though, since you will be having only one file a plain 
+flows of tickets though, since you will be having only one file with plain 
 [Markdown][markdown] with your issues - and optionally other stuff - collected 
 in it.
 
@@ -347,14 +347,73 @@ add something more convenient later.
 
 Of course this way the remaining Windows users are locked out.
 
+## Prerequisites
+
+TrackDown relies on a git installation available on the path.
+
+## Compatibility
+
+TrackDown ist tested to work on Ubuntu 12.04 and newer. It is expected to work
+on similar Linux systems and MacOS systems.
+
+There are no plans to support Windows systems except where Un*x like layers as
+cygwin are in use.
+
 # Related Projects
 
 I only came accross relates projects which have certain limitations or are 
-unmaintained.
+unmaintained. In each case the limitations have an extent that kept me from
+using these systems except for very small or test projects.
 
-## Related Projects with Limitations
+## Fossil SCM
 
-- Fossil
+What I liked about fossil is, that it brings the three core elements of development
+
+- Source Code
+- Documentation or Notes (Wiki)
+- Issues
+
+local to my machine for distributed development or disconnected situations.
+
+You don't have to maintain backups since the remote instances are your backups 
+if the source code, wiki and ticketing state.
+
+It does not have a wiki capable of shared editing with later merging like the
+GIT based wikis of github.com or bitbucket.org.
+
+Also it is not possible to the contents of the wiki outside the [Fossil][fossil] 
+context e.g. for a documentation web site, since you cannot export the wikis
+raw data. (Yes, [Fossil][fossil] provides means to usr the wiki directly as
+a documentation site system, which is similar but not exactly the same.)
+
+The drawback is, that it does all these things  by creating a nearly closed shop 
+system not open to re-use of these elements and not open to external tooling 
+outside the [Fossil][fossil] scripting facility.
+
+Additionally I have to keep the [Fossil][fossil] internal web server running for
+each repository I am using, to be able to read the notes and issues for a project.
+
+## bitbucket.org
+
+Bitbucket is a brilliant tool for Open Source or small projects. It has decent VCS
+solutions, a WIKI which can be used distributed through GIT.
+
+The only thing I'm missing is the distributed offline work for ticketing.
+
+So in this case it is possible to leave out the ticketing of bitbucket.org and
+use TrackDown with bitbucket.org as the GIT based storage backend.
+
+## Trac
+
+A few years ago a colleague stated that he is running a local VM for each project,
+he is involved with, to take notes, track issues, and maintain source code.
+
+Of course this does not imply shared use of the Trac service or disconnected use.
+
+Also while Trac is a brilliant tool, this leaves me with the necessity to maintain 
+the locally running instances and take backups of them in addition to the project 
+VCS and source code repositories. This is not the case for the GIT based solutions
+in this list, which have a remote repository as a backup wiki and source code.
 
 ## Unmaintained related Projects
 
