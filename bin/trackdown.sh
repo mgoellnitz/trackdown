@@ -109,6 +109,10 @@ if [ "$CMD" = "use" ] ; then
     echo "GIT repository missing commits. Exiting."
     exit
   fi
+  if [ -f .trackdown/config ] ; then
+    echo "Project already initialized for trackdown use."
+    exit
+  fi
   cp $DIR/trackdown-hook.sh .git/hooks/post-commit
   chmod 755 .git/hooks/post-commit
   mkdir .trackdown
@@ -126,11 +130,15 @@ if [ "$CMD" = "use" ] ; then
     echo "autopush=false" >>  .trackdown/config
     echo "location=$ISSUES" >>  .trackdown/config
   fi
-  ln -s $ISSUES issues.md
-  ln -s `dirname $ISSUES`/roadmap.md roadmap.md
+  ID=`dirname $ISSUES`
+  # echo "id: $ID"
+  if [ "." != "$ID" ] ; then
+    ln -s $ISSUES issues.md
+    ln -s `dirname $ISSUES`/roadmap.md roadmap.md
+    echo "roadmap.md" >> .gitignore
+  fi
   echo "/.trackdown" >> .gitignore
   echo "issues.md" >> .gitignore
-  echo "roadmap.md" >> .gitignore
 
 fi
 
