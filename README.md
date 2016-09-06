@@ -442,12 +442,16 @@ work perfectly together with this project, NetBeans decided to use the [JGit][jg
 library, which only supports a subsets of the [GIT][git] hooks - and not the 
 ones we  use here.
 
-## ROOT directory of the source code must be a valid roadmap and issue file location
+## ROOT directory of the source code must be a valid roadmap and issue file location (in progress)
 
 *1.0*
 
 Due to forced set of symbolic links in the root directory of the source code
 respository to the roadmap and issue collection file, the 'use' step fails.
+
+ Martin Goellnitz  /    Tue Sep 6 21:29:12 2016 +0200
+
+    refs #ROOT - make root directory of source code a valid place for the issue collection file and roadmap file
 
 ## COPY release notes.
 
