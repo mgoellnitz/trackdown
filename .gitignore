@@ -1,2 +1,7 @@
-/.nb-gradle/
+/build/
+/.gradle/
+/.nb-gradle*
 /.trackdown/
+/.trackdown
+issues.md
+roadmap.md
