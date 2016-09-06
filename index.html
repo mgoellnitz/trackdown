@@ -35,37 +35,38 @@ also distributed wiki editing through <a href="http://git-scm.com/">GIT</a> as w
 
 <p>Then this here is for you!</p>
 
-<p>It is not intended for large, permanently online or connected teams and heavy flows
-of tickets though, since you will be having only one file a plain <a href="https://daringfireball.net/projects/markdown/">Markdown</a>
-with your issues - and optionally other stuff - collected in it.</p>
+<p>It is not intended for large, permanently online or connected teams and heavy 
+flows of tickets though, since you will be having only one file a plain 
+<a href="https://daringfireball.net/projects/markdown/">Markdown</a> with your issues - and optionally other stuff - collected 
+in it.</p>
 
 <h1>
 <a id="design" class="anchor" href="#design" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Design</h1>
 
-<p>While TrackDown does not define an issue related workflow, it has some intended workflow
-elements which are supported:</p>
+<p>While TrackDown does not define an issue related workflow, it has some intended 
+workflow elements which are supported:</p>
 
-<p>The issues are defined and maintained in a single <a href="https://daringfireball.net/projects/markdown/">Markdown</a> file following
-the format given here.</p>
+<p>The issues are defined and maintained in a single <a href="https://daringfireball.net/projects/markdown/">Markdown</a> file 
+following the format given here.</p>
 
-<p>The commit hook of TrackDown reads the commit messages and modifies that issue collection
-if your commit messages relate to some of the issues.</p>
+<p>The commit hook of TrackDown reads the commit messages and modifies that issue 
+collection if your commit messages relate to some of the issues.</p>
 
 <p>Additionally a roadmap file is automatically maintained for your tickets.</p>
 
-<p>The issue collection this way is held local on your machine and not remote in the
-database of a tracking system. (Which is something also <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a> supports.)
-Like with the source code, it is pushed to remote repositories if needed (or possible).
-The simple <a href="https://daringfireball.net/projects/markdown/">Markdown</a> format and the usage of <a href="http://git-scm.com/">GIT</a> as a backend
-support distributed, shared editing and later merging of the issues and the related
-notes in the issue collection. (This is where the parallel with <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a>
-ends).</p>
+<p>The issue collection this way is held local on your machine and not remote in 
+the database of a tracking system. (Which is something also <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a> 
+supports.) Like with the source code, it is pushed to remote repositories if 
+needed (or possible). The simple <a href="https://daringfireball.net/projects/markdown/">Markdown</a> format and the usage of 
+<a href="http://git-scm.com/">GIT</a> as a backend support distributed, shared editing and later merging of 
+the issues and the related notes in the issue collection. (This is where the 
+parallel with <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a> ends).</p>
 
 <h1>
 <a id="the-format" class="anchor" href="#the-format" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Format</h1>
 
-<p>While sticking to only partly structured <a href="https://daringfireball.net/projects/markdown/">Markdown</a> the following elements
-should be maintainable with TrackDown:</p>
+<p>While sticking to only partly structured <a href="https://daringfireball.net/projects/markdown/">Markdown</a> the following 
+elements should be maintainable with TrackDown:</p>
 
 <ul>
 <li>ID</li>
@@ -99,8 +100,8 @@ should be maintainable with TrackDown:</p>
 
   ### Commits (auto generated)
 
-  The headline commits at level three is optional. The commit messages are inserted
-  just as the last part of the issue's level two text area.
+  The headline commits at level three is optional. The commit messages are 
+  inserted just as the last part of the issue's level two text area.
 </code></pre>
 
 <p>The really fixed non optional parts of this are</p>
@@ -165,10 +166,13 @@ affected by the issue (if this is possible to say).</p>
 <h1>
 <a id="setup" class="anchor" href="#setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup</h1>
 
-<p>There are two ways to setup TrackDown. The default way is to use it in a
-separate branch of you source code repository and have it editable in your IDE
-through a symbolic link to the issue collection file which is maintained by you
-through direct typing or the commit hook integration.</p>
+<p>There are two ways to setup TrackDown: Have the issues file integrated in your
+source code repository, or place it in a arbitrary place of your chosing.</p>
+
+<p>The first - default - way is to use it in a separate branch of you source code 
+repository and have it editable in your IDE through a symbolic link to the issue 
+collection file which is maintained by you through direct typing or the commit 
+hook integration.</p>
 
 <p>The second way is to use the file at a different location - e.g. in the wiki of
 the project instead of the source code repository, which is described later.</p>
@@ -176,10 +180,11 @@ the project instead of the source code repository, which is described later.</p>
 <h2>
 <a id="initialize-the-repository" class="anchor" href="#initialize-the-repository" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Initialize the Repository</h2>
 
-<p>If you want to track the issues in a trackdown branch of your source code repository
-and not in any other location of your chosing, you need to modify the <a href="http://git-scm.com/">GIT</a>
-repository accordingly. You source code repository must contain at least one commit
-for this to work. To initialize a <a href="http://git-scm.com/">GIT</a> repository that way, call the script</p>
+<p>If you want to track the issues in a trackdown branch of your source code 
+repository and not in any other location of your chosing, you need to modify the 
+<a href="http://git-scm.com/">GIT</a> repository accordingly. Your source code repository must contain at 
+least one commit for this to work. To initialize a <a href="http://git-scm.com/">GIT</a> repository that 
+way, call the script</p>
 
 <pre><code>  trackdown.sh init
 </code></pre>
@@ -191,8 +196,8 @@ interfere with your remote workflow.</p>
 <pre><code>  git push original trackdown
 </code></pre>
 
-<p>Initialization must only to be executed once for a repository and all of its
-fork and clones.</p>
+<p>Initialization must only be executed once for a repository and all of its forks 
+and clones.</p>
 
 <p>If you want to use the issue collection file from a different location, leave
 out this step.</p>
@@ -232,16 +237,20 @@ mentioned here.</p>
 <h1>
 <a id="commands-in-the-commit-messages" class="anchor" href="#commands-in-the-commit-messages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands in the Commit Messages</h1>
 
-<p>Right now TrackDown understands only two commands in the commit messages. It relies
-on a git implementation which is capable if executing the script hooks. JGit
-is lacking this (for the post commit hooks used here) and as a result NetBeans and
-Eclipse cannot use this mimik.</p>
+<p>Right now TrackDown understands only two commands in the commit messages. It 
+relies on a git implementation which is capable if executing the script hooks. </p>
+
+<p>JGit is lacking this (for the post commit hooks used here) and as a result 
+NetBeans and Eclipse cannot use this mimik!</p>
 
 <h2>
 <a id="refs-id" class="anchor" href="#refs-id" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>refs <em>id</em>
 </h2>
 
 <p>Reference the commit in the list of commits at the end of the issue text.</p>
+
+<pre><code>git commit -m "refs #MYID - comment" files...
+</code></pre>
 
 <p>This command changes the state to "in progress" from anything like new, nothing,
 or even resolved</p>
@@ -254,6 +263,9 @@ or even resolved</p>
 </h2>
 
 <p>Reference the commit in the list of commits at the end of the issue text.</p>
+
+<pre><code>git commit -m "fixes #MYID - comment" files...
+</code></pre>
 
 <p>This command changes the state to "resolved" from anything like new, nothing, or
 in progress</p>
@@ -356,6 +368,26 @@ operations which is not desirable.</p>
 add something more convenient later.</p>
 
 <p>Of course this way the remaining Windows users are locked out.</p>
+
+<h1>
+<a id="related-projects" class="anchor" href="#related-projects" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Related Projects</h1>
+
+<p>I only came accross relates projects which have certain limitations or are 
+unmaintained.</p>
+
+<h2>
+<a id="related-projects-with-limitations" class="anchor" href="#related-projects-with-limitations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Related Projects with Limitations</h2>
+
+<ul>
+<li>Fossil</li>
+</ul>
+
+<h2>
+<a id="unmaintained-related-projects" class="anchor" href="#unmaintained-related-projects" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Unmaintained related Projects</h2>
+
+<ul>
+<li><a href="https://github.com/glogiotatidis/gitissius">https://github.com/glogiotatidis/gitissius</a></li>
+</ul>
 
 <h1>
 <a id="issues-1" class="anchor" href="#issues-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Issues</h1>
