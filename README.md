@@ -13,37 +13,38 @@ also distributed wiki editing through [GIT][git] as well?
 
 Then this here is for you!
 
-It is not intended for large, permanently online or connected teams and heavy flows
-of tickets though, since you will be having only one file a plain [Markdown][markdown]
-with your issues - and optionally other stuff - collected in it.
+It is not intended for large, permanently online or connected teams and heavy 
+flows of tickets though, since you will be having only one file a plain 
+[Markdown][markdown] with your issues - and optionally other stuff - collected 
+in it.
 
 
 # Design
 
-While TrackDown does not define an issue related workflow, it has some intended workflow
-elements which are supported:
+While TrackDown does not define an issue related workflow, it has some intended 
+workflow elements which are supported:
 
-The issues are defined and maintained in a single [Markdown][markdown] file following
-the format given here.
+The issues are defined and maintained in a single [Markdown][markdown] file 
+following the format given here.
 
-The commit hook of TrackDown reads the commit messages and modifies that issue collection
-if your commit messages relate to some of the issues.
+The commit hook of TrackDown reads the commit messages and modifies that issue 
+collection if your commit messages relate to some of the issues.
 
 Additionally a roadmap file is automatically maintained for your tickets.
 
-The issue collection this way is held local on your machine and not remote in the
-database of a tracking system. (Which is something also [Fossil][fossil] supports.)
-Like with the source code, it is pushed to remote repositories if needed (or possible).
-The simple [Markdown][markdown] format and the usage of [GIT][git] as a backend
-support distributed, shared editing and later merging of the issues and the related
-notes in the issue collection. (This is where the parallel with [Fossil][fossil]
-ends).
+The issue collection this way is held local on your machine and not remote in 
+the database of a tracking system. (Which is something also [Fossil][fossil] 
+supports.) Like with the source code, it is pushed to remote repositories if 
+needed (or possible). The simple [Markdown][markdown] format and the usage of 
+[GIT][git] as a backend support distributed, shared editing and later merging of 
+the issues and the related notes in the issue collection. (This is where the 
+parallel with [Fossil][fossil] ends).
 
 
 # The Format
 
-While sticking to only partly structured [Markdown][markdown] the following elements
-should be maintainable with TrackDown:
+While sticking to only partly structured [Markdown][markdown] the following 
+elements should be maintainable with TrackDown:
 
 - ID
 - Title
@@ -76,8 +77,8 @@ These fields are mapped to the following source structure
 
   ### Commits (auto generated)
 
-  The headline commits at level three is optional. The commit messages are inserted
-  just as the last part of the issue's level two text area.
+  The headline commits at level three is optional. The commit messages are 
+  inserted just as the last part of the issue's level two text area.
 ```
 
 The really fixed non optional parts of this are
@@ -136,20 +137,24 @@ Anything expressible in Markdown.
 
 # Setup
 
-There are two ways to setup TrackDown. The default way is to use it in a
-separate branch of you source code repository and have it editable in your IDE
-through a symbolic link to the issue collection file which is maintained by you
-through direct typing or the commit hook integration.
+There are two ways to setup TrackDown: Have the issues file integrated in your
+source code repository, or place it in a arbitrary place of your chosing.
+
+The first - default - way is to use it in a separate branch of you source code 
+repository and have it editable in your IDE through a symbolic link to the issue 
+collection file which is maintained by you through direct typing or the commit 
+hook integration.
 
 The second way is to use the file at a different location - e.g. in the wiki of
 the project instead of the source code repository, which is described later.
 
 ## Initialize the Repository
 
-If you want to track the issues in a trackdown branch of your source code repository
-and not in any other location of your chosing, you need to modify the [GIT][git]
-repository accordingly. You source code repository must contain at least one commit
-for this to work. To initialize a [GIT][git] repository that way, call the script
+If you want to track the issues in a trackdown branch of your source code 
+repository and not in any other location of your chosing, you need to modify the 
+[GIT][git] repository accordingly. Your source code repository must contain at 
+least one commit for this to work. To initialize a [GIT][git] repository that 
+way, call the script
 
 ```
   trackdown.sh init
@@ -163,8 +168,8 @@ interfere with your remote workflow.
   git push original trackdown
 ```
 
-Initialization must only to be executed once for a repository and all of its
-fork and clones.
+Initialization must only be executed once for a repository and all of its forks 
+and clones.
 
 If you want to use the issue collection file from a different location, leave
 out this step.
@@ -206,14 +211,19 @@ mentioned here.
 
 # Commands in the Commit Messages
 
-Right now TrackDown understands only two commands in the commit messages. It relies
-on a git implementation which is capable if executing the script hooks. JGit
-is lacking this (for the post commit hooks used here) and as a result NetBeans and
-Eclipse cannot use this mimik.
+Right now TrackDown understands only two commands in the commit messages. It 
+relies on a git implementation which is capable if executing the script hooks. 
+
+JGit is lacking this (for the post commit hooks used here) and as a result 
+NetBeans and Eclipse cannot use this mimik!
 
 ## refs *id*
 
 Reference the commit in the list of commits at the end of the issue text.
+
+```
+git commit -m "refs #MYID - comment" files...
+```
 
 This command changes the state to "in progress" from anything like new, nothing,
 or even resolved
@@ -225,6 +235,10 @@ or even resolved
 ## resolves|fixes *id*
 
 Reference the commit in the list of commits at the end of the issue text.
+
+```
+git commit -m "fixes #MYID - comment" files...
+```
 
 This command changes the state to "resolved" from anything like new, nothing, or
 in progress
@@ -333,6 +347,18 @@ add something more convenient later.
 
 Of course this way the remaining Windows users are locked out.
 
+# Related Projects
+
+I only came accross relates projects which have certain limitations or are 
+unmaintained.
+
+## Related Projects with Limitations
+
+- Fossil
+
+## Unmaintained related Projects
+
+ - https://github.com/glogiotatidis/gitissius
 
 # Issues
 
