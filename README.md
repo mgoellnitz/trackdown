@@ -212,10 +212,11 @@ mentioned here.
 # Commands in the Commit Messages
 
 Right now TrackDown understands only two commands in the commit messages. It 
-relies on a git implementation which is capable if executing the script hooks. 
+relies on a [GIT][git] implementation which is capable if executing the script 
+hooks. 
 
-JGit is lacking this (for the post commit hooks used here) and as a result 
-NetBeans and Eclipse cannot use this mimik!
+[JGit ][jgit] is lacking this (for the post commit hooks used here) and as a 
+result NetBeans and Eclipse cannot use this mimik!
 
 ## refs *id*
 
@@ -349,7 +350,7 @@ Of course this way the remaining Windows users are locked out.
 
 ## Prerequisites
 
-TrackDown relies on a git installation available on the path.
+TrackDown relies on a [GIT][git] installation available on the path.
 
 ## Compatibility
 
@@ -379,7 +380,7 @@ You don't have to maintain backups since the remote instances are your backups
 if the source code, wiki and ticketing state.
 
 It does not have a wiki capable of shared editing with later merging like the
-GIT based wikis of github.com or bitbucket.org.
+[GIT][git] based wikis of [github.com][github] or [bitbucket.org][bitbucket].
 
 Also it is not possible to the contents of the wiki outside the [Fossil][fossil] 
 context e.g. for a documentation web site, since you cannot export the wikis
@@ -395,25 +396,29 @@ each repository I am using, to be able to read the notes and issues for a projec
 
 ## bitbucket.org
 
-Bitbucket is a brilliant tool for Open Source or small projects. It has decent VCS
-solutions, a WIKI which can be used distributed through GIT.
+[Bitbucket.org][bitbucket] a brilliant tool for Open Source or small projects.  
+It has decent VCS solutions, a WIKI which can be used distributed through 
+[GIT][git].
 
 The only thing I'm missing is the distributed offline work for ticketing.
 
-So in this case it is possible to leave out the ticketing of bitbucket.org and
-use TrackDown with bitbucket.org as the GIT based storage backend.
+So in this case it is possible to leave out the ticketing of [bitbucket.org][bitbucket] 
+and use TrackDown with [bitbucket.org][bitbucket] as the [GIT][git] based 
+storage backend.
 
 ## Trac
 
-A few years ago a colleague stated that he is running a local VM for each project,
-he is involved with, to take notes, track issues, and maintain source code.
+A few years ago a colleague stated that he is running a local VM for each 
+project, he is involved with, to take notes, track issues, and maintain source 
+code.
 
 Of course this does not imply shared use of the Trac service or disconnected use.
 
-Also while Trac is a brilliant tool, this leaves me with the necessity to maintain 
-the locally running instances and take backups of them in addition to the project 
-VCS and source code repositories. This is not the case for the GIT based solutions
-in this list, which have a remote repository as a backup wiki and source code.
+Also while Trac is a brilliant tool, this leaves me with the necessity to 
+maintain the locally running instances and take backups of them in addition to 
+the project VCS and source code repositories. This is not the case for the 
+[GIT][git] based solutions in this list, which have a remote repository as a 
+backup wiki and source code.
 
 ## Unmaintained related Projects
 
@@ -427,27 +432,35 @@ Right now we have three collections/iterations/sprints in this issue list:
 - *nth* This feature is nice to have but can be left out.
 - *oos* This issue is relevant but out of the scope of this project.
 
-## Doesn't interoperate with NetBeans
+## NETBEANS interoperation not working due to missing hook implementation in [JGit][jgit]
 
 *oos*
 
-While some IDE integrations rely on the git command line tooling and thus work
-perfectly together with this project, NetBeans decided to use the JGit library,
-which onyl supports a subsets of the git hooks - and not the ones we use here.
+While some IDE integrations rely on the [GIT][git] command line tooling and thus 
+work perfectly together with this project, NetBeans decided to use the [JGit][jgit] 
+library, which only supports a subsets of the [GIT][git] hooks - and not the 
+ones we  use here.
+
+## ROOT directory of the source code must be a valid roadmap and issue file location
+
+*1.0*
+
+Due to forced set of symbolic links in the root directory of the source code
+respository to the roadmap and issue collection file, the 'use' step fails.
 
 ## COPY release notes.
 
 *1.0*
 
 When closing a release or sprint, it should be possible to copy all the resolved
-issues to a new [Markdown][markdown] file to remove the from the issue collection
-and have a contribution to release notes.
+issues to a new [Markdown][markdown] file to remove them from the issue 
+collection and have a contribution to release notes.
 
 ## MULTIISSUE There can be only one issue per commit.
 
 *nth*
 
-Right now we only support the extraction of one issues ID per git commit.
+Right now we only support the extraction of one issues ID per [GIT][git] commit.
 
 [markdown]: https://daringfireball.net/projects/markdown/
 [git]: http://git-scm.com/
@@ -455,3 +468,4 @@ Right now we only support the extraction of one issues ID per git commit.
 [bitbucket]: https://bitbucket.org/
 [fossil]: http://fossil-scm.org/index.html/doc/trunk/www/index.wiki
 [github]: https://github.com/
+[jgit]: https://eclipse.org/jgit/
