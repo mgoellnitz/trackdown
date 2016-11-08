@@ -436,7 +436,7 @@ Right now we have three collections/iterations/sprints in this issue list:
 - *nth* This feature is nice to have but can be left out.
 - *oos* This issue is relevant but out of the scope of this project.
 
-## NETBEANS interoperation not working due to missing hook implementation in [JGit][jgit]
+## NETBEANS interoperation not working due to missing hook implementation in [JGit][jgit] (in progress)
 
 *oos*
 
@@ -444,6 +444,25 @@ While some IDE integrations rely on the [GIT][git] command line tooling and thus
 work perfectly together with this project, NetBeans decided to use the [JGit][jgit] 
 library, which only supports a subsets of the [GIT][git] hooks - and not the 
 ones we  use here.
+
+I already helped to add the post-commit hook which is needed by this project
+and it now is part of the latest nightly builds. Interoperation with trackdown
+could not be tested so far.
+
+## ROADMAP should show percentage for issues already started
+
+*1.0*
+
+As with the number of resolved issues there should be a second value for
+the work in progress.
+
+## SETUP tracking repository symmetrically (in progress)
+
+*1.0*
+
+The local tracking branch with its special checkout should be setup symmetrically
+to ther root repository checkout with simple push style and user and email
+set up locally.
 
 ## SYNCHRONIZE roadmap also on unhandled commits
 
@@ -453,12 +472,24 @@ The roadmap file should be updated on every commit since there might be
 changes in the issues collection file not produced by the commit hook script
 which might affect the roadmap.
 
-## ROADMAP should show percentage for issues already started
+## ROOT directory of the source code must be a valid roadmap and issue file location (in progress)
 
 *1.0*
 
-As with the number of resolved issues there should be a second value for
-the work in progress.
+Due to forced set of symbolic links in the root directory of the source code
+respository to the roadmap and issue collection file, the 'use' step fails.
+
+ Martin Goellnitz  /    Tue Sep 6 21:29:12 2016 +0200
+
+    refs #ROOT - make root directory of source code a valid place for the issue collection file and roadmap file
+
+## COPY release notes.
+
+*1.0*
+
+When closing a release or sprint, it should be possible to copy all the resolved
+issues to a new [Markdown][markdown] file to remove them from the issue 
+collection and have a contribution to release notes.
 
 ## UPDATE command for the commit hook (resolved)
 
@@ -466,14 +497,6 @@ the work in progress.
 
 Add an update command so that the commit hook can be updated alongside the
 tool script to be in sync.
-
-## SETUP tracking repository symmetrically (in progress)
-
-*1.0*
-
-The local tracking branch with its special checkout should be setup symmetrically
-to ther root repository checkout with simple push style and user and email
-set up locally.
 
 ## HASH of the commit should be part of the listing (resolved)
 
@@ -498,25 +521,6 @@ collection file resulting in callable HTTP-links.
  Martin Goellnitz  / Tue Nov 8 19:43:10 2016 [0d0f42e3606654c2b036113e411ee313ce4f9493](https://github.com/mgoellnitz/trackdown/commit/0d0f42e3606654c2b036113e411ee313ce4f9493)
 
     resolve #PREFIX commit hashes to form clickable links
-
-## ROOT directory of the source code must be a valid roadmap and issue file location (in progress)
-
-*1.0*
-
-Due to forced set of symbolic links in the root directory of the source code
-respository to the roadmap and issue collection file, the 'use' step fails.
-
- Martin Goellnitz  /    Tue Sep 6 21:29:12 2016 +0200
-
-    refs #ROOT - make root directory of source code a valid place for the issue collection file and roadmap file
-
-## COPY release notes.
-
-*1.0*
-
-When closing a release or sprint, it should be possible to copy all the resolved
-issues to a new [Markdown][markdown] file to remove them from the issue 
-collection and have a contribution to release notes.
 
 ## MULTIISSUE There can be only one issue per commit.
 
