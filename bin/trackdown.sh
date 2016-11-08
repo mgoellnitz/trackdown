@@ -58,7 +58,7 @@ if [ "$CMD" = "ls" ] ; then
   if [ -z "$ISSUES" ] ; then
     ISSUES=".git/trackdown/issues.md"
   fi
-  grep -B2 "^\*$2\*" $ISSUES|grep "^\#\#\ "
+  grep -B2 "^\*$2\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'
 
 fi
 
@@ -76,9 +76,13 @@ if [ "$CMD" = "roadmap" ] ; then
   for r in `grep "^\*[A-Za-z0-9\._]*\*" $ISSUES|cut -d '*' -f 2|sort|uniq` ; do
     TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
     RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(resolved)'|wc -l`
-    echo "## ${r} - $[$RESOLVED * 100 / $TOTAL]% completed - $RESOLVED / $TOTAL:"
+    PROGRESS=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(in progress)'|wc -l`
+    echo "## ${r}:"
     echo ""
-    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'
+    echo "$[$RESOLVED * 100 / $TOTAL]% ($RESOLVED / $TOTAL) completed"
+    echo "$[$PROGRESS * 100 / $TOTAL]% ($PROGRESS / $TOTAL) in progress"
+    echo ""
+    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'
     echo ""
   done
 

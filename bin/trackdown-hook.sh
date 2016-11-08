@@ -103,9 +103,13 @@ if [ ! -z "$STATUS" ] ; then
   for r in `grep "^\*[A-Za-z0-9\._]*\*" $ISSUES|cut -d '*' -f 2|sort|uniq` ; do
     TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
     RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(resolved)'|wc -l`
-    echo "## ${r} - $[$RESOLVED * 100 / $TOTAL]% completed - $RESOLVED / $TOTAL:" >> $ROADMAP
+    PROGRESS=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(in progress)'|wc -l`
+    echo "## ${r}:" >> $ROADMAP
     echo "" >> $ROADMAP
-    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g' >> $ROADMAP
+    echo "$[$RESOLVED * 100 / $TOTAL]% ($RESOLVED / $TOTAL) completed" >> $ROADMAP
+    echo "$[$PROGRESS * 100 / $TOTAL]% ($PROGRESS / $TOTAL) in progress" >> $ROADMAP
+    echo "" >> $ROADMAP
+    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g' >> $ROADMAP
     echo "" >> $ROADMAP
   done
 
