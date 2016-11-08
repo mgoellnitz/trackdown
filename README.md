@@ -495,6 +495,10 @@ collection file resulting in callable HTTP-links.
 
     refs #PREFIX commit hashes for form clickable URLs
 
+ Martin Goellnitz  / Tue Nov 8 19:33:47 2016 (https://github.com/mgoellnitz/tangram/commit/be4ccd2db34f69935439c54cc7cc70509f1fbb6b)
+
+    resolve #PREFIX commit hashes for form clickable URLs
+
 ## ROOT directory of the source code must be a valid roadmap and issue file location (in progress)
 
 *1.0*
