@@ -500,7 +500,7 @@ I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
 
-## ROADMAP should show percentage for issues already started (in progress)
+## ROADMAP should show percentage for issues already started (resolved)
 
 *1.0*
 
