@@ -511,6 +511,10 @@ the work in progress.
 
     refs #ROADMAP output enhancement
 
+ Martin Goellnitz  / Wed Nov 9 00:55:22 2016 [0bd7768acc26577da36ae808e21d72deb70452e7](https://github.com/mgoellnitz/trackdown/commit/0bd7768acc26577da36ae808e21d72deb70452e7)
+
+    resolve #ROADMAP enhancements
+
 ## SETUP tracking repository symmetrically (in progress)
 
 *1.0*
