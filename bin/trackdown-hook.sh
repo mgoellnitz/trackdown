@@ -57,13 +57,13 @@ if [ ! -z "$LINE" ] ; then
     STATUS="resolved"
   fi
 fi
-# echo "ID: $ID - $STATUS"
 HASH=`git log|head -1|cut -d ' ' -f 2`
 HASID=`grep "^\#\#\ ${ID}" $ISSUES`
 if [ -z "$HASID" ] ; then
   echo "ID $ID not found in issues collection"
   exit
 fi
+echo "$ID $STATUS"
 if [ ! -z "$STATUS" ] ; then
   sed -i.remove -e "s/##\ $ID\ \(.*\)\ (.*)/## $ID \1/g" $ISSUES
   sed -i.remove -e "s/##\ $ID\ \(.*\)/## $ID \1 ($STATUS)/g" $ISSUES
