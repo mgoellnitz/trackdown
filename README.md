@@ -495,11 +495,7 @@ collection file resulting in callable HTTP-links.
 
     refs #PREFIX commit hashes to form clickable URLs
 
- Martin Goellnitz  / Tue Nov 8 19:33:47 2016 (https://github.com/mgoellnitz/trackdown/commit/be4ccd2db34f69935439c54cc7cc70509f1fbb6b)
-
-    resolve #PREFIX commit hashes to form clickable URLs
-
- Martin Goellnitz  / Tue Nov 8 19:40:08 2016 (https://github.com/mgoellnitz/trackdown/commit/7a7670f2650f523ad8cd8fdc0efba7e252bc061b)
+ Martin Goellnitz  / Tue Nov 8 19:43:10 2016 [0d0f42e3606654c2b036113e411ee313ce4f9493](https://github.com/mgoellnitz/trackdown/commit/0d0f42e3606654c2b036113e411ee313ce4f9493)
 
     resolve #PREFIX commit hashes to form clickable links
 
