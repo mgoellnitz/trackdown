@@ -307,7 +307,7 @@ Optionally you can add a path to an issue collection file as a parameter like in
 The source repository contains a directory named .trackdown.
 
 This directory contains a file named config. There are some options in this
-file, which you can change.
+file, which you might want to change.
 
 Example config file for TrackDown:
 
@@ -315,11 +315,7 @@ Example config file for TrackDown:
   autocommit=true
   autopush=false
   location=../wiki/issues.md
-```
-
-
-```
-  (Future Work: It also contains a file named trackdown.sh update for TrackDown updates)
+  prefix=https://github.com/mgoellnitz/tangram/commit/
 ```
 
 ## Auto Commit all Issue Collection Changes
@@ -340,6 +336,13 @@ to *true*.
 In other scenarios you may switch it to false. E.g. if the issue collection is
 part of your project wiki then automatically pushing might lead to remote
 operations which is not desirable.
+
+## Online commit summary prefix
+
+With some GIT backends it is possible to obtain summary with changes and 
+commit message online for every commit. Tu use this facility place a prefix
+in the config file where hash of a commit can be appended to for a valid
+link for that commit.
 
 
 # Installation
@@ -479,7 +482,7 @@ set up locally.
 When adding a commit note to the issues collection file, the hash of that
 commit should be part of the message alongside with the date and author.
 
-## PREFIX hashes in commit notes to form a URL
+## PREFIX hashes in commit notes to form a URL (in progress)
 
 *1.0*
 
@@ -487,6 +490,10 @@ Many git implementations provide links to single commits with their changes
 and other information. Provide configuration options for trackdown to extend
 the commit hashes to full URLs when adding a commit note to the issues 
 collection file resulting in callable HTTP-links.
+
+ Martin Goellnitz  / Tue Nov 8 19:22:15 2016  (commit 7931fbc6a6379032e19733af3f343261989c1108)
+
+    refs #PREFIX commit hashes for form clickable URLs
 
 ## ROOT directory of the source code must be a valid roadmap and issue file location (in progress)
 

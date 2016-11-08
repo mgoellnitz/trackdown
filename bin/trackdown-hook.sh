@@ -80,7 +80,7 @@ if [ ! -z "$STATUS" ] ; then
     LINES=`cat $ISSUES|wc -l`
     # echo "SECTION $SECTION - LINES $LINES"
     head -$[ $SECTION - 1 ] $ISSUES >>$ISSUES.remove
-    echo "$AUTHOR /$DATE (${PREFIX}${HASH})" >>$ISSUES.remove
+    echo "$AUTHOR /${DATE}(${PREFIX}${HASH})" >>$ISSUES.remove
     git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES.remove
     echo "" >>$ISSUES.remove
     tail -$[ $LINES - $SECTION + 1 ] $ISSUES >>$ISSUES.remove
