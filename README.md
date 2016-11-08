@@ -449,12 +449,16 @@ I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
 
-## ROADMAP should show percentage for issues already started
+## ROADMAP should show percentage for issues already started (in progress)
 
 *1.0*
 
 As with the number of resolved issues there should be a second value for
 the work in progress.
+
+ Martin Goellnitz  / Tue Nov 8 20:03:51 2016 [2535f73db2aca2049a018f5b705e2604dc98f28b](https://github.com/mgoellnitz/trackdown/commit/2535f73db2aca2049a018f5b705e2604dc98f28b)
+
+    refs #ROADMAP output enhancement
 
 ## SETUP tracking repository symmetrically (in progress)
 
