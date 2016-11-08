@@ -32,7 +32,7 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME ls v"
   echo "  list issues for version v"
   echo ""
-  echo "$MYNAME issues"
+  echo "$MYNAME issues [collections file]"
   echo "  list all potential issues"
   echo ""
   echo "$MYNAME sync"
@@ -93,9 +93,9 @@ fi
 if [ "$CMD" = "issues" ] ; then
 
   # Location of the issues file
-  ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  ISSUES="$2"
   if [ -z "$ISSUES" ] ; then
-    ISSUES="$2"
+    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
   fi
   if [ -z "$ISSUES" ] ; then
     ISSUES=".git/trackdown/issues.md"
