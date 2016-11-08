@@ -84,7 +84,7 @@ if [ ! -z "$STATUS" ] ; then
     if [ -z "$PREFIX" ] ; then
       echo "$AUTHOR /${DATE}(${HASH})" >>$ISSUES.remove
     else
-      echo "$AUTHOR /${DATE}\[${HASH}\](${PREFIX}${HASH})" >>$ISSUES.remove
+      echo "$AUTHOR /${DATE}[${HASH}](${PREFIX}${HASH})" >>$ISSUES.remove
     fi
     git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES.remove
     echo "" >>$ISSUES.remove
