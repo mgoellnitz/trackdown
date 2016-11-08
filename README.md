@@ -442,14 +442,29 @@ work perfectly together with this project, NetBeans decided to use the [JGit][jg
 library, which only supports a subsets of the [GIT][git] hooks - and not the 
 ones we  use here.
 
-## UPDATE command for the commit hook
+## SYNCHRONIZE roadmap also on unhandled commits
+
+*1.0*
+
+The roadmap file should be updated on every commit since there might be
+changes in the issues collection file not produced by the commit hook script
+which might affect the roadmap.
+
+## ROADMAP should show percentage for work in progress
+
+*1.0*
+
+As with the number of resolved issues there should be a second value for
+the work in progress.
+
+## UPDATE command for the commit hook (resolved)
 
 *1.0*
 
 Add an update command so that the commit hook can be updated alongside the
 tool script to be in sync.
 
-## SETUP tracking repository symmetrically
+## SETUP tracking repository symmetrically (in progress)
 
 *1.0*
 
