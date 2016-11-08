@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015 Martin Goellnitz
+# Copyright 2015-2016 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ fi
 # echo "ISSUES $ISSUES"
 MSGLINES=`git log -n 1|wc -l`
 AUTHOR=`git log -n 1|grep Author|cut -d ':' -f 2-10|sed -e s/\<.*\>//g`
-DATE=`git log -n 1|grep Date|cut -d ':' -f 2-10`
+DATE=`git log -n 1|grep Date|cut -d ':' -f 2-10|cut -d '+' -f 1|cut -d '-' -f 1|sed -e s'/^\  //g`
 LINE=`git log -n 1|tail -$[ $MSGLINES - 4 ]|grep \#`
 STATUS=""
 if [ ! -z "$LINE" ] ; then
@@ -53,6 +53,7 @@ if [ ! -z "$LINE" ] ; then
   fi
 fi
 echo "ID: $ID - $STATUS"
+HASH=`git log|head -1|cut -d ' ' -f 2`
 HASID=`grep "^\#\#\ ${ID}" $ISSUES`
 if [ -z "$HASID" ] ; then
   echo "ID $ID not found in issues collection"
@@ -74,7 +75,7 @@ if [ ! -z "$STATUS" ] ; then
     LINES=`cat $ISSUES|wc -l`
     # echo "SECTION $SECTION - LINES $LINES"
     head -$[ $SECTION - 1 ] $ISSUES >>$ISSUES.remove
-    echo "$AUTHOR / $DATE" >>$ISSUES.remove
+    echo "$AUTHOR /$DATE ($HASH)" >>$ISSUES.remove
     git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES.remove
     echo "" >>$ISSUES.remove
     tail -$[ $LINES - $SECTION + 1 ] $ISSUES >>$ISSUES.remove
