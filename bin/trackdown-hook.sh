@@ -39,7 +39,7 @@ fi
 # echo "ISSUES $ISSUES"
 MSGLINES=`git log -n 1|wc -l`
 AUTHOR=`git log -n 1|grep Author|cut -d ':' -f 2-10|sed -e s/\<.*\>//g`
-DATE=`git log -n 1|grep Date|cut -d ':' -f 2-10|cut -d '+' -f 1|cut -d '-' -f 1|sed -e s'/^\  //g`
+DATE=`git log -n 1|grep Date|cut -d ':' -f 2-10|cut -d '+' -f 1|cut -d '-' -f 1|sed -e s'/^\  //g'`
 LINE=`git log -n 1|tail -$[ $MSGLINES - 4 ]|grep \#`
 STATUS=""
 if [ ! -z "$LINE" ] ; then
