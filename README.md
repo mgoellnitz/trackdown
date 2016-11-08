@@ -442,6 +442,14 @@ work perfectly together with this project, NetBeans decided to use the [JGit][jg
 library, which only supports a subsets of the [GIT][git] hooks - and not the 
 ones we  use here.
 
+## SETUP tracking repository symmetrically
+
+*1.0*
+
+The local tracking branch with its special checkout should be setup symmetrically
+to ther root repository checkout with simple push style and user and email
+set up locally.
+
 ## HASH of the commit should be part of the listing
 
 *1.0*
