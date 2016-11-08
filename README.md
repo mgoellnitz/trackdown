@@ -482,7 +482,7 @@ set up locally.
 When adding a commit note to the issues collection file, the hash of that
 commit should be part of the message alongside with the date and author.
 
-## PREFIX hashes in commit notes to form a URL (in progress)
+## PREFIX hashes in commit notes to form a URL (resolved)
 
 *1.0*
 
