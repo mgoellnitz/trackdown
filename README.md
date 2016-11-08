@@ -442,6 +442,13 @@ work perfectly together with this project, NetBeans decided to use the [JGit][jg
 library, which only supports a subsets of the [GIT][git] hooks - and not the 
 ones we  use here.
 
+## UPDATE command for the commit hook
+
+*1.0*
+
+Add an update command so that the commit hook can be updated alongside the
+tool script to be in sync.
+
 ## SETUP tracking repository symmetrically
 
 *1.0*

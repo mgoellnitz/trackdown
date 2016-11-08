@@ -41,6 +41,9 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME use [collections file]"
   echo "  setup clone for issue tracking (optional with non default file)"
   echo ""
+  echo "$MYNAME update"
+  echo "  just update the commit hook"
+  echo ""
   echo "$MYNAME init"
   echo "  init issue tracking within GIT branch"
 
@@ -115,13 +118,19 @@ if [ "$CMD" = "use" ] ; then
   fi
   cp $DIR/trackdown-hook.sh .git/hooks/post-commit
   chmod 755 .git/hooks/post-commit
-  mkdir .trackdown
+  if [ ! -d .trackdown ] ; then
+    mkdir .trackdown
+  fi
   if [ -z "$ISSUES" ] ; then
     ISSUES=".git/trackdown/issues.md"
     cd .git
     # git clone --single-branch --branch trackdown .. trackdown
     git clone --branch trackdown .. trackdown
-    cd ..
+    cd trackdown
+    git config --local push.default simple
+    git config --local user.email "trackdown@provocon.eu"
+    git config --local user.name "Markdown Issue Tracker"
+    cd ../..
     echo "autocommit=true" > .trackdown/config
     echo "autopush=true" >>  .trackdown/config
     echo "location=.git/trackdown/issues.md" >>  .trackdown/config
@@ -135,11 +144,39 @@ if [ "$CMD" = "use" ] ; then
   if [ "." != "$ID" ] ; then
     ln -s $ISSUES issues.md
     ln -s `dirname $ISSUES`/roadmap.md roadmap.md
-    echo "roadmap.md" >> .gitignore
+    CHECK=`grep roadmap.md .gitignore|wc -l`
+    if [ $CHECK = 0 ] ; then
+      echo "roadmap.md" >> .gitignore
+    fi
   fi
-  echo "/.trackdown" >> .gitignore
-  echo "issues.md" >> .gitignore
+  CHECK=`grep .trackdown .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/.trackdown" >> .gitignore
+  fi
+  CHECK=`grep issues.md .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "issues.md" >> .gitignore
+  fi
+fi
 
+
+# update hook command
+if [ "$CMD" = "update" ] ; then
+
+  if [ ! -d .git ] ; then
+    echo "Not in a GIT repository. Exiting."
+    exit
+  fi
+  if [ `git branch -l|wc -l` = 0 ] ; then
+    echo "GIT repository missing commits. Exiting."
+    exit
+  fi
+  if [ ! -f .trackdown/config ] ; then
+    echo "Project not initialized for trackdown use."
+    exit
+  fi
+  cp $DIR/trackdown-hook.sh .git/hooks/post-commit
+  chmod 755 .git/hooks/post-commit
 fi
 
 
