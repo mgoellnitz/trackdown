@@ -1,4 +1,4 @@
 /build/
-/.gradle/
+/.gradle
 /.nb-gradle*
 /.trackdown
