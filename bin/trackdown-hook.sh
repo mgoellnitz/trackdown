@@ -33,9 +33,6 @@ if [ -z "$ISSUES" ] ; then
 fi
 # Prefix for links to online commit descriptions
 PREFIX=`grep prefix= .trackdown/config|cut -d '=' -f 2`
-if [ -z "$PREFIX" ] ; then
-  PREFIX="commit "
-fi
 # echo "ISSUES $ISSUES"
 MSGLINES=`git log -n 1|wc -l`
 AUTHOR=`git log -n 1|grep Author|cut -d ':' -f 2-10|sed -e s/\<.*\>//g`
@@ -84,7 +81,11 @@ if [ ! -z "$STATUS" ] ; then
     LINES=`cat $ISSUES|wc -l`
     # echo "SECTION $SECTION - LINES $LINES"
     head -$[ $SECTION - 1 ] $ISSUES >>$ISSUES.remove
-    echo "$AUTHOR /${DATE}(${PREFIX}${HASH})" >>$ISSUES.remove
+    if [ -z "$PREFIX" ] ; then
+      echo "$AUTHOR /${DATE}(${PREFIX}${HASH})" >>$ISSUES.remove
+    else
+      echo "$AUTHOR /${DATE}[${HASH})(${PREFIX}${HASH})" >>$ISSUES.remove
+    fi
     git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES.remove
     echo "" >>$ISSUES.remove
     tail -$[ $LINES - $SECTION + 1 ] $ISSUES >>$ISSUES.remove
