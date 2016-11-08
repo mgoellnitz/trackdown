@@ -442,6 +442,22 @@ work perfectly together with this project, NetBeans decided to use the [JGit][jg
 library, which only supports a subsets of the [GIT][git] hooks - and not the 
 ones we  use here.
 
+## HASH of the commit should be part of the listing
+
+*1.0*
+
+When adding a commit note to the issues collection file, the hash of that
+commit should be part of the message alongside with the date and author.
+
+## PREFIX hashes in commit notes to form a URL
+
+*1.0*
+
+Many git implementations provide links to single commits with their changes
+and other information. Provide configuration options for trackdown to extend
+the commit hashes to full URLs when adding a commit note to the issues 
+collection file resulting in callable HTTP-links.
+
 ## ROOT directory of the source code must be a valid roadmap and issue file location (in progress)
 
 *1.0*
