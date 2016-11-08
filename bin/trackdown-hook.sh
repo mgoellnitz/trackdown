@@ -34,7 +34,7 @@ fi
 # Prefix for links to online commit descriptions
 PREFIX=`grep prefix= .trackdown/config|cut -d '=' -f 2`
 if [ -z "$PREFIX" ] ; then
-  ISSUES="commit "
+  PREFIX="commit "
 fi
 # echo "ISSUES $ISSUES"
 MSGLINES=`git log -n 1|wc -l`
