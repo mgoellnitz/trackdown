@@ -56,6 +56,10 @@ if [ ! -z "$LINE" ] ; then
   if [ ! -z "$MARKER" ] ; then
     STATUS="resolved"
   fi
+  MARKER=`echo $LINE|grep -i "resolve \#$ID"`
+  if [ ! -z "$MARKER" ] ; then
+    STATUS="resolved"
+  fi
 fi
 HASH=`git log|head -1|cut -d ' ' -f 2`
 HASID=`grep "^\#\#\ ${ID}" $ISSUES`
