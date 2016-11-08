@@ -450,7 +450,7 @@ The roadmap file should be updated on every commit since there might be
 changes in the issues collection file not produced by the commit hook script
 which might affect the roadmap.
 
-## ROADMAP should show percentage for work in progress
+## ROADMAP should show percentage for issues already started
 
 *1.0*
 
@@ -472,7 +472,7 @@ The local tracking branch with its special checkout should be setup symmetricall
 to ther root repository checkout with simple push style and user and email
 set up locally.
 
-## HASH of the commit should be part of the listing
+## HASH of the commit should be part of the listing (resolved)
 
 *1.0*
 
