@@ -5,8 +5,9 @@
 
 Issue Tracking with plain [Markdown][markdown].
 
-In short: You are missing the "git clone" for your tickets from [github.com][github]
-or [bitbucket.org][bitbucket] where we already have this for code and wiki?
+In short: You are missing the "git clone" for your tickets from [GitLab][gitlab], 
+[GitHub][github] or [Bitbucket][bitbucket] where we already have this for 
+code and wiki?
 
 You need issue tracking which works for distributed and potentially disconnected
 situations together with your distributed version control [GIT][git] and e.g. 
@@ -28,10 +29,14 @@ workflow elements which are supported:
 The issues are defined and maintained in a single [Markdown][markdown] file 
 following the format given here.
 
-The commit hook of TrackDown reads the commit messages and modifies that issue 
-collection if your commit messages relate to some of the issues.
+The [GIT][git] post-commit hook of TrackDown reads the commit messages and 
+modifies that issue collection if your commit messages relate to some of the 
+issues.
 
 Additionally a roadmap file is automatically maintained for your tickets.
+This roadmap file groupd the issue headline in groups according to their
+version label and illustrated progress counting issues in progress and resolved
+issues.
 
 The issue collection this way is held local on your machine and not remote in 
 the database of a tracking system. (Which is something also [Fossil][fossil] 
@@ -141,17 +146,21 @@ Anything expressible in Markdown.
 There are two ways to setup TrackDown: Have the issues file integrated in your
 source code repository, or place it in a arbitrary place of your chosing.
 
-The first - default - way is to use it in a separate branch of you source code 
-repository and have it editable in your IDE through a symbolic link to the issue 
-collection file which is maintained by you through direct typing or the commit 
-hook integration.
+The first - default - way is to use it in a separate branch of your source code 
+repository. It is kept visible and editable through a symbolic link at the
+root level of the source code repository. Of course this file is touched
+automatically via commits to your sourcecode through the post-commit hook of
+TrackDown.
 
 The second way is to use the file at a different location - e.g. in the wiki of
 the project instead of the source code repository, which is described later.
 
+In both cases the automatically maintained roadmap file resides next to the
+issue collection file.
+
 ## Initialize the Repository
 
-If you want to track the issues in a trackdown branch of your source code 
+If you want to track the issues in a TrackDown branch of your source code 
 repository and not in any other location of your chosing, you need to modify the 
 [GIT][git] repository accordingly. Your source code repository must contain at 
 least one commit for this to work. To initialize a [GIT][git] repository that 
@@ -212,12 +221,14 @@ mentioned here.
 
 # Commands in the Commit Messages
 
-Right now TrackDown understands only two commands in the commit messages. It 
-relies on a [GIT][git] implementation which is capable if executing the script 
-hooks. 
+To support automatic reading of commit messages and modifying the issues
+collection alongside you work, TrackDown relies on a [GIT][git] implementation, 
+which is capable if executing the script hooks. 
 
 [JGit ][jgit] is lacking this (for the post commit hooks used here) and as a 
 result NetBeans and Eclipse cannot use this mimik!
+
+Right now TrackDown understands only two commands in the commit messages. 
 
 ## refs *id*
 
@@ -234,7 +245,7 @@ or even resolved
   (Future work: lifts the issue up to the top of the list)
 ```
 
-## resolves|fixes *id*
+## resolves|resolve|fixes *id*
 
 Reference the commit in the list of commits at the end of the issue text.
 
@@ -252,26 +263,29 @@ in progress
 
 # Command Line Tools
 
-In addition to the init and integration tools the following commands are available
+In addition to the init and integration tools, the following commands are 
+available:
 
 ## Roadmap
 
-The command
+Provided that the issues in the issue collection file are marked with version
+labels like suggested, the command
 
 ```
   trackdown.sh roadmap
 ```
 
-prints out a complete roadmap of the project if you entered "target version"s for
-you issues sorted by "target versions" in [Markdown][markdown] format.
+prints out a complete roadmap of the project sorted by "target versions" in 
+[Markdown][markdown] format.
 
-The term "target version" could also be read as "release" or "sprint" or anything
-which describes your development process best.
+The term "target version" could also be read as "release" or "sprint" or 
+anything which describes your development process best.
 
 
 ## List
 
-The command `ls` is used to show all issues from a given "target version" like in
+The command `ls` is used to show all issues marked for a given "target version" 
+like in
 
 ```
   trackdown.sh ls 1.1
@@ -279,8 +293,8 @@ The command `ls` is used to show all issues from a given "target version" like i
 
 where all issues intended to be completed in "target version" 1.1 are listed.
 
-The term "target version" could also be read as "release" or "sprint" or anything
-which describes your development process best.
+The term "target version" could also be read as "release" or "sprint" or 
+anything which describes your development process best.
 
 
 ## Issues
@@ -292,13 +306,13 @@ The command
 ```
 
 list all potential issues in the issue collection. Potential means in this case,
-that there may be some false positives if you not only collect issues with this
-tool.
+that there may be some false positives if there are additional elements in your
+issue collection file, which might be interpreted as issues.
 
 Optionally you can add a path to an issue collection file as a parameter like in
 
 ```
-  trackdown.sh use ../wiki/issues.md
+  trackdown.sh issues ../wiki/issues.md
 ```
 
 
@@ -321,26 +335,27 @@ Example config file for TrackDown:
 ## Auto Commit all Issue Collection Changes
 
 Automatically commits the new change to the trackdown branch. If you didn't
-change the default location where your normal source code repository contains
-the trackdown branch will want to leave the unchanged to true.
+change the default location where your source code repository contains the 
+a trackdown branch, you will want to leave the unchanged with the default
+value `true`.
 
-In other scenarios you may switch it to false.
+In other scenarios you may switch it to `false`.
 
 ## Auto Push all Issue Collection Commits
 
 Automatically pushes after each commit to the upstream repository. If you didn't
-changethe default locations where your normal source code repository is the
-upstream repository of your issue collection you will want to leave the unchanged
-to *true*.
+change the default locations where your source code repository is the upstream 
+repository of your issue collection you will want to leave the unchanged
+with the default value `true`.
 
 In other scenarios you may switch it to false. E.g. if the issue collection is
-part of your project wiki then automatically pushing might lead to remote
-operations which is not desirable.
+part of your project wiki then automatic pushing might lead to remote 
+operations, which is not desirable.
 
 ## Online commit summary prefix
 
 With some GIT backends it is possible to obtain summary with changes and 
-commit message online for every commit. Tu use this facility place a prefix
+commit message online for every commit. To use this facility place a prefix
 in the config file where hash of a commit can be appended to for a valid
 link for that commit.
 
@@ -352,17 +367,21 @@ add something more convenient later.
 
 Of course this way the remaining Windows users are locked out.
 
+A symbolic link `td` to the `trackdown.sh` script is recommended for easier
+use.
+
 ## Prerequisites
 
 TrackDown relies on a [GIT][git] installation available on the path.
 
 ## Compatibility
 
-TrackDown ist tested to work on Ubuntu 12.04 and newer. It is expected to work
+TrackDown is tested to work with Ubuntu 12.04 and newer. It is expected to work
 on similar Linux systems and MacOS systems.
 
 There are no plans to support Windows systems except where Un*x like layers as
 cygwin are in use.
+
 
 # Related Projects
 
@@ -381,24 +400,31 @@ What I liked about fossil is, that it brings the three core elements of developm
 local to my machine for distributed development or disconnected situations.
 
 You don't have to maintain backups since the remote instances are your backups 
-if the source code, wiki and ticketing state.
+of the source code, wiki, and ticketing state.
 
 It does not have a wiki capable of shared editing with later merging like the
-[GIT][git] based wikis of [github.com][github] or [bitbucket.org][bitbucket].
+[GIT][git] based wikis of [GitLab][gitlab], [GitHub][github], or 
+[Bitbucket][bitbucket].
 
 Also it is not possible to the contents of the wiki outside the [Fossil][fossil] 
 context e.g. for a documentation web site, since you cannot export the wikis
 raw data. (Yes, [Fossil][fossil] provides means to usr the wiki directly as
 a documentation site system, which is similar but not exactly the same.)
 
-The drawback is, that it does all these things  by creating a nearly closed shop 
+The drawback is, that it does all these things by creating a nearly closed shop 
 system not open to re-use of these elements and not open to external tooling 
 outside the [Fossil][fossil] scripting facility.
 
 Additionally I have to keep the [Fossil][fossil] internal web server running for
-each repository I am using, to be able to read the notes and issues for a project.
+each repository I am using, to be able to read the notes and issues for a 
+project.
 
-## bitbucket.org
+Also there is only poor IDE support for [Fossil][fossil] right now, with the
+exception of Support for [Idea](https://plugins.jetbrains.com/plugin/7479) 
+and my own small [plug-in for NetBeans](http://chiselapp.com/user/backendzeit/repository/netbeans-fossil-plugin/index)
+mirrored [here](https://github.com/mgoellnitz/netbeans-fossil-plugin).
+
+## Bitbucket
 
 [Bitbucket.org][bitbucket] a brilliant tool for Open Source or small projects.  
 It has decent VCS solutions, a WIKI which can be used distributed through 
@@ -406,9 +432,34 @@ It has decent VCS solutions, a WIKI which can be used distributed through
 
 The only thing I'm missing is the distributed offline work for ticketing.
 
-So in this case it is possible to leave out the ticketing of [bitbucket.org][bitbucket] 
-and use TrackDown with [bitbucket.org][bitbucket] as the [GIT][git] based 
-storage backend.
+So in this case it is possible to leave out the ticketing of [Bitbucket][bitbucket] 
+and use TrackDown with [Bitbucket][bitbucket] as the [GIT][git] based 
+storage backend. And this is exactly what TrackDown was designed for.
+
+## GitHub
+
+[GitHub][github] is the most used solution for [GIT][git] powered projects
+together with a [GIT][git] based wiki (as opposed to Bitbucket and GitLab
+the Wiki is a flat folder) and many other usefull details.
+
+The only thing I'm missing is the distributed offline work for ticketing.
+
+So in this case it is possible to leave out the ticketing of [GitHub][github] 
+and use TrackDown with [GitHub][github] as the [GIT][git] based 
+storage backend. And this is exactly what TrackDown was designed for.
+
+## GitLab
+
+[GitLab][gitlab] not only is a good online solution but also is a piece of
+installable software (like Bitbucket as the renamed Stash is also...). It's
+wiki is also [GIT][git] based wiki and it comes with a wealth of other
+integration and usefull tools and details.
+
+The only thing I'm missing is the distributed offline work for ticketing.
+
+So in this case it is possible to leave out the ticketing of [GitLab][gitlab] 
+and use TrackDown with [GitLab][gitlab] as the [GIT][git] based 
+storage backend. And this is exactly what TrackDown was designed for.
 
 ## Trac
 
@@ -473,7 +524,7 @@ set up locally.
 *1.0*
 
 The roadmap file should be updated on every commit since there might be
-changes in the issues collection file not produced by the commit hook script
+changes in the issue collection file not produced by the commit hook script
 which might affect the roadmap.
 
 ## ROOT directory of the source code must be a valid roadmap and issue file location (in progress)
@@ -506,7 +557,7 @@ tool script to be in sync.
 
 *1.0*
 
-When adding a commit note to the issues collection file, the hash of that
+When adding a commit note to the issue collection file, the hash of that
 commit should be part of the message alongside with the date and author.
 
 ## PREFIX hashes in commit notes to form a URL (resolved)
@@ -537,5 +588,6 @@ Right now we only support the extraction of one issues ID per [GIT][git] commit.
 [trac]: http://trac.edgewall.org/
 [bitbucket]: https://bitbucket.org/
 [fossil]: http://fossil-scm.org/index.html/doc/trunk/www/index.wiki
+[gitlab]: https://gitlab.com/
 [github]: https://github.com/
 [jgit]: https://eclipse.org/jgit/
