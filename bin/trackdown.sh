@@ -127,13 +127,15 @@ if [ "$CMD" = "use" ] ; then
   fi
   if [ -z "$ISSUES" ] ; then
     ISSUES=".git/trackdown/issues.md"
+    NAME=`git config -l|grep user.email|cut -d '=' -f 2`
+    MAIL=`git config -l|grep user.name|cut -d '=' -f 2`
     cd .git
     # git clone --single-branch --branch trackdown .. trackdown
     git clone --branch trackdown .. trackdown
     cd trackdown
     git config --local push.default simple
-    git config --local user.email "trackdown@provocon.eu"
-    git config --local user.name "Markdown Issue Tracker"
+    git config --local user.email "$MAIL"
+    git config --local user.name "$NAME"
     cd ../..
     echo "autocommit=true" > .trackdown/config
     echo "autopush=true" >>  .trackdown/config
