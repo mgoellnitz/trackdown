@@ -517,7 +517,7 @@ the work in progress.
 
     resolve #ROADMAP enhancements
 
-## SETUP tracking repository symmetrically (in progress)
+## SETUP tracking repository symmetrically (resolved)
 
 *1.0*
 
@@ -525,7 +525,11 @@ The local tracking branch with its special checkout should be setup symmetricall
 to ther root repository checkout with simple push style and user and email
 set up locally.
 
-## SYNCHRONIZE roadmap also on unhandled commits (in progress)
+ Martin Goellnitz  / Wed Nov 9 01:42:57 2016 [674b85ec7bebbf36618b000098c9195893fc3f90](https://github.com/mgoellnitz/trackdown/commit/674b85ec7bebbf36618b000098c9195893fc3f90)
+
+    resolve #SETUP tracking repository symmetrically
+
+## SYNCHRONIZE roadmap also on unhandled commits (resolved)
 
 *1.0*
 
@@ -536,6 +540,10 @@ which might affect the roadmap.
  Martin Goellnitz  / Wed Nov 9 01:26:57 2016 [b5187ae2af3e8718fc943ccc21bbe1fd91458174](https://github.com/mgoellnitz/trackdown/commit/b5187ae2af3e8718fc943ccc21bbe1fd91458174)
 
     refs #SYNCHRONIZE roapmap on every commit
+
+ Martin Goellnitz  / Wed Nov 9 01:32:00 2016 [4802cb811866529bcb52b100693219a206fa1e43](https://github.com/mgoellnitz/trackdown/commit/4802cb811866529bcb52b100693219a206fa1e43)
+
+    resolve #SYNCHRONIZE roadmap also on otherwise unhandled commits
 
 ## ROOT directory of the source code must be a valid roadmap and issue file location (resolved)
 
