@@ -20,6 +20,8 @@
 // Dummy gradle file to be able to edit sources easily from within my IDE netbeans.
 apply plugin: 'java'
 
+version = '0.2-SNAPSHOT'
+
 sourceSets {
   main {
     resources {
@@ -33,6 +35,6 @@ task distribution(type: Zip) {
    from 'bin/'
    into 'usr/local/bin'
    include '*'
-   archiveName "${project.name}.zip"
+   archiveName "${project.name}-${project.version}.zip"
    // destinationDir(file('/usr/local/bin'))
 }
