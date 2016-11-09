@@ -16,6 +16,25 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+function roadmap {
+  ROADMAP=`dirname $ISSUES`
+  ROADMAP=${ROADMAP}/roadmap.md
+  echo "# Roadmap" >$ROADMAP
+  echo "" >>$ROADMAP
+  for r in `grep "^\*[A-Za-z0-9\._]*\*" $ISSUES|cut -d '*' -f 2|sort|uniq` ; do
+    TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
+    RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(resolved)'|wc -l`
+    PROGRESS=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(in progress)'|wc -l`
+    echo "## ${r}:" >> $ROADMAP
+    echo "" >> $ROADMAP
+    echo "$[$RESOLVED * 100 / $TOTAL]% ($RESOLVED / $TOTAL) completed" >> $ROADMAP
+    echo "$[$PROGRESS * 100 / $TOTAL]% ($PROGRESS / $TOTAL) in progress" >> $ROADMAP
+    echo "" >> $ROADMAP
+    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g' >> $ROADMAP
+    echo "" >> $ROADMAP
+  done
+}
+
 # Create config file if none exists
 if [ ! -f .trackdown/config ] ; then
   if [ ! -d .trackdown ] ; then
@@ -62,6 +81,7 @@ HASH=`git log|head -1|cut -d ' ' -f 2`
 HASID=`grep "^\#\#\ ${ID}" $ISSUES`
 if [ -z "$HASID" ] ; then
   echo "ID $ID not found in issues collection"
+  roadmap
   exit
 fi
 echo "$ID $STATUS"
@@ -96,22 +116,7 @@ if [ ! -z "$STATUS" ] ; then
     git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES
   fi
 
-  ROADMAP=`dirname $ISSUES`
-  ROADMAP=${ROADMAP}/roadmap.md
-  echo "# Roadmap" >$ROADMAP
-  echo "" >>$ROADMAP
-  for r in `grep "^\*[A-Za-z0-9\._]*\*" $ISSUES|cut -d '*' -f 2|sort|uniq` ; do
-    TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
-    RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(resolved)'|wc -l`
-    PROGRESS=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(in progress)'|wc -l`
-    echo "## ${r}:" >> $ROADMAP
-    echo "" >> $ROADMAP
-    echo "$[$RESOLVED * 100 / $TOTAL]% ($RESOLVED / $TOTAL) completed" >> $ROADMAP
-    echo "$[$PROGRESS * 100 / $TOTAL]% ($PROGRESS / $TOTAL) in progress" >> $ROADMAP
-    echo "" >> $ROADMAP
-    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g' >> $ROADMAP
-    echo "" >> $ROADMAP
-  done
+  roadmap
 
   AUTOCOMMIT=`grep autocommit=true .trackdown/config`
   # echo "AUTOCOMMIT: $AUTOCOMMIT"
