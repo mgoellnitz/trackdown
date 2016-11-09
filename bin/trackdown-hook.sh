@@ -137,4 +137,6 @@ if [ ! -z "$STATUS" ] ; then
       cd $WD
     fi
   fi
+else 
+  roadmap
 fi
