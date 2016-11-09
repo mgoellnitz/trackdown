@@ -226,7 +226,9 @@ collection alongside you work, TrackDown relies on a [GIT][git] implementation,
 which is capable if executing the script hooks. 
 
 [JGit ][jgit] is lacking this (for the post commit hooks used here) and as a 
-result NetBeans and Eclipse cannot use this mimik!
+result NetBeans and Eclipse cannot use this mimik! With Eclipse you might be 
+lucky using the [nightly builds](http://download.eclipse.org/egit/updates-nightly/) 
+of JGit (Version 4.6 an up).
 
 Right now TrackDown understands only two commands in the commit messages. 
 
