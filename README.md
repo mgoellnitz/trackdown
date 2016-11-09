@@ -525,7 +525,7 @@ The local tracking branch with its special checkout should be setup symmetricall
 to ther root repository checkout with simple push style and user and email
 set up locally.
 
-## SYNCHRONIZE roadmap also on unhandled commits
+## SYNCHRONIZE roadmap also on unhandled commits (in progress)
 
 *1.0*
 
@@ -533,7 +533,11 @@ The roadmap file should be updated on every commit since there might be
 changes in the issue collection file not produced by the commit hook script
 which might affect the roadmap.
 
-## ROOT directory of the source code must be a valid roadmap and issue file location (in progress)
+ Martin Goellnitz  / Wed Nov 9 01:26:57 2016 [b5187ae2af3e8718fc943ccc21bbe1fd91458174](https://github.com/mgoellnitz/trackdown/commit/b5187ae2af3e8718fc943ccc21bbe1fd91458174)
+
+    refs #SYNCHRONIZE roapmap on every commit
+
+## ROOT directory of the source code must be a valid roadmap and issue file location (resolved)
 
 *1.0*
 
