@@ -26,10 +26,10 @@ if [ -z "$CMD" ] ; then
   MYNAME=`basename $0`
   echo "Usage:"
   echo ""
-  echo "$MYNAME roadmap"
+  echo "$MYNAME roadmap [collections file]"
   echo "  print roadmap"
   echo ""
-  echo "$MYNAME ls v"
+  echo "$MYNAME ls v [collections file]"
   echo "  list issues for version v"
   echo ""
   echo "$MYNAME issues [collections file]"
@@ -54,7 +54,10 @@ fi
 if [ "$CMD" = "ls" ] ; then
 
   # Location of the issues file
-  ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  ISSUES=$3
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  fi
   if [ -z "$ISSUES" ] ; then
     ISSUES=".git/trackdown/issues.md"
   fi
@@ -67,7 +70,9 @@ fi
 if [ "$CMD" = "roadmap" ] ; then
 
   # Location of the issues file
-  ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  fi
   if [ -z "$ISSUES" ] ; then
     ISSUES=".git/trackdown/issues.md"
   fi
