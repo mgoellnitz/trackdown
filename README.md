@@ -504,7 +504,7 @@ could not be tested so far.
 
 ## REDMINE offline mirror
 
-*1.0*
+*nth*
 
 For how historical reasons I have projects with redmine ticket in use and with
 still relevant tickets. Some of them might even be a candidate to migrate to
