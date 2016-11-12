@@ -502,6 +502,33 @@ I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
 
+## REDMINE offline mirror
+
+*1.0*
+
+For how historical reasons I have projects with redmine ticket in use and with
+still relevant tickets. Some of them might even be a candidate to migrate to
+Trackdown for others it might be sufficient to get a current offline mirror
+when the repository is not available.
+
+Trackdown should be capable of translating redmine JSON exports of tickets to
+the special markdown format given here. 
+
+For the mirror scenario, certain 
+limitations are acceptable, 
+
+For  migration scenarios the commit lists should be included and even closed 
+tickets should be taken into account to not lose the relevant parts of the
+project history.
+
+## COPY release notes.
+
+*1.0*
+
+When closing a release or sprint, it should be possible to copy all the resolved
+issues to a new [Markdown][markdown] file to remove them from the issue 
+collection and have a contribution to release notes.
+
 ## ROADMAP should show percentage for issues already started (resolved)
 
 *1.0*
@@ -555,14 +582,6 @@ respository to the roadmap and issue collection file, the 'use' step fails.
  Martin Goellnitz  /    Tue Sep 6 21:29:12 2016 +0200
 
     refs #ROOT - make root directory of source code a valid place for the issue collection file and roadmap file
-
-## COPY release notes.
-
-*1.0*
-
-When closing a release or sprint, it should be possible to copy all the resolved
-issues to a new [Markdown][markdown] file to remove them from the issue 
-collection and have a contribution to release notes.
 
 ## UPDATE command for the commit hook (resolved)
 
