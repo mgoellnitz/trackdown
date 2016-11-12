@@ -502,14 +502,6 @@ I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
 
-## PUSH trackdown branch on initialization
-
-*1.0*
-
-When used with a special trackdown branch, this branch should be automatically
-pushed to the upstream repository to setup linkable of the remoe and local
-branches.
-
 ## ROADMAP should show percentage for issues already started (resolved)
 
 *1.0*
