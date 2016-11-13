@@ -372,7 +372,6 @@ if [ "$CMD" = "mirror" ] ; then
     if [ -z "$ISSUES" ] ; then
       ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
     fi
-    # jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >$ISSUES
     echo "# Issues" >$ISSUES
     for id in `jq  -c '.[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
@@ -440,6 +439,20 @@ if [ "$CMD" = "remote" ] ; then
       echo "Assigning $ISSUE to user $PARAM"
       curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
            -d "{\"issue\":{\"assigned_to_id\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
+      exit
+    fi
+  fi
+  if [ "$TYPE" = "gitlab" ] ; then
+    URL=`grep gitlab.url= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No gitlab source url configured. Did you setup gitlab mirroring?" $URL
+    TOKEN=`grep gitlab.key= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No gitlab api token configured. Did you setup gitlab mirroring?" $TOKEN
+    PROJECT=`grep gitlab.project= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
+    if [ "$REMOTE" = "assign" ] ; then
+      echo "Assigning $ISSUE to user $PARAM"
+      curl -X PUT -H "PRIVATE-TOKEN: $TOKEN" \
+           ${URL}/api/v3/projects/${PROJECT}/issues/${ISSUE}?assignee_id=${PARAM} > /dev/null
       exit
     fi
   fi

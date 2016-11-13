@@ -555,6 +555,20 @@ current mirror state to you local issue collection file and the roadmap.
 trackdown.sh mirror
 ```
 
+Additionally - since you now are on your command line and perhaps don't want
+to switch windows evey second - there is a `remote` command to issue commands
+on the remote mirroring source system.
+
+```
+trackdown.sh remote assign 68 XYZ
+Assigning XYZ to user 68 
+```
+
+You have to provide the issues *real* id - not the short one - and the id of
+the user, which is also always exported to the issue collection file to 
+facility this.
+
+
 ## Redmine
 
 For historical reasons my [Tangram](https://github.com/mgoellnitz/tangram)
@@ -602,6 +616,10 @@ trackdown.sh remote assign 68 XYZ
 Assigning XYZ to user 68 
 ```
 
+You have to provide the id of the user - not its name, which is also always 
+exported to the issue collection file to  facility this.
+
+
 ### Migration
 
 When you think this information mirrored right now is sufficient to cut the ties,
@@ -633,12 +651,20 @@ I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
 
-## GITLAB offline mirror
+## GITLAB offline mirror (in progress)
 
 *nth*
 
 Trackdown should be capable of translating [GitLab][gitlab] JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.
+
+ Martin Goellnitz  / Sun Nov 13 19:10:27 2016 [29eb793d1caa2e42c1f120aa31e7ceb27929ca6b](https://github.com/mgoellnitz/trackdown/commit/29eb793d1caa2e42c1f120aa31e7ceb27929ca6b)
+
+    refs #GITLAB mirror in its first incarnation as another mirror type
+
+ Martin Goellnitz  / Sun Nov 13 19:11:43 2016 [d239356055272bdd0af6cad32925bb259785717d](https://github.com/mgoellnitz/trackdown/commit/d239356055272bdd0af6cad32925bb259785717d)
+
+    refs #GITLAB offline testing was still in place
 
 ## REDMINE offline mirror (in progress)
 
