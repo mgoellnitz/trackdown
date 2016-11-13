@@ -532,6 +532,29 @@ To facilitate the use of TrackDown the option of migrating an existing base
 of tickets is of course helpful. The choice, which systems are taken as a
 data source for such a migration is driven by personal needs.
 
+
+## GitLab Offline Mirror
+
+For disconnected situations which TrackDown is supposed to support, it is
+possible to connect a workspace to its [GitLab][gitlab] issue tracker and
+mirror tickets for offline use.
+
+It is not intended for changeing the issues in the issue collection file.
+
+Instead of `trackdown.sh use` issue `trackdown.sh gitlab` to setup the mirror
+connection.
+
+```
+trackdown.sh gitlab <apitoken> <projectname> https://<gitlab.host>/
+```
+
+Afterwards anytime you can connect to the [GitLab][gitlab] system, collect the 
+current mirror state to you local issue collection file and the roadmap.
+
+```
+trackdown.sh mirror
+```
+
 ## Redmine
 
 For historical reasons my [Tangram](https://github.com/mgoellnitz/tangram)
@@ -558,8 +581,8 @@ connection.
 trackdown.sh redmine <apikey> <projectname> https://<redmine.host>/
 ```
 
-Afterwards anytime you can connect to the redmine system collect the current
-mirror state to you local issue collection file and the roadmap.
+Afterwards anytime you can connect to the [Redmine][redmine] system, collect the 
+current mirror state to you local issue collection file and the roadmap.
 
 ```
 trackdown.sh mirror
@@ -610,17 +633,24 @@ I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
 
+## GITLAB offline mirror
+
+*nth*
+
+Trackdown should be capable of translating [GitLab][gitlab] JSON exports of 
+tickets to the special markdown format given here as a mirror for offline use.
+
 ## REDMINE offline mirror (in progress)
 
 *nth*
 
-For how historical reasons I have projects with redmine ticket in use and with
-still relevant tickets. Some of them might even be a candidate to migrate to
-Trackdown for others it might be sufficient to get a current offline mirror
-when the repository is not available.
+For how historical reasons I have projects with [Redmine][redmine] ticketing in 
+use and with still relevant tickets. Some of them might even be a candidate to 
+migrate to Trackdown for others it might be sufficient to get a current offline 
+mirror when the repository is not available.
 
-Trackdown should be capable of translating redmine JSON exports of tickets to
-the special markdown format given here. 
+Trackdown should be capable of translating [Redmine][redmine] JSON exports of 
+tickets to the special markdown format given here. 
 
 For the mirror scenario, certain 
 limitations are acceptable, 
@@ -644,7 +674,6 @@ project history.
  Martin Goellnitz  / Sun Nov 13 12:55:45 2016 [a745c43eb4a444bae91dc15d2b601f78e63e8722](https://github.com/mgoellnitz/trackdown/commit/a745c43eb4a444bae91dc15d2b601f78e63e8722)
 
     refs #REDMINE mirror now extracts more details from the original tickets
-
 
 ## ASSIGNMENT of issues should be part of the format and tooling (in progress)
 

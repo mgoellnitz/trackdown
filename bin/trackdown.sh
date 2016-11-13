@@ -343,7 +343,7 @@ if [ "$CMD" = "mirror" ] ; then
         echo "" >>$ISSUES
       fi
       jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
-        |sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
+        |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
         |sed -e 's/\&ouml;/ö/g'|sed -e 's/\&Ouml;/Ö/g' \
         |sed -e 's/\&auml;/ä/g'|sed -e 's/\&Auml;/Ä/g' \
         |sed -e 's/\&uuml;/ü/g'|sed -e 's/\&Uuml;/Ü/g' \
@@ -354,6 +354,56 @@ if [ "$CMD" = "mirror" ] ; then
     done
     rm $EXPORT
   fi
+
+  if [ $TYPE = "gitlab" ] ; then
+    EXPORT="/tmp/issues.json"
+    URL=`grep gitlab.url= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No gitlab source url configured. Did you setup gitlab mirroring?" $URL
+    TOKEN=`grep gitlab.key= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No gitlab api token configured. Did you setup gitlab mirroring?" $TOKEN
+    PROJECT=`grep gitlab.project= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
+    URL="${URL}/api/v3/projects/$PROJECT/issues"
+    # curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
+    if [ ! -f $EXPORT ] ; then
+      echo "JSON export file $EXPORT not found. Export seemed to have failed..."
+      exit
+    fi
+    if [ -z "$ISSUES" ] ; then
+      ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+    fi
+    # jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >$ISSUES
+    echo "# Issues" >$ISSUES
+    for id in `jq  -c '.[]|.id' $EXPORT` ; do
+      echo "" >>$ISSUES
+      echo "" >>$ISSUES
+      TITLE=`jq  -c '.[]|select(.id == '$id')|.title' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+      IID=`jq  -c '.[]|select(.id == '$id')|.iid' $EXPORT|sed -e 's/"//g'`
+      STATE=`jq  -c '.[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
+      s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g'`
+      MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone' $EXPORT|sed -e 's/.*title...\([a-zA-Z0-9\ _]*\).*"./\1/g'`
+      ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g'`
+      echo "## $IID $TITLE - $id ($s)"  >>$ISSUES
+      echo "" >>$ISSUES
+      echo -n "*${MILESTONE}*"  >>$ISSUES
+      if [ "$ASSIGNEE" != "null" ] ; then
+        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+      fi
+      echo "" >>$ISSUES
+      AUTHOR=`jq  -c '.[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)","username.*/\1/g'`
+      if [ "$AUTHOR" != "null" ] ; then
+        echo "Author: \`$AUTHOR\`" >>$ISSUES
+        echo "" >>$ISSUES
+      fi
+      DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.description' $EXPORT`
+      if [ "$DESCRIPTION" != "null" ] ; then
+        echo "" >>$ISSUES
+        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g' >>$ISSUES
+      fi
+    done
+    # rm -f $EXPORT
+  fi
+
   RMDIR=`dirname $ISSUES`
   $0 roadmap >$RMDIR/roadmap.md
   
@@ -397,6 +447,50 @@ if [ "$CMD" = "remote" ] ; then
 
 fi
 
+
+# gitlab command to setup a gitlab system as a remote mirror source
+# curl --header "PRIVATE-TOKEN: $GITLAB_COM_TOKEN" https://gitlab.com/api/v3/projects|jq '.[]|.name,.id'
+if [ "$CMD" = "gitlab" ] ; then
+
+  if [ `jq 2>&1|wc -l` = 0 ] ; then
+    echo "To use this functionality, jq must be installed."
+    exit
+  fi
+  bailOnZero "No api token given as the first parameter" $2
+  bailOnZero "No project name given as the second parameter" $3
+  bailOnZero "No gitlab instance base url given as the third parameter" $4
+  PID=`curl --header "PRIVATE-TOKEN: $2" ${4}/api/v3/projects|jq '.[]|select(.name=="'$3'")|.id'`
+  echo "Setting up TrackDown to mirror from $3 ($PID) on $4"
+  if [ ! -d .trackdown ] ; then
+    mkdir .trackdown
+    touch .trackdown/config
+  fi
+  MIRROR=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  if [ ! -z $MIRROR ] ; then
+    echo "Mirror setup already done in this repository with type $MIRROR."
+    exit
+  fi
+  echo "autocommit=false" > .trackdown/config
+  echo "autopush=false" >>  .trackdown/config
+  echo "location=gitlab-issues.md" >>  .trackdown/config
+  CHECK=`grep .trackdown .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/.trackdown" >> .gitignore
+  fi
+  CHECK=`grep redmine-issues.md .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/gitlab-issues.md" >> .gitignore
+  fi
+  CHECK=`grep roadmap.md .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/roadmap.md" >> .gitignore
+  fi
+  echo "mirror.type=gitlab" >> .trackdown/config
+  echo "gitlab.url=$4" >> .trackdown/config
+  echo "gitlab.project=$PID" >> .trackdown/config
+  echo "gitlab.key=$2" >> .trackdown/config
+
+fi
 
 # redmine command to setup a redmine system as a remote mirror source
 if [ "$CMD" = "redmine" ] ; then
