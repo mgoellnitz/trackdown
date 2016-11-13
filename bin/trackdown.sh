@@ -78,6 +78,12 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME remote c i p"
   echo "  issue remote command c on issue i with parameter p on remote mirroring source system"
   echo ""
+  echo "$MYNAME github k p o"
+  echo "  setup github mirroring project p of owner o with given apikey k(needs jq)"
+  echo ""
+  echo "$MYNAME gitlab k p u"
+  echo "  setup gitlab mirroring project p with given apikey k and gitlab base url u (needs jq)"
+  echo ""
   echo "$MYNAME redmine k p u"
   echo "  setup redmine mirroring project p with given apikey k and redmine base url u (needs jq)"
   echo ""
@@ -327,7 +333,7 @@ if [ "$CMD" = "mirror" ] ; then
       s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
       echo "## $id $SUBJECT ($s)" >>$ISSUES
       echo "" >>$ISSUES
-      VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/.*name...\(.*\)"./*\1*/g'`
+      VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/No Milestone/g'|sed -e 's/.*name...\(.*\)"./*\1*/g'`
       ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
       echo -n "${VERSION}"  >>$ISSUES
       if [ "$ASSIGNEE" != "null" ] ; then
@@ -380,7 +386,7 @@ if [ "$CMD" = "mirror" ] ; then
       IID=`jq  -c '.[]|select(.id == '$id')|.iid' $EXPORT|sed -e 's/"//g'`
       STATE=`jq  -c '.[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
       s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g'`
-      MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone' $EXPORT|sed -e 's/.*title...\([a-zA-Z0-9\ _]*\).*"./\1/g'`
+      MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone' $EXPORT|sed -e 's/null/No Milestone/g'|sed -e 's/.*title...\([a-zA-Z0-9\ _]*\).*"./\1/g'`
       ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g'`
       echo "## $IID $TITLE - $id ($s)"  >>$ISSUES
       echo "" >>$ISSUES
@@ -391,10 +397,58 @@ if [ "$CMD" = "mirror" ] ; then
       echo "" >>$ISSUES
       AUTHOR=`jq  -c '.[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)","username.*/\1/g'`
       if [ "$AUTHOR" != "null" ] ; then
-        echo "Author: \`$AUTHOR\`" >>$ISSUES
         echo "" >>$ISSUES
+        echo "Author: \`$AUTHOR\`" >>$ISSUES
       fi
       DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.description' $EXPORT`
+      if [ "$DESCRIPTION" != "null" ] ; then
+        echo "" >>$ISSUES
+        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g' >>$ISSUES
+      fi
+    done
+    rm -f $EXPORT
+  fi
+
+  if [ $TYPE = "github" ] ; then
+    EXPORT="/tmp/issues.json"
+    OWNER=`grep github.owner= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No github repository owner configured. Did you setup github mirroring?" $OWNER
+    TOKEN=`grep github.key= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No github api token configured. Did you setup github mirroring?" $TOKEN
+    PROJECT=`grep github.project= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No gihub project. Did you setup github mirroring?" $PROJECT
+    URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues?state=all"
+    curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
+    if [ ! -f $EXPORT ] ; then
+      echo "JSON export file $EXPORT not found. Export seemed to have failed..."
+      exit
+    fi
+    if [ -z "$ISSUES" ] ; then
+      ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+    fi
+    echo "# Issues" >$ISSUES
+    for id in `jq  -c '.[]|.id' $EXPORT` ; do
+      echo "" >>$ISSUES
+      echo "" >>$ISSUES
+      TITLE=`jq  -c '.[]|select(.id == '$id')|.title' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+      IID=`jq  -c '.[]|select(.id == '$id')|.number' $EXPORT|sed -e 's/"//g'`
+      STATE=`jq  -c '.[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
+      s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
+      MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone' $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
+      ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g'`
+      echo "## $IID $TITLE - $id ($s)"  >>$ISSUES
+      echo "" >>$ISSUES
+      echo -n "*${MILESTONE}*"  >>$ISSUES
+      if [ "$ASSIGNEE" != "null" ] ; then
+        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+      fi
+      echo "" >>$ISSUES
+      AUTHOR=`jq  -c '.[]|select(.id == '$id')|.user' $EXPORT|sed -e 's/.*login...\(.*\)","id.*/\1/g'`
+      if [ "$AUTHOR" != "null" ] ; then
+        echo "" >>$ISSUES
+        echo "Author: \`$AUTHOR\`" >>$ISSUES
+      fi
+      DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.body' $EXPORT`
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g' >>$ISSUES
@@ -462,7 +516,6 @@ fi
 
 
 # gitlab command to setup a gitlab system as a remote mirror source
-# curl --header "PRIVATE-TOKEN: $GITLAB_COM_TOKEN" https://gitlab.com/api/v3/projects|jq '.[]|.name,.id'
 if [ "$CMD" = "gitlab" ] ; then
 
   if [ `jq 2>&1|wc -l` = 0 ] ; then
@@ -504,6 +557,50 @@ if [ "$CMD" = "gitlab" ] ; then
   echo "gitlab.key=$2" >> .trackdown/config
 
 fi
+
+
+# github command to setup a github system as a remote mirror source
+if [ "$CMD" = "github" ] ; then
+
+  if [ `jq 2>&1|wc -l` = 0 ] ; then
+    echo "To use this functionality, jq must be installed."
+    exit
+  fi
+  bailOnZero "No api token given as the first parameter" $2
+  bailOnZero "No project name given as the second parameter" $3
+  bailOnZero "No username given as the third parameter" $4
+  echo "Setting up TrackDown to mirror $3 owned by $4 from github.com"
+  if [ ! -d .trackdown ] ; then
+    mkdir .trackdown
+    touch .trackdown/config
+  fi
+  MIRROR=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  if [ ! -z $MIRROR ] ; then
+    echo "Mirror setup already done in this repository with type $MIRROR."
+    exit
+  fi
+  echo "autocommit=false" > .trackdown/config
+  echo "autopush=false" >>  .trackdown/config
+  echo "location=github-issues.md" >>  .trackdown/config
+  CHECK=`grep .trackdown .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/.trackdown" >> .gitignore
+  fi
+  CHECK=`grep redmine-issues.md .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/github-issues.md" >> .gitignore
+  fi
+  CHECK=`grep roadmap.md .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/roadmap.md" >> .gitignore
+  fi
+  echo "mirror.type=github" >> .trackdown/config
+  echo "github.owner=$4" >> .trackdown/config
+  echo "github.project=$3" >> .trackdown/config
+  echo "github.key=$2" >> .trackdown/config
+
+fi
+
 
 # redmine command to setup a redmine system as a remote mirror source
 if [ "$CMD" = "redmine" ] ; then

@@ -533,6 +533,29 @@ of tickets is of course helpful. The choice, which systems are taken as a
 data source for such a migration is driven by personal needs.
 
 
+## GitHub Offline Mirror
+
+For disconnected situations which TrackDown is supposed to support, it is
+possible to connect a workspace to its [GitHub][github] issue tracker and
+mirror tickets for offline use.
+
+It is not intended for changeing the issues in the issue collection file.
+
+Instead of `trackdown.sh use` issue `trackdown.sh github` to setup the mirror
+connection.
+
+```
+trackdown.sh gihthub <apitoken> <projectname> <owner>
+```
+
+Afterwards anytime you can connect to the [GitHub][github] system, collect the 
+current mirror state to you local issue collection file and the roadmap.
+
+```
+trackdown.sh mirror
+```
+
+
 ## GitLab Offline Mirror
 
 For disconnected situations which TrackDown is supposed to support, it is
@@ -650,6 +673,13 @@ ones we  use here.
 I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
+
+## GITHUB offline mirror
+
+*nth*
+
+Trackdown should be capable of translating [GitHub][github] JSON exports of 
+tickets to the special markdown format given here as a mirror for offline use.
 
 ## GITLAB offline mirror (in progress)
 
