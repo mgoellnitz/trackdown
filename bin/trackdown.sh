@@ -20,6 +20,14 @@ CMD=$1
 ISSUES=$2
 DIR=`dirname $0`
 
+# $0 message to issue when not given $2 parameter to check
+function bailOnZero {
+  if [ -z "$2" ] ; then
+    echo $1
+    exit
+  fi
+}  
+
 # usage command
 if [ -z "$CMD" ] ; then
 
@@ -50,8 +58,11 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME mirror"
   echo "  sync with reviously setup tracking master (redmine - needs jq)"
   echo ""
-  echo "$MYNAME redmine k u"
-  echo "  setup redmine mirroring with given apikey k and issues json url u (needs jq)"
+  echo "$MYNAME remote c i p"
+  echo "  issue remote command c on issue i with parameter p on remote mirroring source system"
+  echo ""
+  echo "$MYNAME redmine k p u"
+  echo "  setup redmine mirroring project p with given apikey k and redmine base url u (needs jq)"
   echo ""
   echo "$MYNAME sync"
   echo "  directly push issues GIT to upstream (rarely usefull)"
@@ -275,9 +286,14 @@ if [ "$CMD" = "init" ] ; then
 
 fi
 
+
 # command for redmine to mirror the issue collection file from a json source to this tool
 if [ "$CMD" = "mirror" ] ; then
 
+  if [ ! -f .trackdown/config ] ; then
+    echo "TrackDown not set up. Start with use or redmine command..."
+    exit
+  fi
   if [ `jq 2>&1|wc -l` = 0 ] ; then
     echo "To use this functionality, jq must be installed."
     exit
@@ -289,10 +305,16 @@ if [ "$CMD" = "mirror" ] ; then
     exit
   fi
   KEY=`grep redmine.key= .trackdown/config|cut -d '=' -f 2`
-  if [ -z "$URL" ] ; then
+  if [ -z "$KEY" ] ; then
     echo "No redmine api key configured. Did you setup redmine mirroring?"
     exit
   fi
+  PROJECT=`grep redmine.project= .trackdown/config|cut -d '=' -f 2`
+  if [ -z "$PROJECT" ] ; then
+    echo "No redmine project. Did you setup redmine mirroring?"
+    exit
+  fi
+  URL="${URL}/projects/$PROJECT/issues.json"
   curl -H "X-Redmine-API-Key: $KEY" $URL >$EXPORT
   if [ ! -f $EXPORT ] ; then
     echo "JSON export file $EXPORT not found. Export seemed to have failed..."
@@ -341,7 +363,53 @@ if [ "$CMD" = "mirror" ] ; then
   
 fi
 
-# redmine command to read json issues export and produce issue collection file
+
+# remote command to issue commands on mirror sources
+if [ "$CMD" = "remote" ] ; then
+
+  if [ ! -f .trackdown/config ] ; then
+    echo "TrackDown not set up. Start with use or redmine command..."
+    exit
+  fi
+  URL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
+  if [ -z "$URL" ] ; then
+    echo "No redmine source url configured. Did you setup redmine mirroring?"
+    exit
+  fi
+  KEY=`grep redmine.key= .trackdown/config|cut -d '=' -f 2`
+  if [ -z "$KEY" ] ; then
+    echo "No redmine api key configured. Did you setup redmine mirroring?"
+    exit
+  fi
+  REMOTE=$2
+  bailOnZero $REMOTE "X No remote command given as the second parameter"
+  if [ -z $REMOTE ] ; then
+    echo "No remote command given as the second parameter"
+    exit
+  fi
+  echo "Remote command: $REMOTE"
+  ISSUE=$3
+  if [ -z $ISSUE ] ; then
+    echo "No target issue to operate on given as the third parameter"
+    exit
+  fi
+  echo "Target issue: $ISSUE"
+  PARAM=$4
+  if [ -z "$PARAM" ] ; then
+    echo "No parameter for the remote operation given as the forth parameter"
+    exit
+  fi
+  echo "Parameter: $PARAM"
+  if [ "$REMOTE" = "comment" ] ; then
+    echo "Adding comment \"$PARAM\" to $ISSUE"
+    curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
+         -d "{\"issue\":{\"notes\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
+  fi
+
+fi
+
+
+# redmine command to setup a redmine system as a remote mirror source
 if [ "$CMD" = "redmine" ] ; then
 
   if [ `jq 2>&1|wc -l` = 0 ] ; then
@@ -356,12 +424,21 @@ if [ "$CMD" = "redmine" ] ; then
     exit
   fi
   if [ -z $3 ] ; then
-    echo "No issues json url given as the second parameter"
+    echo "No project name given as the second parameter"
     exit
   fi
-  echo "Setting up TrackDown to mirror from $3"
+  if [ -z $4 ] ; then
+    echo "No redmine instance base url given as the third parameter"
+    exit
+  fi
+  echo "Setting up TrackDown to mirror from $3 on $4"
   if [ ! -d .trackdown ] ; then
     mkdir .trackdown
+  fi
+  MIRROR=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  if [ ! -z "$MIRROR" ] ; then
+    echo "Mirror setup already done in this repository with type $MIRROR."
+    exit
   fi
   echo "autocommit=false" > .trackdown/config
   echo "autopush=false" >>  .trackdown/config
@@ -378,7 +455,9 @@ if [ "$CMD" = "redmine" ] ; then
   if [ $CHECK = 0 ] ; then
     echo "/roadmap.md" >> .gitignore
   fi
-  echo "redmine.url=$3" >> .trackdown/config
+  echo "mirror.type=redmine" >> .trackdown/config
+  echo "redmine.url=$4" >> .trackdown/config
+  echo "redmine.project=$3" >> .trackdown/config
   echo "redmine.key=$2" >> .trackdown/config
 
 fi

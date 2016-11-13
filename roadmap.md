@@ -2,9 +2,10 @@
 
 ## 1.0:
 
-87% (7 / 8) completed
-0% (0 / 8) in progress
+77% (7 / 9) completed
+11% (1 / 9) in progress
 
+* ASSIGNMENT of issues should be part of the format and tooling (in progress)
 * COPY release notes.
 * ROADMAP should show percentage for issues already started (resolved)
 * SETUP tracking repository symmetrically (resolved)

@@ -555,7 +555,7 @@ Instead of `trackdown.sh use` issue `trackdown.sh redmine` to setup the mirror
 connection.
 
 ```
-trackdown.sh redmine apikey12345 https://my.redmine.host/projects/projectname/issues.json
+trackdown.sh redmine <apikey> <projectname> https://<redmine.host>/
 ```
 
 Afterwards anytime you can connect to the redmine system collect the current
@@ -563,6 +563,15 @@ mirror state to you local issue collection file and the roadmap.
 
 ```
 trackdown.sh mirror
+```
+
+Additionally - since you now are on your command line and perhaps don't want
+to switch windows evey second - there is a `remote` command to issue commands
+on the remote mirroring source system.
+
+```
+trackdown.sh remote comment XYZ "Hi there."
+Adding comment "Hi there." to XYZ
 ```
 
 
@@ -633,7 +642,7 @@ project history.
     refs #REDMINE mirror now extracts more details from the original tickets
 
 
-## ASSIGNMENT of issues should be part of the format and tooling
+## ASSIGNMENT of issues should be part of the format and tooling (in progress)
 
 *1.0*
 
@@ -643,6 +652,10 @@ is currently working on an issue at least as an optional part of the format.
 Additionally some support in the tooling is needed to list issues assigned
 to the current user
 
+
+ Martin Goellnitz  / Sun Nov 13 14:47:12 2016 [0aaf357d1474a3877db9da977b9aadba7d9ed6a5](https://github.com/mgoellnitz/trackdown/commit/0aaf357d1474a3877db9da977b9aadba7d9ed6a5)
+
+    refs #ASSIGNMENT of issues to me now listable
 
 ## COPY release notes.
 
