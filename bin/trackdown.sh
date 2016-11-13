@@ -26,16 +26,19 @@ if [ -z "$CMD" ] ; then
   MYNAME=`basename $0`
   echo "Usage:"
   echo ""
-  echo "$MYNAME roadmap [collections file]"
+  echo "$MYNAME roadmap [collection file]"
   echo "  print roadmap"
   echo ""
-  echo "$MYNAME ls v [collections file]"
+  echo "$MYNAME ls v [collection file]"
   echo "  list issues for version v"
   echo ""
-  echo "$MYNAME issues [collections file]"
+  echo "$MYNAME mine [me] [collection file]"
+  echo "  list issues which are marked to be mine"
+  echo ""
+  echo "$MYNAME issues [collection file]"
   echo "  list all potential issues"
   echo ""
-  echo "$MYNAME use [collections file]"
+  echo "$MYNAME use [collection file]"
   echo "  setup clone for issue tracking (optional with non default file)"
   echo ""
   echo "$MYNAME update"
@@ -69,6 +72,26 @@ if [ "$CMD" = "ls" ] ; then
   fi
   grep -B2 "^\*$2\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'
 
+fi
+
+
+# command to list my issues in the collection
+if [ "$CMD" = "mine" ] ; then
+
+  # Location of the issues file
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  fi
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=".git/trackdown/issues.md"
+  fi
+  if [ -z "$ME" ] ; then
+    ME=`grep me= .trackdown/config|cut -d '=' -f 2`
+  fi
+  if [ -z "$ME" ] ; then
+    ME="$USER"
+  fi
+  grep -B2 "Currently.assigned.to...$ME" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'
 fi
 
 

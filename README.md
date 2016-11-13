@@ -67,7 +67,7 @@ These fields are mapped to the following source structure
 ```
   ## ID Title (status)
 
-  *Target Version (optional)*
+  *Target Version (optional)* - Currently assigned to: `me` (optional)
 
   ### severity (optional) priority (optional)
 
@@ -307,7 +307,7 @@ The command
   trackdown.sh issues
 ```
 
-list all potential issues in the issue collection. Potential means in this case,
+lists all potential issues in the issue collection. Potential means in this case,
 that there may be some false positives if there are additional elements in your
 issue collection file, which might be interpreted as issues.
 
@@ -315,6 +315,40 @@ Optionally you can add a path to an issue collection file as a parameter like in
 
 ```
   trackdown.sh issues ../wiki/issues.md
+```
+
+
+## My Tickets
+
+The command
+
+```
+  trackdown.sh mine
+```
+
+lists all issues in the issue collection, which are marked with a
+
+```
+*Version 1.0* - Currently assigned to: `me`
+```
+
+The `me` placeholder in the case is taken - in that order - from
+
+* the first parameter on the command line
+* The `me` entry in the `.trackdown/config` file
+* The local user name from the environment variable `$USER`
+
+Optionally you can add a path to an issue collection file as an additional parameter 
+like in
+
+```
+  trackdown.sh mine ../wiki/issues.md
+```
+
+or
+
+```
+  trackdown.sh mine UserName ../wiki/issues.md
 ```
 
 
@@ -331,7 +365,8 @@ Example config file for TrackDown:
   autocommit=true
   autopush=false
   location=../wiki/issues.md
-  prefix=https://github.com/mgoellnitz/tangram/commit/
+  prefix=https://github.com/user/project/commit/
+  me=My Name
 ```
 
 ## Auto Commit all Issue Collection Changes
@@ -360,6 +395,15 @@ With some GIT backends it is possible to obtain summary with changes and
 commit message online for every commit. To use this facility place a prefix
 in the config file where hash of a commit can be appended to for a valid
 link for that commit.
+
+## Username for assignments
+
+To allow to work with the user assignment of tickets, the name as used in the
+issue collection file can be added here, so that listing of tickets for the
+current user is possible.
+
+The assignment will no automatically added to the ticket if that user uses
+a commit message related to a ticket, but just the progress flag will be set.
 
 
 # Installation
@@ -587,6 +631,18 @@ project history.
  Martin Goellnitz  / Sun Nov 13 12:55:45 2016 [a745c43eb4a444bae91dc15d2b601f78e63e8722](https://github.com/mgoellnitz/trackdown/commit/a745c43eb4a444bae91dc15d2b601f78e63e8722)
 
     refs #REDMINE mirror now extracts more details from the original tickets
+
+
+## ASSIGNMENT of issues should be part of the format and tooling
+
+*1.0*
+
+We need a facility to deal with assignments of tickets to illustrate, who
+is currently working on an issue at least as an optional part of the format.
+
+Additionally some support in the tooling is needed to list issues assigned
+to the current user
+
 
 ## COPY release notes.
 
