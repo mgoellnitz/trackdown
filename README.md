@@ -584,6 +584,10 @@ project history.
 
     refs #REDMINE mirror command should be named mirror and the old sync command keep that name
 
+ Martin Goellnitz  / Sun Nov 13 12:55:45 2016 [a745c43eb4a444bae91dc15d2b601f78e63e8722](https://github.com/mgoellnitz/trackdown/commit/a745c43eb4a444bae91dc15d2b601f78e63e8722)
+
+    refs #REDMINE mirror now extracts more details from the original tickets
+
 ## COPY release notes.
 
 *1.0*
