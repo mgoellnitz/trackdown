@@ -363,7 +363,7 @@ if [ "$CMD" = "mirror" ] ; then
     bailOnZero "No gitlab api token configured. Did you setup gitlab mirroring?" $TOKEN
     PROJECT=`grep gitlab.project= .trackdown/config|cut -d '=' -f 2`
     bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
-    URL="${URL}/api/v3/projects/$PROJECT/issues"
+    URL="${URL}/api/v3/projects/$PROJECT/issues?per_page=100"
     curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
     if [ ! -f $EXPORT ] ; then
       echo "JSON export file $EXPORT not found. Export seemed to have failed..."
