@@ -411,9 +411,13 @@ if [ "$CMD" = "redmine" ] ; then
   echo "Setting up TrackDown to mirror from $3 on $4"
   if [ ! -d .trackdown ] ; then
     mkdir .trackdown
+    touch .trackdown/config
   fi
   MIRROR=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
-  bailOnZero "Mirror setup already done in this repository with type $MIRROR." $MIRROR
+  if [ ! -z $MIRROR ] ; then
+    echo "Mirror setup already done in this repository with type $MIRROR."
+    exit
+  fi
   echo "autocommit=false" > .trackdown/config
   echo "autopush=false" >>  .trackdown/config
   echo "location=redmine-issues.md" >>  .trackdown/config
