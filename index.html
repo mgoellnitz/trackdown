@@ -90,7 +90,7 @@ elements should be maintainable with TrackDown:</p>
 
 <pre><code>  ## ID Title (status)
 
-  *Target Version (optional)*
+  *Target Version (optional)* - Currently assigned to: `me` (optional)
 
   ### severity (optional) priority (optional)
 
@@ -331,13 +331,46 @@ anything which describes your development process best.</p>
 <pre><code>  trackdown.sh issues
 </code></pre>
 
-<p>list all potential issues in the issue collection. Potential means in this case,
+<p>lists all potential issues in the issue collection. Potential means in this case,
 that there may be some false positives if there are additional elements in your
 issue collection file, which might be interpreted as issues.</p>
 
 <p>Optionally you can add a path to an issue collection file as a parameter like in</p>
 
 <pre><code>  trackdown.sh issues ../wiki/issues.md
+</code></pre>
+
+<h2>
+<a id="my-tickets" class="anchor" href="#my-tickets" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>My Tickets</h2>
+
+<p>The command</p>
+
+<pre><code>  trackdown.sh mine
+</code></pre>
+
+<p>lists all issues in the issue collection, which are marked with a</p>
+
+<pre><code>*Version 1.0* - Currently assigned to: `me`
+</code></pre>
+
+<p>The <code>me</code> placeholder in the case is taken - in that order - from</p>
+
+<ul>
+<li>the first parameter on the command line</li>
+<li>The <code>me</code> entry in the <code>.trackdown/config</code> file</li>
+<li>The local user name from the environment variable <code>$USER</code>
+</li>
+</ul>
+
+<p>Optionally you can add a path to an issue collection file as an additional parameter 
+like in</p>
+
+<pre><code>  trackdown.sh mine ../wiki/issues.md
+</code></pre>
+
+<p>or</p>
+
+<pre><code>  trackdown.sh mine UserName ../wiki/issues.md
 </code></pre>
 
 <h1>
@@ -353,7 +386,8 @@ file, which you might want to change.</p>
 <pre><code>  autocommit=true
   autopush=false
   location=../wiki/issues.md
-  prefix=https://github.com/mgoellnitz/tangram/commit/
+  prefix=https://github.com/user/project/commit/
+  me=My Name
 </code></pre>
 
 <h2>
@@ -385,6 +419,16 @@ operations, which is not desirable.</p>
 commit message online for every commit. To use this facility place a prefix
 in the config file where hash of a commit can be appended to for a valid
 link for that commit.</p>
+
+<h2>
+<a id="username-for-assignments" class="anchor" href="#username-for-assignments" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Username for assignments</h2>
+
+<p>To allow to work with the user assignment of tickets, the name as used in the
+issue collection file can be added here, so that listing of tickets for the
+current user is possible.</p>
+
+<p>The assignment will no automatically added to the ticket if that user uses
+a commit message related to a ticket, but just the progress flag will be set.</p>
 
 <h1>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h1>
@@ -549,7 +593,25 @@ the following setup workflow is used instead of the steps given above:</p>
 <p>Instead of <code>trackdown.sh use</code> issue <code>trackdown.sh redmine</code> to setup the mirror
 connection.</p>
 
-<pre><code>trackdown.sh redmine apikey12345 https://my.redmine.host/projects/projectname/issues.json
+<pre><code>trackdown.sh redmine &lt;apikey&gt; &lt;projectname&gt; https://&lt;redmine.host&gt;/
+</code></pre>
+
+<p>Afterwards anytime you can connect to the redmine system collect the current
+mirror state to you local issue collection file and the roadmap.</p>
+
+<pre><code>trackdown.sh mirror
+</code></pre>
+
+<p>Additionally - since you now are on your command line and perhaps don't want
+to switch windows evey second - there is a <code>remote</code> command to issue commands
+on the remote mirroring source system.</p>
+
+<pre><code>trackdown.sh remote comment XYZ "Hi there."
+Adding comment "Hi there." to XYZ
+</code></pre>
+
+<pre><code>trackdown.sh remote assign 68 XYZ
+Assigning XYZ to user 68 
 </code></pre>
 
 <h3>
@@ -613,6 +675,37 @@ project history.</p>
 <p>Martin Goellnitz  / Sun Nov 13 01:22:34 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/dcf643bf7b21300561013b6cd5fbf202a0567009">dcf643bf7b21300561013b6cd5fbf202a0567009</a></p>
 
 <pre><code>refs #REDMINE mirroring started
+</code></pre>
+
+<p>Martin Goellnitz  / Sun Nov 13 02:48:36 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/7211c3ce7b6f7bed464fa6c866239b5ced3bd4e2">7211c3ce7b6f7bed464fa6c866239b5ced3bd4e2</a></p>
+
+<pre><code>refs #REDMINE mirror shoud overwrite issue collection and no always append
+</code></pre>
+
+<p>Martin Goellnitz  / Sun Nov 13 12:21:00 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/a82c03fdf6356ef4079446fe7f3d75cae80124d7">a82c03fdf6356ef4079446fe7f3d75cae80124d7</a></p>
+
+<pre><code>refs #REDMINE mirror command should be named mirror and the old sync command keep that name
+</code></pre>
+
+<p>Martin Goellnitz  / Sun Nov 13 12:55:45 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/a745c43eb4a444bae91dc15d2b601f78e63e8722">a745c43eb4a444bae91dc15d2b601f78e63e8722</a></p>
+
+<pre><code>refs #REDMINE mirror now extracts more details from the original tickets
+</code></pre>
+
+<h2>
+<a id="assignment-of-issues-should-be-part-of-the-format-and-tooling-in-progress" class="anchor" href="#assignment-of-issues-should-be-part-of-the-format-and-tooling-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ASSIGNMENT of issues should be part of the format and tooling (in progress)</h2>
+
+<p><em>1.0</em></p>
+
+<p>We need a facility to deal with assignments of tickets to illustrate, who
+is currently working on an issue at least as an optional part of the format.</p>
+
+<p>Additionally some support in the tooling is needed to list issues assigned
+to the current user</p>
+
+<p>Martin Goellnitz  / Sun Nov 13 14:47:12 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/0aaf357d1474a3877db9da977b9aadba7d9ed6a5">0aaf357d1474a3877db9da977b9aadba7d9ed6a5</a></p>
+
+<pre><code>refs #ASSIGNMENT of issues to me now listable
 </code></pre>
 
 <h2>
