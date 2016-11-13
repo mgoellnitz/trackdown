@@ -568,12 +568,17 @@ project history.
 
     refs #REDMINE mirroring started
 
+## COPY release notes.
 
 *1.0*
 
 When closing a release or sprint, it should be possible to copy all the resolved
 issues to a new [Markdown][markdown] file to remove them from the issue 
 collection and have a contribution to release notes.
+
+ Martin Goellnitz  / Sun Nov 13 01:51:12 2016 [de3417d6789e59219d8d9616d5498c857f33cb32](https://github.com/mgoellnitz/trackdown/commit/de3417d6789e59219d8d9616d5498c857f33cb32)
+
+    refs #REDMINE mirror users don't have to use git for this purpose - smarter .gitignore handling alongside
 
 ## ROADMAP should show percentage for issues already started (resolved)
 

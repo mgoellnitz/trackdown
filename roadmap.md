@@ -2,10 +2,9 @@
 
 ## 1.0:
 
-100% (7 / 7) completed
-0% (0 / 7) in progress
+100% (6 / 6) completed
+0% (0 / 6) in progress
 
-* ROADMAP should show percentage for issues already started (resolved)
 * SETUP tracking repository symmetrically (resolved)
 * SYNCHRONIZE roadmap also on unhandled commits (resolved)
 * ROOT directory of the source code must be a valid roadmap and issue file location (resolved)
