@@ -2,23 +2,23 @@
 
 ## 1.0:
 
-87% (7 / 8) completed
-0% (0 / 8) in progress
+100% (7 / 7) completed
+0% (0 / 7) in progress
 
 * ROADMAP should show percentage for issues already started (resolved)
 * SETUP tracking repository symmetrically (resolved)
 * SYNCHRONIZE roadmap also on unhandled commits (resolved)
 * ROOT directory of the source code must be a valid roadmap and issue file location (resolved)
-* COPY release notes.
 * UPDATE command for the commit hook (resolved)
 * HASH of the commit should be part of the listing (resolved)
 * PREFIX hashes in commit notes to form a URL (resolved)
 
 ## nth:
 
-0% (0 / 1) completed
-0% (0 / 1) in progress
+0% (0 / 2) completed
+50% (1 / 2) in progress
 
+* REDMINE offline mirror (in progress)
 * MULTIISSUE There can be only one issue per commit.
 
 ## oos:

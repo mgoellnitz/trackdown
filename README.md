@@ -545,7 +545,7 @@ I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
 
-## REDMINE offline mirror
+## REDMINE offline mirror (in progress)
 
 *nth*
 
@@ -564,7 +564,10 @@ For  migration scenarios the commit lists should be included and even closed
 tickets should be taken into account to not lose the relevant parts of the
 project history.
 
-## COPY release notes.
+ Martin Goellnitz  / Sun Nov 13 01:22:34 2016 [dcf643bf7b21300561013b6cd5fbf202a0567009](https://github.com/mgoellnitz/trackdown/commit/dcf643bf7b21300561013b6cd5fbf202a0567009)
+
+    refs #REDMINE mirroring started
+
 
 *1.0*
 
