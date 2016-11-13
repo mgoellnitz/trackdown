@@ -164,16 +164,18 @@ if [ "$CMD" = "use" ] ; then
     ln -s `dirname $ISSUES`/roadmap.md roadmap.md
     CHECK=`grep roadmap.md .gitignore|wc -l`
     if [ $CHECK = 0 ] ; then
-      echo "roadmap.md" >> .gitignore
+      echo "/roadmap.md" >> .gitignore
     fi
   fi
   CHECK=`grep .trackdown .gitignore|wc -l`
   if [ $CHECK = 0 ] ; then
     echo "/.trackdown" >> .gitignore
   fi
-  CHECK=`grep issues.md .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "issues.md" >> .gitignore
+  if [ -h issues.md ] ; then
+    CHECK=`grep issues.md .gitignore|wc -l`
+    if [ $CHECK = 0 ] ; then
+      echo "/issues.md" >> .gitignore
+    fi
   fi
 fi
 
@@ -298,6 +300,8 @@ if [ "$CMD" = "sync" ] ; then
       |sed -e 's/<p>//g'|sed -e 's/<\/p>//g' >>$ISSUES
   done
   rm $EXPORT
+  RMDIR=`dirname $ISSUES`
+  $0 roadmap >$RMDIR/roadmap.md
   
 fi
 
@@ -320,7 +324,24 @@ if [ "$CMD" = "redmine" ] ; then
     exit
   fi
   echo "Setting up TrackDown to mirror from $3"
-  $0 use redmine-issues.md
+  if [ ! -d .trackdown ] ; then
+    mkdir .trackdown
+  fi
+  echo "autocommit=false" > .trackdown/config
+  echo "autopush=false" >>  .trackdown/config
+  echo "location=redmine-issues.md" >>  .trackdown/config
+  CHECK=`grep .trackdown .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/.trackdown" >> .gitignore
+  fi
+  CHECK=`grep redmine-issues.md .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/redmine-issues.md" >> .gitignore
+  fi
+  CHECK=`grep roadmap.md .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/roadmap.md" >> .gitignore
+  fi
   echo "redmine.url=$3" >> .trackdown/config
   echo "redmine.key=$2" >> .trackdown/config
 
