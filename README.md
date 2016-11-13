@@ -666,6 +666,14 @@ tickets to the special markdown format given here as a mirror for offline use.
 
     refs #GITLAB offline testing was still in place
 
+ Martin Goellnitz  / Sun Nov 13 19:29:46 2016 [4940d3cf9d3182d0fe591ea82ea94d0651703ffd](https://github.com/mgoellnitz/trackdown/commit/4940d3cf9d3182d0fe591ea82ea94d0651703ffd)
+
+    refs #GITLAB remote command to assign tickets added
+
+ Martin Goellnitz  / Sun Nov 13 19:52:31 2016 [34e0dcec0c72fc0fafe0887a966e392163d6df44](https://github.com/mgoellnitz/trackdown/commit/34e0dcec0c72fc0fafe0887a966e392163d6df44)
+
+    refs #GITLAB issues exports should at least be usable up to 100 issues
+
 ## REDMINE offline mirror (in progress)
 
 *nth*
