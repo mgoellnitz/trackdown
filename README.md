@@ -481,6 +481,49 @@ backup wiki and source code.
 
  - https://github.com/glogiotatidis/gitissius
 
+
+# Migration
+
+To facilitate the use of TrackDown the option of migrating an existing base
+of tickets is of course helpful. The choice, which systems are taken as a
+data source for such a migration is driven by personal needs.
+
+## Redmine
+
+For historical reasons my [Tangram](https://github.com/mgoellnitz/tangram)
+project uses [Redmine][redmine] and customers also use [Redmine][redmine]. So 
+there are two scenarios where some interfacing would be helpful.
+
+In addition the roadmap outline of TrackDown is very much inspired from the 
+[Redmine][redmine] roadmap page.
+
+### Offline mirror
+
+Since I'm - sad enough - not in the position to tell my enterprise scale
+customers which ticketing systems to use, there is still the need to have
+the issue descriptions, ticket ID, target versions, affected versions and
+even the roadmap available offline.
+
+For an offline mirror without the capability to change the status of tickets,
+the following setup workflow is used instead of the steps given above:
+
+Instead of `trackdown.sh use` issue `trackdown.sh redmine` to setup the mirror
+connection.
+
+```
+trackdown.sh redmine apikey12345 https://my.redmine.host/projects/projectname/issues.json
+```
+
+### Migration
+
+When you think this information mirrored right now is sufficient to cut the ties,
+you can setup the created issues collection and roadmap as the repository
+and do a `trackdown.sh use`.
+
+The full migration is not covered by a command yet and setting up mirrored
+data in the special TrackDown branch must be accomplished manually.
+
+
 # Issues
 
 Right now we have three collections/iterations/sprints in this issue list:
@@ -628,3 +671,4 @@ Right now we only support the extraction of one issues ID per [GIT][git] commit.
 [gitlab]: https://gitlab.com/
 [github]: https://github.com/
 [jgit]: https://eclipse.org/jgit/
+[redmine]: http://www.redmine.org/

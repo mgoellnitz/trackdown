@@ -35,8 +35,8 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME issues [collections file]"
   echo "  list all potential issues"
   echo ""
-  echo "$MYNAME sync"
-  echo "  directly sync issues GIT with upstream (rarely usefull)"
+  echo "$MYNAME push"
+  echo "  directly push issues GIT to upstream (rarely usefull)"
   echo ""
   echo "$MYNAME use [collections file]"
   echo "  setup clone for issue tracking (optional with non default file)"
@@ -46,6 +46,12 @@ if [ -z "$CMD" ] ; then
   echo ""
   echo "$MYNAME init"
   echo "  init issue tracking within GIT branch"
+  echo ""
+  echo "$MYNAME sync"
+  echo "  sync with reviously setup tracking master (redmine - needs jq)"
+  echo ""
+  echo "$MYNAME redmine k u"
+  echo "  setup redmine mirroring with given apikey k and issues json url u (needs jq)"
 
 fi
 
@@ -193,7 +199,7 @@ fi
 
 
 # sync command
-if [ "$CMD" = "sync" ] ; then
+if [ "$CMD" = "push" ] ; then
 
   if [ ! -d .git ] ; then
     echo "Not in a GIT repository. Exiting."
@@ -241,5 +247,81 @@ if [ "$CMD" = "init" ] ; then
   git commit -m "Empty issues collection" issues.md roadmap.md
   git checkout $BRANCH
   git stash apply
+
+fi
+
+# sync command for redmine to read json issues export and produce issue collection file
+if [ "$CMD" = "sync" ] ; then
+
+  if [ `jq 2>&1|wc -l` = 0 ] ; then
+    echo "To use this functionality, jq must be installed."
+    exit
+  fi
+  EXPORT="/tmp/issues.json"
+  URL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
+  if [ -z "$URL" ] ; then
+    echo "No redmine source url configured. Did you setup redmine mirroring?"
+    exit
+  fi
+  KEY=`grep redmine.key= .trackdown/config|cut -d '=' -f 2`
+  if [ -z "$URL" ] ; then
+    echo "No redmine api key configured. Did you setup redmine mirroring?"
+    exit
+  fi
+  curl -H "X-Redmine-API-Key: $KEY" $URL >$EXPORT
+  if [ ! -f $EXPORT ] ; then
+    echo "JSON export file $EXPORT not found. Export seemed to have failed..."
+    exit
+  fi
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  fi
+  jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >>$ISSUES
+  for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
+    echo "" >>$ISSUES
+    echo "" >>$ISSUES
+    SUBJECT=`jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g'`
+    STATUS=`jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
+    s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
+    echo "## $id $SUBJECT ($s)" >>$ISSUES
+    echo "" >>$ISSUES
+    jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/.*name...\(.*\)"./*\1*/g' >>$ISSUES
+    echo "" >>$ISSUES
+    jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
+      |sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
+      |sed -e 's/\&ouml;/ö/g'|sed -e 's/\&Ouml;/Ö/g' \
+      |sed -e 's/\&auml;/ä/g'|sed -e 's/\&Auml;/Ä/g' \
+      |sed -e 's/\&uuml;/ü/g'|sed -e 's/\&Uuml;/Ü/g' \
+      |sed -e 's/\&quot;/"/g'|sed -e 's/\&szlig;/ß/g' \
+      |sed -e 's/<strong>//g'|sed -e 's/<\/strong>//g' \
+      |sed -e 's/<h3>/### /g'|sed -e 's/<\/h3>//g' \
+      |sed -e 's/<p>//g'|sed -e 's/<\/p>//g' >>$ISSUES
+  done
+  rm $EXPORT
+  
+fi
+
+# redmine command to read json issues export and produce issue collection file
+if [ "$CMD" = "redmine" ] ; then
+
+  if [ `jq 2>&1|wc -l` = 0 ] ; then
+    echo "To use this functionality, jq must be installed."
+    exit
+  fi
+  if [ -z "$2" ] ; then
+    ISSUES="issues.json"
+  fi
+  if [ -z $2 ] ; then
+    echo "No api key given as the first parameter"
+    exit
+  fi
+  if [ -z $3 ] ; then
+    echo "No issues json url given as the second parameter"
+    exit
+  fi
+  echo "Setting up TrackDown to mirror from $3"
+  $0 use redmine-issues.md
+  echo "redmine.url=$3" >> .trackdown/config
+  echo "redmine.key=$2" >> .trackdown/config
 
 fi
