@@ -574,6 +574,10 @@ trackdown.sh remote comment XYZ "Hi there."
 Adding comment "Hi there." to XYZ
 ```
 
+```
+trackdown.sh remote assign 68 XYZ
+Assigning XYZ to user 68 
+```
 
 ### Migration
 

@@ -28,6 +28,23 @@ function bailOnZero {
   fi
 }  
 
+# Exit if trackdown is not initialized
+function checkTrackdown {
+  if [ ! -f .trackdown/config ] ; then
+    echo "Project not initialized for trackdown use."
+    exit
+  fi
+}
+
+# Exit if not in a git repository root directory
+function checkGit {
+  if [ ! -d .git ] ; then
+    echo "Not in a GIT repository. Exiting."
+    exit
+  fi
+}
+
+
 # usage command
 if [ -z "$CMD" ] ; then
 
@@ -154,10 +171,7 @@ fi
 # use command
 if [ "$CMD" = "use" ] ; then
 
-  if [ ! -d .git ] ; then
-    echo "Not in a GIT repository. Exiting."
-    exit
-  fi
+  checkGit
   if [ `git branch -l|wc -l` = 0 ] ; then
     echo "GIT repository missing commits. Exiting."
     exit
@@ -217,30 +231,23 @@ fi
 # update hook command
 if [ "$CMD" = "update" ] ; then
 
-  if [ ! -d .git ] ; then
-    echo "Not in a GIT repository. Exiting."
-    exit
+  checkTrackdown
+  checkGit
+  TYPE=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  if [ -z $TYPE ] ; then
+    cp $DIR/trackdown-hook.sh .git/hooks/post-commit
+    chmod 755 .git/hooks/post-commit
+  else
+    echo "This repository is setup as a mirror - no hoook update needed."
   fi
-  if [ `git branch -l|wc -l` = 0 ] ; then
-    echo "GIT repository missing commits. Exiting."
-    exit
-  fi
-  if [ ! -f .trackdown/config ] ; then
-    echo "Project not initialized for trackdown use."
-    exit
-  fi
-  cp $DIR/trackdown-hook.sh .git/hooks/post-commit
-  chmod 755 .git/hooks/post-commit
+
 fi
 
 
 # sync command
 if [ "$CMD" = "sync" ] ; then
 
-  if [ ! -d .git ] ; then
-    echo "Not in a GIT repository. Exiting."
-    exit
-  fi
+  checkGit
 
   ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
   if [ -z "$ISSUES" ] ; then
@@ -264,10 +271,7 @@ fi
 # init command
 if [ "$CMD" = "init" ] ; then
 
-  if [ ! -d .git ] ; then
-    echo "Not in a GIT repository. Exiting."
-    exit
-  fi
+  checkGit
   if [ `git log|wc -l` = 0 ] ; then
     echo "GIT repository missing commits. Exiting."
     exit
@@ -289,75 +293,67 @@ fi
 
 # command for redmine to mirror the issue collection file from a json source to this tool
 if [ "$CMD" = "mirror" ] ; then
-
-  if [ ! -f .trackdown/config ] ; then
-    echo "TrackDown not set up. Start with use or redmine command..."
-    exit
-  fi
+ 
+  checkTrackdown
+  TYPE=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  bailOnZero "No mirror setup done for this repository." $TYPE
   if [ `jq 2>&1|wc -l` = 0 ] ; then
     echo "To use this functionality, jq must be installed."
     exit
   fi
-  EXPORT="/tmp/issues.json"
-  URL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
-  if [ -z "$URL" ] ; then
-    echo "No redmine source url configured. Did you setup redmine mirroring?"
-    exit
-  fi
-  KEY=`grep redmine.key= .trackdown/config|cut -d '=' -f 2`
-  if [ -z "$KEY" ] ; then
-    echo "No redmine api key configured. Did you setup redmine mirroring?"
-    exit
-  fi
-  PROJECT=`grep redmine.project= .trackdown/config|cut -d '=' -f 2`
-  if [ -z "$PROJECT" ] ; then
-    echo "No redmine project. Did you setup redmine mirroring?"
-    exit
-  fi
-  URL="${URL}/projects/$PROJECT/issues.json"
-  curl -H "X-Redmine-API-Key: $KEY" $URL >$EXPORT
-  if [ ! -f $EXPORT ] ; then
-    echo "JSON export file $EXPORT not found. Export seemed to have failed..."
-    exit
-  fi
-  if [ -z "$ISSUES" ] ; then
-    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
-  fi
-  jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >$ISSUES
-  for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
-    echo "" >>$ISSUES
-    echo "" >>$ISSUES
-    SUBJECT=`jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g'`
-    STATUS=`jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
-    s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
-    echo "## $id $SUBJECT ($s)" >>$ISSUES
-    echo "" >>$ISSUES
-    VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/.*name...\(.*\)"./*\1*/g'`
-    ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
-    echo -n "${VERSION}"  >>$ISSUES
-    if [ "$ASSIGNEE" != "null" ] ; then
-      echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+  if [ $TYPE = "redmine" ] ; then
+    EXPORT="/tmp/issues.json"
+    URL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $URL
+    KEY=`grep redmine.key= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No redmine api key configured. Did you setup redmine mirroring?" $KEY
+    PROJECT=`grep redmine.project= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No redmine project. Did you setup redmine mirroring?" $PROJECT
+    URL="${URL}/projects/$PROJECT/issues.json"
+    curl -H "X-Redmine-API-Key: $KEY" $URL >$EXPORT
+    if [ ! -f $EXPORT ] ; then
+      echo "JSON export file $EXPORT not found. Export seemed to have failed..."
+      exit
     fi
-    echo "" >>$ISSUES
-    echo "" >>$ISSUES
-    echo "### Description" >>$ISSUES
-    echo "" >>$ISSUES
-    AUTHOR=`jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
-    if [ "$AUTHOR" != "null" ] ; then
-      echo "Author: \`$AUTHOR\`" >>$ISSUES
+    if [ -z "$ISSUES" ] ; then
+      ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+    fi
+    jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >$ISSUES
+    for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
-    fi
-    jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
-      |sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
-      |sed -e 's/\&ouml;/ö/g'|sed -e 's/\&Ouml;/Ö/g' \
-      |sed -e 's/\&auml;/ä/g'|sed -e 's/\&Auml;/Ä/g' \
-      |sed -e 's/\&uuml;/ü/g'|sed -e 's/\&Uuml;/Ü/g' \
-      |sed -e 's/\&quot;/"/g'|sed -e 's/\&szlig;/ß/g' \
-      |sed -e 's/<strong>//g'|sed -e 's/<\/strong>//g' \
-      |sed -e 's/<h3>/\`/g'|sed -e 's/<\/h3>/\`/g' \
-      |sed -e 's/<p>//g'|sed -e 's/<\/p>//g' >>$ISSUES
-  done
-  rm $EXPORT
+      echo "" >>$ISSUES
+      SUBJECT=`jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g'`
+      STATUS=`jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
+      s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
+      echo "## $id $SUBJECT ($s)" >>$ISSUES
+      echo "" >>$ISSUES
+      VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/.*name...\(.*\)"./*\1*/g'`
+      ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
+      echo -n "${VERSION}"  >>$ISSUES
+      if [ "$ASSIGNEE" != "null" ] ; then
+        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+      fi
+      echo "" >>$ISSUES
+      echo "" >>$ISSUES
+      echo "### Description" >>$ISSUES
+      echo "" >>$ISSUES
+      AUTHOR=`jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
+      if [ "$AUTHOR" != "null" ] ; then
+        echo "Author: \`$AUTHOR\`" >>$ISSUES
+        echo "" >>$ISSUES
+      fi
+      jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
+        |sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
+        |sed -e 's/\&ouml;/ö/g'|sed -e 's/\&Ouml;/Ö/g' \
+        |sed -e 's/\&auml;/ä/g'|sed -e 's/\&Auml;/Ä/g' \
+        |sed -e 's/\&uuml;/ü/g'|sed -e 's/\&Uuml;/Ü/g' \
+        |sed -e 's/\&quot;/"/g'|sed -e 's/\&szlig;/ß/g' \
+        |sed -e 's/<strong>//g'|sed -e 's/<\/strong>//g' \
+        |sed -e 's/<h3>/\`/g'|sed -e 's/<\/h3>/\`/g' \
+        |sed -e 's/<p>//g'|sed -e 's/<\/p>//g' >>$ISSUES
+    done
+    rm $EXPORT
+  fi
   RMDIR=`dirname $ISSUES`
   $0 roadmap >$RMDIR/roadmap.md
   
@@ -367,44 +363,37 @@ fi
 # remote command to issue commands on mirror sources
 if [ "$CMD" = "remote" ] ; then
 
-  if [ ! -f .trackdown/config ] ; then
-    echo "TrackDown not set up. Start with use or redmine command..."
-    exit
-  fi
-  URL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
-  if [ -z "$URL" ] ; then
-    echo "No redmine source url configured. Did you setup redmine mirroring?"
-    exit
-  fi
-  KEY=`grep redmine.key= .trackdown/config|cut -d '=' -f 2`
-  if [ -z "$KEY" ] ; then
-    echo "No redmine api key configured. Did you setup redmine mirroring?"
-    exit
-  fi
+  checkTrackdown
+  TYPE=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  bailOnZero "No mirror setup done for this repository." $TYPE
   REMOTE=$2
-  bailOnZero $REMOTE "X No remote command given as the second parameter"
-  if [ -z $REMOTE ] ; then
-    echo "No remote command given as the second parameter"
-    exit
-  fi
+  bailOnZero "No remote command given as the second parameter" $REMOTE
   echo "Remote command: $REMOTE"
   ISSUE=$3
-  if [ -z $ISSUE ] ; then
-    echo "No target issue to operate on given as the third parameter"
-    exit
-  fi
+  bailOnZero "No target issue to operate on given as the third parameter" $ISSUE
   echo "Target issue: $ISSUE"
   PARAM=$4
-  if [ -z "$PARAM" ] ; then
-    echo "No parameter for the remote operation given as the forth parameter"
-    exit
-  fi
+  bailOnZero "No parameter for the remote operation given as the forth parameter" $PARAM
   echo "Parameter: $PARAM"
-  if [ "$REMOTE" = "comment" ] ; then
-    echo "Adding comment \"$PARAM\" to $ISSUE"
-    curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
-         -d "{\"issue\":{\"notes\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
+  if [ "$TYPE" = "redmine" ] ; then
+    URL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $URL
+    KEY=`grep redmine.key= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No redmine api key configured. Did you setup redmine mirroring?" $KEY
+    if [ "$REMOTE" = "comment" ] ; then
+      echo "Adding comment \"$PARAM\" to $ISSUE"
+      curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
+           -d "{\"issue\":{\"notes\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
+      exit
+    fi
+    if [ "$REMOTE" = "assign" ] ; then
+      echo "Assigning $ISSUE to user $PARAM"
+      curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
+           -d "{\"issue\":{\"assigned_to_id\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
+      exit
+    fi
   fi
+  echo "Unknown remote command $REMOTE for mirror source of type $MIRROR"
 
 fi
 
@@ -416,30 +405,15 @@ if [ "$CMD" = "redmine" ] ; then
     echo "To use this functionality, jq must be installed."
     exit
   fi
-  if [ -z "$2" ] ; then
-    ISSUES="issues.json"
-  fi
-  if [ -z $2 ] ; then
-    echo "No api key given as the first parameter"
-    exit
-  fi
-  if [ -z $3 ] ; then
-    echo "No project name given as the second parameter"
-    exit
-  fi
-  if [ -z $4 ] ; then
-    echo "No redmine instance base url given as the third parameter"
-    exit
-  fi
+  bailOnZero "No api key given as the first parameter" $2
+  bailOnZero "No project name given as the second parameter" $3
+  bailOnZero "No redmine instance base url given as the third parameter" $4
   echo "Setting up TrackDown to mirror from $3 on $4"
   if [ ! -d .trackdown ] ; then
     mkdir .trackdown
   fi
   MIRROR=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
-  if [ ! -z "$MIRROR" ] ; then
-    echo "Mirror setup already done in this repository with type $MIRROR."
-    exit
-  fi
+  bailOnZero "Mirror setup already done in this repository with type $MIRROR." $MIRROR
   echo "autocommit=false" > .trackdown/config
   echo "autopush=false" >>  .trackdown/config
   echo "location=redmine-issues.md" >>  .trackdown/config
