@@ -580,6 +580,10 @@ project history.
 
     refs #REDMINE mirror shoud overwrite issue collection and no always append
 
+ Martin Goellnitz  / Sun Nov 13 12:21:00 2016 [a82c03fdf6356ef4079446fe7f3d75cae80124d7](https://github.com/mgoellnitz/trackdown/commit/a82c03fdf6356ef4079446fe7f3d75cae80124d7)
+
+    refs #REDMINE mirror command should be named mirror and the old sync command keep that name
+
 ## COPY release notes.
 
 *1.0*

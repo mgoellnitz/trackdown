@@ -287,8 +287,21 @@ if [ "$CMD" = "mirror" ] ; then
     s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
     echo "## $id $SUBJECT ($s)" >>$ISSUES
     echo "" >>$ISSUES
-    jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/.*name...\(.*\)"./*\1*/g' >>$ISSUES
+    VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/.*name...\(.*\)"./*\1*/g'`
+    ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
+    echo -n "${VERSION}"  >>$ISSUES
+    if [ "$ASSIGNEE" != "null" ] ; then
+      echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+    fi
     echo "" >>$ISSUES
+    echo "" >>$ISSUES
+    echo "### Description" >>$ISSUES
+    echo "" >>$ISSUES
+    AUTHOR=`jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
+    if [ "$AUTHOR" != "null" ] ; then
+      echo "Author: \`$AUTHOR\`" >>$ISSUES
+      echo "" >>$ISSUES
+    fi
     jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
       |sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
       |sed -e 's/\&ouml;/ö/g'|sed -e 's/\&Ouml;/Ö/g' \
@@ -296,7 +309,7 @@ if [ "$CMD" = "mirror" ] ; then
       |sed -e 's/\&uuml;/ü/g'|sed -e 's/\&Uuml;/Ü/g' \
       |sed -e 's/\&quot;/"/g'|sed -e 's/\&szlig;/ß/g' \
       |sed -e 's/<strong>//g'|sed -e 's/<\/strong>//g' \
-      |sed -e 's/<h3>/### /g'|sed -e 's/<\/h3>//g' \
+      |sed -e 's/<h3>/\`/g'|sed -e 's/<\/h3>/\`/g' \
       |sed -e 's/<p>//g'|sed -e 's/<\/p>//g' >>$ISSUES
   done
   rm $EXPORT
