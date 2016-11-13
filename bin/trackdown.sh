@@ -364,7 +364,7 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep gitlab.project= .trackdown/config|cut -d '=' -f 2`
     bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
     URL="${URL}/api/v3/projects/$PROJECT/issues"
-    # curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
+    curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
     if [ ! -f $EXPORT ] ; then
       echo "JSON export file $EXPORT not found. Export seemed to have failed..."
       exit
@@ -401,7 +401,7 @@ if [ "$CMD" = "mirror" ] ; then
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g' >>$ISSUES
       fi
     done
-    # rm -f $EXPORT
+    rm -f $EXPORT
   fi
 
   RMDIR=`dirname $ISSUES`
