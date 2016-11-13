@@ -35,9 +35,6 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME issues [collections file]"
   echo "  list all potential issues"
   echo ""
-  echo "$MYNAME push"
-  echo "  directly push issues GIT to upstream (rarely usefull)"
-  echo ""
   echo "$MYNAME use [collections file]"
   echo "  setup clone for issue tracking (optional with non default file)"
   echo ""
@@ -47,11 +44,14 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME init"
   echo "  init issue tracking within GIT branch"
   echo ""
-  echo "$MYNAME sync"
+  echo "$MYNAME mirror"
   echo "  sync with reviously setup tracking master (redmine - needs jq)"
   echo ""
   echo "$MYNAME redmine k u"
   echo "  setup redmine mirroring with given apikey k and issues json url u (needs jq)"
+  echo ""
+  echo "$MYNAME sync"
+  echo "  directly push issues GIT to upstream (rarely usefull)"
 
 fi
 
@@ -201,7 +201,7 @@ fi
 
 
 # sync command
-if [ "$CMD" = "push" ] ; then
+if [ "$CMD" = "sync" ] ; then
 
   if [ ! -d .git ] ; then
     echo "Not in a GIT repository. Exiting."
@@ -252,8 +252,8 @@ if [ "$CMD" = "init" ] ; then
 
 fi
 
-# sync command for redmine to read json issues export and produce issue collection file
-if [ "$CMD" = "sync" ] ; then
+# command for redmine to mirror the issue collection file from a json source to this tool
+if [ "$CMD" = "mirror" ] ; then
 
   if [ `jq 2>&1|wc -l` = 0 ] ; then
     echo "To use this functionality, jq must be installed."

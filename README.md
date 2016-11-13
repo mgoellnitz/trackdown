@@ -514,6 +514,14 @@ connection.
 trackdown.sh redmine apikey12345 https://my.redmine.host/projects/projectname/issues.json
 ```
 
+Afterwards anytime you can connect to the redmine system collect the current
+mirror state to you local issue collection file and the roadmap.
+
+```
+trackdown.sh mirror
+```
+
+
 ### Migration
 
 When you think this information mirrored right now is sufficient to cut the ties,
@@ -567,6 +575,10 @@ project history.
  Martin Goellnitz  / Sun Nov 13 01:22:34 2016 [dcf643bf7b21300561013b6cd5fbf202a0567009](https://github.com/mgoellnitz/trackdown/commit/dcf643bf7b21300561013b6cd5fbf202a0567009)
 
     refs #REDMINE mirroring started
+
+ Martin Goellnitz  / Sun Nov 13 02:48:36 2016 [7211c3ce7b6f7bed464fa6c866239b5ced3bd4e2](https://github.com/mgoellnitz/trackdown/commit/7211c3ce7b6f7bed464fa6c866239b5ced3bd4e2)
+
+    refs #REDMINE mirror shoud overwrite issue collection and no always append
 
 ## COPY release notes.
 
