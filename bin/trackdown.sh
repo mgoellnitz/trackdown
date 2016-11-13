@@ -278,7 +278,7 @@ if [ "$CMD" = "sync" ] ; then
   if [ -z "$ISSUES" ] ; then
     ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
   fi
-  jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >>$ISSUES
+  jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >$ISSUES
   for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
     echo "" >>$ISSUES
     echo "" >>$ISSUES
