@@ -459,7 +459,7 @@ if [ "$CMD" = "mirror" ] ; then
       DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.body' $EXPORT`
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
-        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g' >>$ISSUES
+        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g' >>$ISSUES
       fi
     done
     rm -f $EXPORT
