@@ -30,7 +30,7 @@ function roadmap {
     echo "$[$RESOLVED * 100 / $TOTAL]% ($RESOLVED / $TOTAL) completed" >> $ROADMAP
     echo "$[$PROGRESS * 100 / $TOTAL]% ($PROGRESS / $TOTAL) in progress" >> $ROADMAP
     echo "" >> $ROADMAP
-    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g' >> $ROADMAP
+    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'|awk '{print $NF,$0}'| sort | cut -f2- -d' ' >> $ROADMAP
     echo "" >> $ROADMAP
   done
 }
