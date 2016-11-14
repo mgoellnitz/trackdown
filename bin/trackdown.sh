@@ -349,7 +349,8 @@ if [ "$CMD" = "mirror" ] ; then
         echo "" >>$ISSUES
       fi
       jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
-        |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
+        |sed -e 's/"//g'|sed -e 's/\\t//g' \
+        |sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
         |sed -e 's/\&ouml;/ö/g'|sed -e 's/\&Ouml;/Ö/g' \
         |sed -e 's/\&auml;/ä/g'|sed -e 's/\&Auml;/Ä/g' \
         |sed -e 's/\&uuml;/ü/g'|sed -e 's/\&Uuml;/Ü/g' \
@@ -388,7 +389,7 @@ if [ "$CMD" = "mirror" ] ; then
       s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g'`
       MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone' $EXPORT|sed -e 's/null/No Milestone/g'|sed -e 's/.*title...\([a-zA-Z0-9\ _]*\).*"./\1/g'`
       ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g'`
-      echo "## $IID $TITLE - $id ($s)"  >>$ISSUES
+      echo "## $IID $TITLE ($s)"  >>$ISSUES
       echo "" >>$ISSUES
       echo -n "*${MILESTONE}*"  >>$ISSUES
       LABELS=`jq  -c '.[]|select(.id == '$id')|.labels' $EXPORT`
@@ -400,10 +401,11 @@ if [ "$CMD" = "mirror" ] ; then
       fi
       echo "" >>$ISSUES
       AUTHOR=`jq  -c '.[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)","username.*/\1/g'`
+      echo "" >>$ISSUES
       if [ "$AUTHOR" != "null" ] ; then
-        echo "" >>$ISSUES
-        echo "Author: \`$AUTHOR\`" >>$ISSUES
+        echo -n "Author: \`$AUTHOR\` " >>$ISSUES
       fi
+      echo "GitLab ID $id" >>$ISSUES
       DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.description' $EXPORT`
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
@@ -441,7 +443,7 @@ if [ "$CMD" = "mirror" ] ; then
       MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone' $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
       ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g'`
       LABELS=`jq  -c '.[]|select(.id == '$id')|.labels' $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g'`
-      echo "## $IID $TITLE - $id ($s)"  >>$ISSUES
+      echo "## $IID $TITLE ($s)"  >>$ISSUES
       echo "" >>$ISSUES
       echo -n "*${MILESTONE}*"  >>$ISSUES
       if [ ! "$LABELS" = "[]" ] ; then
@@ -452,10 +454,11 @@ if [ "$CMD" = "mirror" ] ; then
       fi
       echo "" >>$ISSUES
       AUTHOR=`jq  -c '.[]|select(.id == '$id')|.user' $EXPORT|sed -e 's/.*login...\(.*\)","id.*/\1/g'`
+      echo "" >>$ISSUES
       if [ "$AUTHOR" != "null" ] ; then
-        echo "" >>$ISSUES
-        echo "Author: \`$AUTHOR\`" >>$ISSUES
+        echo -n "Author: \`$AUTHOR\` " >>$ISSUES
       fi
+      echo "GitHub ID $id" >>$ISSUES
       DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.body' $EXPORT`
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
@@ -479,13 +482,13 @@ if [ "$CMD" = "remote" ] ; then
   bailOnZero "No mirror setup done for this repository." $TYPE
   REMOTE=$2
   bailOnZero "No remote command given as the second parameter" $REMOTE
-  echo "Remote command: $REMOTE"
+  # echo "Remote command: $REMOTE"
   ISSUE=$3
   bailOnZero "No target issue to operate on given as the third parameter" $ISSUE
-  echo "Target issue: $ISSUE"
+  # echo "Target issue: $ISSUE"
   PARAM=$4
   bailOnZero "No parameter for the remote operation given as the forth parameter" $PARAM
-  echo "Parameter: $PARAM"
+  # echo "Parameter: $PARAM"
   if [ "$TYPE" = "redmine" ] ; then
     URL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
     bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $URL
@@ -518,7 +521,7 @@ if [ "$CMD" = "remote" ] ; then
       exit
     fi
   fi
-  echo "Unknown remote command $REMOTE for mirror source of type $MIRROR"
+  echo "Unknown remote command \"$REMOTE\" for mirror source of type \"$TYPE\""
 
 fi
 
