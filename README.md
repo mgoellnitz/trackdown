@@ -523,7 +523,10 @@ backup wiki and source code.
 
 ## Unmaintained related Projects
 
+These seem to address similar issues, but are not under active development
+
  - https://github.com/glogiotatidis/gitissius
+ - https://github.com/keredson/distributed-issue-tracker
 
 
 # Migration
@@ -674,12 +677,16 @@ I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
 
-## GITHUB offline mirror
+## GITHUB offline mirror (in progress)
 
 *nth*
 
 Trackdown should be capable of translating [GitHub][github] JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.
+
+ Martin Goellnitz  / Sun Nov 13 21:19:35 2016 [35a52a9d751029ac5cbc3730ea28a3fc682663ce](https://github.com/mgoellnitz/trackdown/commit/35a52a9d751029ac5cbc3730ea28a3fc682663ce)
+
+    refs #GITHUB mirroring in its first incarnation of yet another mirror type
 
 ## GITLAB offline mirror (in progress)
 
