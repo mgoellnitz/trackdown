@@ -391,6 +391,10 @@ if [ "$CMD" = "mirror" ] ; then
       echo "## $IID $TITLE - $id ($s)"  >>$ISSUES
       echo "" >>$ISSUES
       echo -n "*${MILESTONE}*"  >>$ISSUES
+      LABELS=`jq  -c '.[]|select(.id == '$id')|.labels' $EXPORT`
+      if [ ! "$LABELS" = "[]" ] ; then
+        echo -n " $LABELS"|sed -e 's/"/\`/g'|sed -e 's/,/][/g' >>$ISSUES
+      fi
       if [ "$ASSIGNEE" != "null" ] ; then
         echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
       fi
@@ -436,9 +440,13 @@ if [ "$CMD" = "mirror" ] ; then
       s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
       MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone' $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
       ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g'`
+      LABELS=`jq  -c '.[]|select(.id == '$id')|.labels' $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g'`
       echo "## $IID $TITLE - $id ($s)"  >>$ISSUES
       echo "" >>$ISSUES
       echo -n "*${MILESTONE}*"  >>$ISSUES
+      if [ ! "$LABELS" = "[]" ] ; then
+        echo -n " $LABELS" >>$ISSUES
+      fi
       if [ "$ASSIGNEE" != "null" ] ; then
         echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
       fi
