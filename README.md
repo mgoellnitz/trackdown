@@ -521,6 +521,25 @@ the project VCS and source code repositories. This is not the case for the
 [GIT][git] based solutions in this list, which have a remote repository as a 
 backup wiki and source code.
 
+## MDWiki
+
+Unlike [Blogdown](https://github.com/gernest/blogdown) where you again start
+a server - but this time on localhost, [MDWiki][mdwiki] just runs in your
+browser to view Markdown files nicely formatted locally.
+
+```
+file:///home/me/somewhere/thats/green/repo/wiki.html#!issues.md
+file:///home/me/somewhere/thats/green/repo/wiki.html#!roadmap.md
+```
+
+The output of Trackdown looks pretty usable in this setup and gives a good
+overview of the issues as the roadmap.
+
+When you also use GitLab, GitHub, or Bitbucket Wikis, [MDWiki][mdwiki] has
+a different understanding, how links should be interpreted. TO get a fully
+compatible local and remote viewing setup for these cases, a patched
+version of [MDWiki][mdwiki] [exists on GitHub](https://github.com/mgoellnitz/mdwiki/).
+
 ## Unmaintained related Projects
 
 These seem to address similar issues, but are not under active development
@@ -873,3 +892,4 @@ Right now we only support the extraction of one issues ID per [GIT][git] commit.
 [github]: https://github.com/
 [jgit]: https://eclipse.org/jgit/
 [redmine]: http://www.redmine.org/
+[mdwiki]: http://mdwiki.info
