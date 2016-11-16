@@ -141,6 +141,9 @@ if [ "$CMD" = "roadmap" ] ; then
   fi
   echo "# Roadmap"
   echo ""
+  IC=`basename $ISSUES .md`
+  echo "[Issue Collection]($IC)"
+  echo ""
   for rr in `grep "^\*[A-Za-z0-9][A-Za-z0-9\._\ ]*\*" $ISSUES|cut -d '*' -f 2|sort|uniq|sed -e 's/\ /__/g'` ; do
     r=`echo $rr|sed -e 's/__/ /g'`
     TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
@@ -325,6 +328,9 @@ if [ "$CMD" = "mirror" ] ; then
       ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
     fi
     jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >$ISSUES
+    echo "" >>$ISSUES
+    echo "" >>$ISSUES
+    echo "[Roadmap](roadmap)" >>$ISSUES
     for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
@@ -380,6 +386,9 @@ if [ "$CMD" = "mirror" ] ; then
       ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
     fi
     echo "# Issues" >$ISSUES
+    echo "" >>$ISSUES
+    echo "" >>$ISSUES
+    echo "[Roadmap](roadmap)" >>$ISSUES
     for id in `jq  -c '.[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
@@ -433,6 +442,9 @@ if [ "$CMD" = "mirror" ] ; then
       ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
     fi
     echo "# Issues" >$ISSUES
+    echo "" >>$ISSUES
+    echo "" >>$ISSUES
+    echo "[Roadmap](roadmap)" >>$ISSUES
     for id in `jq  -c '.[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
