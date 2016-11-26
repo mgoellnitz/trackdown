@@ -433,9 +433,14 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep github.project= .trackdown/config|cut -d '=' -f 2`
     bailOnZero "No gihub project. Did you setup github mirroring?" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues?state=all"
-    curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
+    curl -H "Authorization: token $TOKEN" $URL >$EXPORT
     if [ ! -f $EXPORT ] ; then
       echo "JSON export file $EXPORT not found. Export seemed to have failed..."
+      exit
+    fi
+    RESULT=`jq '.message?' $EXPORT`
+    if [ ! -z "$RESULT" ] ; then
+      echo "Cannot mirror issues for github project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
     if [ -z "$ISSUES" ] ; then
