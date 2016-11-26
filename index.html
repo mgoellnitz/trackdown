@@ -556,10 +556,32 @@ the project VCS and source code repositories. This is not the case for the
 backup wiki and source code.</p>
 
 <h2>
+<a id="mdwiki" class="anchor" href="#mdwiki" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>MDWiki</h2>
+
+<p>Unlike <a href="https://github.com/gernest/blogdown">Blogdown</a> where you again start
+a server - but this time on localhost, <a href="http://mdwiki.info">MDWiki</a> just runs in your
+browser to view Markdown files nicely formatted locally.</p>
+
+<pre><code>file:///home/me/somewhere/thats/green/repo/wiki.html#!issues.md
+file:///home/me/somewhere/thats/green/repo/wiki.html#!roadmap.md
+</code></pre>
+
+<p>The output of Trackdown looks pretty usable in this setup and gives a good
+overview of the issues as the roadmap.</p>
+
+<p>When you also use GitLab, GitHub, or Bitbucket Wikis, <a href="http://mdwiki.info">MDWiki</a> has
+a different understanding, how links should be interpreted. TO get a fully
+compatible local and remote viewing setup for these cases, a patched
+version of <a href="http://mdwiki.info">MDWiki</a> <a href="https://github.com/mgoellnitz/mdwiki/">exists on GitHub</a>.</p>
+
+<h2>
 <a id="unmaintained-related-projects" class="anchor" href="#unmaintained-related-projects" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Unmaintained related Projects</h2>
+
+<p>These seem to address similar issues, but are not under active development</p>
 
 <ul>
 <li><a href="https://github.com/glogiotatidis/gitissius">https://github.com/glogiotatidis/gitissius</a></li>
+<li><a href="https://github.com/keredson/distributed-issue-tracker">https://github.com/keredson/distributed-issue-tracker</a></li>
 </ul>
 
 <h1>
@@ -568,6 +590,60 @@ backup wiki and source code.</p>
 <p>To facilitate the use of TrackDown the option of migrating an existing base
 of tickets is of course helpful. The choice, which systems are taken as a
 data source for such a migration is driven by personal needs.</p>
+
+<h2>
+<a id="github-offline-mirror" class="anchor" href="#github-offline-mirror" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GitHub Offline Mirror</h2>
+
+<p>For disconnected situations which TrackDown is supposed to support, it is
+possible to connect a workspace to its <a href="https://github.com/">GitHub</a> issue tracker and
+mirror tickets for offline use.</p>
+
+<p>It is not intended for changeing the issues in the issue collection file.</p>
+
+<p>Instead of <code>trackdown.sh use</code> issue <code>trackdown.sh github</code> to setup the mirror
+connection.</p>
+
+<pre><code>trackdown.sh gihthub &lt;apitoken&gt; &lt;projectname&gt; &lt;owner&gt;
+</code></pre>
+
+<p>Afterwards anytime you can connect to the <a href="https://github.com/">GitHub</a> system, collect the 
+current mirror state to you local issue collection file and the roadmap.</p>
+
+<pre><code>trackdown.sh mirror
+</code></pre>
+
+<h2>
+<a id="gitlab-offline-mirror" class="anchor" href="#gitlab-offline-mirror" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GitLab Offline Mirror</h2>
+
+<p>For disconnected situations which TrackDown is supposed to support, it is
+possible to connect a workspace to its <a href="https://gitlab.com/">GitLab</a> issue tracker and
+mirror tickets for offline use.</p>
+
+<p>It is not intended for changeing the issues in the issue collection file.</p>
+
+<p>Instead of <code>trackdown.sh use</code> issue <code>trackdown.sh gitlab</code> to setup the mirror
+connection.</p>
+
+<pre><code>trackdown.sh gitlab &lt;apitoken&gt; &lt;projectname&gt; https://&lt;gitlab.host&gt;/
+</code></pre>
+
+<p>Afterwards anytime you can connect to the <a href="https://gitlab.com/">GitLab</a> system, collect the 
+current mirror state to you local issue collection file and the roadmap.</p>
+
+<pre><code>trackdown.sh mirror
+</code></pre>
+
+<p>Additionally - since you now are on your command line and perhaps don't want
+to switch windows evey second - there is a <code>remote</code> command to issue commands
+on the remote mirroring source system.</p>
+
+<pre><code>trackdown.sh remote assign 68 XYZ
+Assigning XYZ to user 68 
+</code></pre>
+
+<p>You have to provide the issues <em>real</em> id - not the short one - and the id of
+the user, which is also always exported to the issue collection file to 
+facility this.</p>
 
 <h2>
 <a id="redmine" class="anchor" href="#redmine" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Redmine</h2>
@@ -596,8 +672,8 @@ connection.</p>
 <pre><code>trackdown.sh redmine &lt;apikey&gt; &lt;projectname&gt; https://&lt;redmine.host&gt;/
 </code></pre>
 
-<p>Afterwards anytime you can connect to the redmine system collect the current
-mirror state to you local issue collection file and the roadmap.</p>
+<p>Afterwards anytime you can connect to the <a href="http://www.redmine.org/">Redmine</a> system, collect the 
+current mirror state to you local issue collection file and the roadmap.</p>
 
 <pre><code>trackdown.sh mirror
 </code></pre>
@@ -613,6 +689,9 @@ Adding comment "Hi there." to XYZ
 <pre><code>trackdown.sh remote assign 68 XYZ
 Assigning XYZ to user 68 
 </code></pre>
+
+<p>You have to provide the id of the user - not its name, which is also always 
+exported to the issue collection file to  facility this.</p>
 
 <h3>
 <a id="migration-1" class="anchor" href="#migration-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Migration</h3>
@@ -653,17 +732,58 @@ and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.</p>
 
 <h2>
+<a id="github-offline-mirror-in-progress" class="anchor" href="#github-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GITHUB offline mirror (in progress)</h2>
+
+<p><em>nth</em></p>
+
+<p>Trackdown should be capable of translating <a href="https://github.com/">GitHub</a> JSON exports of 
+tickets to the special markdown format given here as a mirror for offline use.</p>
+
+<p>Martin Goellnitz  / Sun Nov 13 21:19:35 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/35a52a9d751029ac5cbc3730ea28a3fc682663ce">35a52a9d751029ac5cbc3730ea28a3fc682663ce</a></p>
+
+<pre><code>refs #GITHUB mirroring in its first incarnation of yet another mirror type
+</code></pre>
+
+<h2>
+<a id="gitlab-offline-mirror-in-progress" class="anchor" href="#gitlab-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GITLAB offline mirror (in progress)</h2>
+
+<p><em>nth</em></p>
+
+<p>Trackdown should be capable of translating <a href="https://gitlab.com/">GitLab</a> JSON exports of 
+tickets to the special markdown format given here as a mirror for offline use.</p>
+
+<p>Martin Goellnitz  / Sun Nov 13 19:10:27 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/29eb793d1caa2e42c1f120aa31e7ceb27929ca6b">29eb793d1caa2e42c1f120aa31e7ceb27929ca6b</a></p>
+
+<pre><code>refs #GITLAB mirror in its first incarnation as another mirror type
+</code></pre>
+
+<p>Martin Goellnitz  / Sun Nov 13 19:11:43 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/d239356055272bdd0af6cad32925bb259785717d">d239356055272bdd0af6cad32925bb259785717d</a></p>
+
+<pre><code>refs #GITLAB offline testing was still in place
+</code></pre>
+
+<p>Martin Goellnitz  / Sun Nov 13 19:29:46 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/4940d3cf9d3182d0fe591ea82ea94d0651703ffd">4940d3cf9d3182d0fe591ea82ea94d0651703ffd</a></p>
+
+<pre><code>refs #GITLAB remote command to assign tickets added
+</code></pre>
+
+<p>Martin Goellnitz  / Sun Nov 13 19:52:31 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/34e0dcec0c72fc0fafe0887a966e392163d6df44">34e0dcec0c72fc0fafe0887a966e392163d6df44</a></p>
+
+<pre><code>refs #GITLAB issues exports should at least be usable up to 100 issues
+</code></pre>
+
+<h2>
 <a id="redmine-offline-mirror-in-progress" class="anchor" href="#redmine-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>REDMINE offline mirror (in progress)</h2>
 
 <p><em>nth</em></p>
 
-<p>For how historical reasons I have projects with redmine ticket in use and with
-still relevant tickets. Some of them might even be a candidate to migrate to
-Trackdown for others it might be sufficient to get a current offline mirror
-when the repository is not available.</p>
+<p>For how historical reasons I have projects with <a href="http://www.redmine.org/">Redmine</a> ticketing in 
+use and with still relevant tickets. Some of them might even be a candidate to 
+migrate to Trackdown for others it might be sufficient to get a current offline 
+mirror when the repository is not available.</p>
 
-<p>Trackdown should be capable of translating redmine JSON exports of tickets to
-the special markdown format given here. </p>
+<p>Trackdown should be capable of translating <a href="http://www.redmine.org/">Redmine</a> JSON exports of 
+tickets to the special markdown format given here. </p>
 
 <p>For the mirror scenario, certain 
 limitations are acceptable, </p>
