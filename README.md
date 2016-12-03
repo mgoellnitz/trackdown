@@ -730,6 +730,15 @@ tickets to the special markdown format given here as a mirror for offline use.
 
     refs #GITLAB issues exports should at least be usable up to 100 issues
 
+## GOGS and gitea offline mirror
+
+*nth*
+
+Trackdown should be capable of translating [gogs][gogs] JSON exports of 
+tickets to the special markdown format given here as a mirror for offline use.
+This also adds [gitea][gitea] and has a public instance at [Pikacode][pikacode],
+which can be used as a default.
+
 ## REDMINE offline mirror (in progress)
 
 *nth*
@@ -892,4 +901,7 @@ Right now we only support the extraction of one issues ID per [GIT][git] commit.
 [github]: https://github.com/
 [jgit]: https://eclipse.org/jgit/
 [redmine]: http://www.redmine.org/
+[gogs]: https://gogs.io/
+[gitea]: https://gitea.io/
+[pikacode]: https://v2.pikacode.com/
 [mdwiki]: http://mdwiki.info

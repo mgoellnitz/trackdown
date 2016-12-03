@@ -73,7 +73,7 @@ if [ -z "$CMD" ] ; then
   echo "  init issue tracking within GIT branch"
   echo ""
   echo "$MYNAME mirror"
-  echo "  sync with reviously setup tracking master (redmine - needs jq)"
+  echo "  sync with reviously setup tracking master (gitlab, redmine, github, gogs, gitea, pikacode - needs jq)"
   echo ""
   echo "$MYNAME remote c i p"
   echo "  issue remote command c on issue i with parameter p on remote mirroring source system"
@@ -81,8 +81,11 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME github k p o"
   echo "  setup github mirroring project p of owner o with given apikey k(needs jq)"
   echo ""
-  echo "$MYNAME gitlab k p u"
-  echo "  setup gitlab mirroring project p with given apikey k and gitlab base url u (needs jq)"
+  echo "$MYNAME gitlab k p [u]"
+  echo "  setup gitlab mirroring project p with given apikey k and gitlab base url u (needs jq) - u defaults to gitlab.com"
+  echo ""
+  echo "$MYNAME gogs k p [u]"
+  echo "  setup gogs, gitea or pikacode mirroring project p with given apikey k and gitlab base url u (needs jq) - u defaults to pikacode"
   echo ""
   echo "$MYNAME redmine k p u"
   echo "  setup redmine mirroring project p with given apikey k and redmine base url u (needs jq)"
@@ -431,7 +434,7 @@ if [ "$CMD" = "mirror" ] ; then
     TOKEN=`grep github.key= .trackdown/config|cut -d '=' -f 2`
     bailOnZero "No github api token configured. Did you setup github mirroring?" $TOKEN
     PROJECT=`grep github.project= .trackdown/config|cut -d '=' -f 2`
-    bailOnZero "No gihub project. Did you setup github mirroring?" $PROJECT
+    bailOnZero "No github project. Did you setup github mirroring?" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues?state=all"
     curl -H "Authorization: token $TOKEN" $URL >$EXPORT
     if [ ! -f $EXPORT ] ; then
@@ -476,6 +479,67 @@ if [ "$CMD" = "mirror" ] ; then
         echo -n "Author: \`$AUTHOR\` " >>$ISSUES
       fi
       echo "GitHub ID $id" >>$ISSUES
+      DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.body' $EXPORT`
+      if [ "$DESCRIPTION" != "null" ] ; then
+        echo "" >>$ISSUES
+        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g' >>$ISSUES
+      fi
+    done
+    rm -f $EXPORT
+  fi
+
+  if [ $TYPE = "gogs" ] ; then
+    EXPORT="/tmp/issues.json"
+    URL=`grep gogs.url= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No gogs source url configured. Did you setup gogs mirroring?" $URL
+    TOKEN=`grep gogs.key= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No gogs api token configured. Did you setup github mirroring?" $TOKEN
+    PROJECT=`grep gogs.project= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No gogs/pikacode/gitea project. Did you setup gogs mirroring?" $PROJECT
+    URL="${URL}/api/v1/repos/${PROJECT}/issues?state=all"
+    curl -H "Authorization: token $TOKEN" $URL >$EXPORT
+    if [ ! -f $EXPORT ] ; then
+      echo "JSON export file $EXPORT not found. Export seemed to have failed..."
+      exit
+    fi
+    RESULT=`jq '.message?' $EXPORT`
+    if [ ! -z "$RESULT" ] ; then
+      echo "Cannot mirror issues for gogs project ${OWNER}/${PROJECT}: ${RESULT}"
+      exit
+    fi
+    if [ -z "$ISSUES" ] ; then
+      ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+    fi
+    echo "# Issues" >$ISSUES
+    echo "" >>$ISSUES
+    echo "" >>$ISSUES
+    echo "[Roadmap](roadmap)" >>$ISSUES
+    for id in `jq  -c '.[]|.id' $EXPORT` ; do
+      echo "" >>$ISSUES
+      echo "" >>$ISSUES
+      TITLE=`jq  -c '.[]|select(.id == '$id')|.title' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+      IID=`jq  -c '.[]|select(.id == '$id')|.number' $EXPORT|sed -e 's/"//g'`
+      STATE=`jq  -c '.[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
+      s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
+      MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone|.title' $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
+      ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee|.full_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      LABELS=`jq  -c '.[]|select(.id == '$id')|.labels' $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g'`
+      echo "## $IID $TITLE ($s)"  >>$ISSUES
+      echo "" >>$ISSUES
+      echo -n "*${MILESTONE}*"  >>$ISSUES
+      if [ ! "$LABELS" = "[]" ] ; then
+        echo -n " $LABELS" >>$ISSUES
+      fi
+      if [ "$ASSIGNEE" != "null" ] ; then
+        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+      fi
+      echo "" >>$ISSUES
+      AUTHOR=`jq  -c '.[]|select(.id == '$id')|.user|.full_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      echo "" >>$ISSUES
+      if [ "$AUTHOR" != "null" ] ; then
+        echo -n "Author: \`$AUTHOR\` " >>$ISSUES
+      fi
+      echo "Remote ID $id" >>$ISSUES
       DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.body' $EXPORT`
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
@@ -552,9 +616,9 @@ if [ "$CMD" = "gitlab" ] ; then
   fi
   bailOnZero "No api token given as the first parameter" $2
   bailOnZero "No project name given as the second parameter" $3
-  bailOnZero "No gitlab instance base url given as the third parameter" $4
-  PID=`curl --header "PRIVATE-TOKEN: $2" ${4}/api/v3/projects|jq '.[]|select(.name=="'$3'")|.id'`
-  echo "Setting up TrackDown to mirror from $3 ($PID) on $4"
+  URL=${4:-https://gitlab.com}
+  PID=`curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects|jq '.[]|select(.name=="'$3'")|.id'`
+  echo "Setting up TrackDown to mirror from $3 ($PID) on $URL"
   if [ ! -d .trackdown ] ; then
     mkdir .trackdown
     touch .trackdown/config
@@ -580,7 +644,7 @@ if [ "$CMD" = "gitlab" ] ; then
     echo "/roadmap.md" >> .gitignore
   fi
   echo "mirror.type=gitlab" >> .trackdown/config
-  echo "gitlab.url=$4" >> .trackdown/config
+  echo "gitlab.url=$URL" >> .trackdown/config
   echo "gitlab.project=$PID" >> .trackdown/config
   echo "gitlab.key=$2" >> .trackdown/config
 
@@ -669,5 +733,48 @@ if [ "$CMD" = "redmine" ] ; then
   echo "redmine.url=$4" >> .trackdown/config
   echo "redmine.project=$3" >> .trackdown/config
   echo "redmine.key=$2" >> .trackdown/config
+
+fi
+
+
+# gogs command to setup a gogs, gitea, or pikacode system as a remote mirror source
+if [ "$CMD" = "gogs" ] ; then
+
+  if [ `jq 2>&1|wc -l` = 0 ] ; then
+    echo "To use this functionality, jq must be installed."
+    exit
+  fi
+  bailOnZero "No api token given as the first parameter" $2
+  bailOnZero "No project name given as the second parameter" $3
+  URL=${4:-https://v2.pikacode.com}
+  echo "Setting up TrackDown to mirror from $3 on $URL"
+  if [ ! -d .trackdown ] ; then
+    mkdir .trackdown
+    touch .trackdown/config
+  fi
+  MIRROR=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  if [ ! -z $MIRROR ] ; then
+    echo "Mirror setup already done in this repository with type $MIRROR."
+    exit
+  fi
+  echo "autocommit=false" > .trackdown/config
+  echo "autopush=false" >>  .trackdown/config
+  echo "location=git-issues.md" >>  .trackdown/config
+  CHECK=`grep .trackdown .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/.trackdown" >> .gitignore
+  fi
+  CHECK=`grep redmine-issues.md .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/git-issues.md" >> .gitignore
+  fi
+  CHECK=`grep roadmap.md .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/roadmap.md" >> .gitignore
+  fi
+  echo "mirror.type=gogs" >> .trackdown/config
+  echo "gogs.url=$URL" >> .trackdown/config
+  echo "gogs.project=$3" >> .trackdown/config
+  echo "gogs.key=$2" >> .trackdown/config
 
 fi
