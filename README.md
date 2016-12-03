@@ -846,13 +846,17 @@ project history.
 
     refs #REDMINE mirror now extracts more details from the original tickets
 
-## BITBUCKET issue tracker offline mirror
+## BITBUCKET issue tracker offline mirror (in progress)
 
 *nth*
 
 Trackdown should be capable of translating [Bitbucket.org][bitbucket] JSON 
 exports of tickets to the special markdown format given here as a mirror for 
 offline use. 
+
+ Martin Goellnitz  / Sat Dec 3 13:05:30 2016 [53f1165e8e009ca843909c6d67daaabc7a318f6c](https://github.com/mgoellnitz/trackdown/commit/53f1165e8e009ca843909c6d67daaabc7a318f6c)
+
+    refs #BITBUCKET support started in a first basic version
 
 ## GOGS and gitea offline mirror (in progress)
 
