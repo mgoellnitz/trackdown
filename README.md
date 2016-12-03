@@ -494,6 +494,9 @@ So in this case it is possible to leave out the ticketing of [GitHub][github]
 and use TrackDown with [GitHub][github] as the [GIT][git] based 
 storage backend. And this is exactly what TrackDown was designed for.
 
+As an alternative you can at least mirror the issues from [GitHub][github] to
+have the notes with you and now the issue IDs for offline code commits.
+
 ## GitLab
 
 [GitLab][gitlab] not only is a good online solution but also is a piece of
@@ -506,6 +509,9 @@ The only thing I'm missing is the distributed offline work for ticketing.
 So in this case it is possible to leave out the ticketing of [GitLab][gitlab] 
 and use TrackDown with [GitLab][gitlab] as the [GIT][git] based 
 storage backend. And this is exactly what TrackDown was designed for.
+
+As an alternative you can at least mirror the issues from [GitLab][gitlab] to
+have the notes with you and now the issue IDs for offline code commits.
 
 ## Trac
 
@@ -550,7 +556,7 @@ These seem to address similar issues, but are not under active development
 
 # Migration
 
-To facilitate the use of TrackDown the option of migrating an existing base
+To facilitate the use of TrackDown, the option of migrating an existing base
 of tickets is of course helpful. The choice, which systems are taken as a
 data source for such a migration is driven by personal needs.
 
@@ -561,7 +567,10 @@ For disconnected situations which TrackDown is supposed to support, it is
 possible to connect a workspace to its [GitHub][github] issue tracker and
 mirror tickets for offline use.
 
-It is not intended for changeing the issues in the issue collection file.
+The mirror - of course - is not intended for changeing the issues in the issue 
+collection file. State changes will most likely be triggered on [GitHub][github] 
+by your commit messages or manually, after which a call of the mirroring script
+can be helpfull.
 
 Instead of `trackdown.sh use` issue `trackdown.sh github` to setup the mirror
 connection.
@@ -584,7 +593,10 @@ For disconnected situations which TrackDown is supposed to support, it is
 possible to connect a workspace to its [GitLab][gitlab] issue tracker and
 mirror tickets for offline use.
 
-It is not intended for changeing the issues in the issue collection file.
+The mirror - of course - is not intended for changeing the issues in the issue 
+collection file. State changes will most likely be triggered on [GitLab][gitlab] 
+by your commit messages or manually, after which a call of the mirroring script
+can be helpfull.
 
 Instead of `trackdown.sh use` issue `trackdown.sh gitlab` to setup the mirror
 connection.
@@ -625,7 +637,10 @@ tickets for offline use.
 This is supposed to work with [Pikacode](pikacode) as the available instance
 in the cloud and the community managed fork [Gitea][gitea].
 
-It is not intended for changeing the issues in the issue collection file.
+The mirror - of course - is not intended for changeing the issues in the issue 
+collection file. State changes will most likely be triggered on the [Gogs][gogs]
+instance in use  by your commit messages or manually, after which a call of the 
+mirroring script can be helpfull.
 
 Instead of `trackdown.sh use` issue `trackdown.sh gogs` to setup the mirror
 connection.
@@ -642,6 +657,42 @@ current mirror state to you local issue collection file and the roadmap.
 ```
 trackdown.sh mirror
 ```
+
+
+## Bitbucket.org Offline Mirror
+
+For disconnected situations which TrackDown is supposed to support, it is
+possible to connect a workspace to its [Bitbucket.org][bitbucket] issue 
+tracker and mirror tickets for offline use.
+
+Some of my stalled projects reside therer and I already did an export of the
+issue tracker contents, which [Bitbucket.org][bitbucket] support, and now added
+the offline mirror capabililties to this tool for smother migration away from
+the prorietary issue tracker.
+
+The mirror again is not intended for changeing the issues in the issue 
+collection file. State changes will most likely be triggered on 
+[Bitbucket.org][bitbucket] by your commit messages or manually, after which a 
+call of the mirroring script can be helpfull.
+
+Instead of `trackdown.sh use` issue `trackdown.sh github` to setup the mirror
+connection.
+
+```
+trackdown.sh bitbucket <projectname> <owner>
+```
+
+Afterwards anytime you can connect to the [Bitbucket.org][bitbucket] system, 
+collect the current mirror state to you local issue collection file and the 
+roadmap.
+
+```
+trackdown.sh mirror
+```
+
+In the case of [Bitbucket.org][bitbucket], the mirror script has to ask for
+you password on bitbucket, since the are no secure API tokens available as far
+as I know.
 
 
 ## Redmine
@@ -698,11 +749,11 @@ exported to the issue collection file to  facility this.
 ### Migration
 
 When you think this information mirrored right now is sufficient to cut the ties,
-you can setup the created issues collection and roadmap as the repository
-and do a `trackdown.sh use`.
+you can setup the created issue collection and roadmap as the repository and do 
+a `trackdown.sh use`.
 
-The full migration is not covered by a command yet and setting up mirrored
-data in the special TrackDown branch must be accomplished manually.
+The full migration is not covered by a command yet and setting up mirrored data 
+in the special TrackDown branch must be accomplished manually.
 
 
 # Issues
@@ -725,17 +776,6 @@ ones we  use here.
 I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
-
-## GITHUB offline mirror (in progress)
-
-*nth*
-
-Trackdown should be capable of translating [GitHub][github] JSON exports of 
-tickets to the special markdown format given here as a mirror for offline use.
-
- Martin Goellnitz  / Sun Nov 13 21:19:35 2016 [35a52a9d751029ac5cbc3730ea28a3fc682663ce](https://github.com/mgoellnitz/trackdown/commit/35a52a9d751029ac5cbc3730ea28a3fc682663ce)
-
-    refs #GITHUB mirroring in its first incarnation of yet another mirror type
 
 ## GITLAB offline mirror (in progress)
 
@@ -760,22 +800,16 @@ tickets to the special markdown format given here as a mirror for offline use.
 
     refs #GITLAB issues exports should at least be usable up to 100 issues
 
-## GOGS and gitea offline mirror (in progress)
+## GITHUB offline mirror (in progress)
 
 *nth*
 
-Trackdown should be capable of translating [gogs][gogs] JSON exports of 
+Trackdown should be capable of translating [GitHub][github] JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.
-This also adds [gitea][gitea] and has a public instance at [Pikacode][pikacode],
-which can be used as a default.
 
- Martin Goellnitz  / Sat Dec 3 02:56:16 2016 [e438fa86d8f6d112565899dcbfec466001ea13b4](https://github.com/mgoellnitz/trackdown/commit/e438fa86d8f6d112565899dcbfec466001ea13b4)
+ Martin Goellnitz  / Sun Nov 13 21:19:35 2016 [35a52a9d751029ac5cbc3730ea28a3fc682663ce](https://github.com/mgoellnitz/trackdown/commit/35a52a9d751029ac5cbc3730ea28a3fc682663ce)
 
-    refs #GOGS support initiated with reasonable output in the first step
-
- Martin Goellnitz  / Sat Dec 3 03:03:44 2016 [58a55bc60edc6b451722b6d96b7c598ff8a39522](https://github.com/mgoellnitz/trackdown/commit/58a55bc60edc6b451722b6d96b7c598ff8a39522)
-
-    refs #GOGS related commands missed their documentation
+    refs #GITHUB mirroring in its first incarnation of yet another mirror type
 
 ## REDMINE offline mirror (in progress)
 
@@ -811,6 +845,31 @@ project history.
  Martin Goellnitz  / Sun Nov 13 12:55:45 2016 [a745c43eb4a444bae91dc15d2b601f78e63e8722](https://github.com/mgoellnitz/trackdown/commit/a745c43eb4a444bae91dc15d2b601f78e63e8722)
 
     refs #REDMINE mirror now extracts more details from the original tickets
+
+## BITBUCKET issue tracker offline mirror
+
+*nth*
+
+Trackdown should be capable of translating [Bitbucket.org][bitbucket] JSON 
+exports of tickets to the special markdown format given here as a mirror for 
+offline use. 
+
+## GOGS and gitea offline mirror (in progress)
+
+*nth*
+
+Trackdown should be capable of translating [gogs][gogs] JSON exports of 
+tickets to the special markdown format given here as a mirror for offline use.
+This also adds [gitea][gitea] and has a public instance at [Pikacode][pikacode],
+which can be used as a default.
+
+ Martin Goellnitz  / Sat Dec 3 02:56:16 2016 [e438fa86d8f6d112565899dcbfec466001ea13b4](https://github.com/mgoellnitz/trackdown/commit/e438fa86d8f6d112565899dcbfec466001ea13b4)
+
+    refs #GOGS support initiated with reasonable output in the first step
+
+ Martin Goellnitz  / Sat Dec 3 03:03:44 2016 [58a55bc60edc6b451722b6d96b7c598ff8a39522](https://github.com/mgoellnitz/trackdown/commit/58a55bc60edc6b451722b6d96b7c598ff8a39522)
+
+    refs #GOGS related commands missed their documentation
 
 ## ASSIGNMENT of issues should be part of the format and tooling (in progress)
 
