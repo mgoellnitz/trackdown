@@ -730,7 +730,7 @@ tickets to the special markdown format given here as a mirror for offline use.
 
     refs #GITLAB issues exports should at least be usable up to 100 issues
 
-## GOGS and gitea offline mirror
+## GOGS and gitea offline mirror (in progress)
 
 *nth*
 
@@ -738,6 +738,10 @@ Trackdown should be capable of translating [gogs][gogs] JSON exports of
 tickets to the special markdown format given here as a mirror for offline use.
 This also adds [gitea][gitea] and has a public instance at [Pikacode][pikacode],
 which can be used as a default.
+
+ Martin Goellnitz  / Sat Dec 3 02:56:16 2016 [e438fa86d8f6d112565899dcbfec466001ea13b4](https://github.com/mgoellnitz/trackdown/commit/e438fa86d8f6d112565899dcbfec466001ea13b4)
+
+    refs #GOGS support initiated with reasonable output in the first step
 
 ## REDMINE offline mirror (in progress)
 

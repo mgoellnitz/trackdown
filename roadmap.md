@@ -17,11 +17,12 @@
 
 ## nth:
 
-0% (0 / 4) completed
-75% (3 / 4) in progress
+0% (0 / 5) completed
+80% (4 / 5) in progress
 
 * GITHUB offline mirror (in progress)
 * GITLAB offline mirror (in progress)
+* GOGS and gitea offline mirror (in progress)
 * REDMINE offline mirror (in progress)
 * MULTIISSUE There can be only one issue per commit.
 
