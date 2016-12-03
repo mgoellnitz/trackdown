@@ -773,6 +773,10 @@ which can be used as a default.
 
     refs #GOGS support initiated with reasonable output in the first step
 
+ Martin Goellnitz  / Sat Dec 3 03:03:44 2016 [58a55bc60edc6b451722b6d96b7c598ff8a39522](https://github.com/mgoellnitz/trackdown/commit/58a55bc60edc6b451722b6d96b7c598ff8a39522)
+
+    refs #GOGS related commands missed their documentation
+
 ## REDMINE offline mirror (in progress)
 
 *nth*
