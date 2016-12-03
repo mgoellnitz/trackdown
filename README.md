@@ -590,8 +590,10 @@ Instead of `trackdown.sh use` issue `trackdown.sh gitlab` to setup the mirror
 connection.
 
 ```
-trackdown.sh gitlab <apitoken> <projectname> https://<gitlab.host>/
+trackdown.sh gitlab <apitoken> <projectname> [https://<gitlab.host>]
 ```
+
+If you ommit the url prefix, `https://gitlab.com` is used.
 
 Afterwards anytime you can connect to the [GitLab][gitlab] system, collect the 
 current mirror state to you local issue collection file and the roadmap.
@@ -612,6 +614,34 @@ Assigning XYZ to user 68
 You have to provide the issues *real* id - not the short one - and the id of
 the user, which is also always exported to the issue collection file to 
 facility this.
+
+
+## Gogs Offline Mirror
+
+For disconnected situations which TrackDown is supposed to support, it is
+possible to connect a workspace to its [Gogs][gogs] issue tracker and mirror 
+tickets for offline use.
+
+This is supposed to work with [Pikacode](pikacode) as the available instance
+in the cloud and the community managed fork [Gitea][gitea].
+
+It is not intended for changeing the issues in the issue collection file.
+
+Instead of `trackdown.sh use` issue `trackdown.sh gogs` to setup the mirror
+connection.
+
+```
+trackdown.sh gogs <apitoken> <projectname> [https://<gitlab.host>]
+```
+
+If you ommit the url prefix, `https://v2.pikacode.com` is used.
+
+Afterwards anytime you can connect to the [gogs][gogs] system, collect the 
+current mirror state to you local issue collection file and the roadmap.
+
+```
+trackdown.sh mirror
+```
 
 
 ## Redmine
