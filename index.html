@@ -526,6 +526,9 @@ the Wiki is a flat folder) and many other usefull details.</p>
 and use TrackDown with <a href="https://github.com/">GitHub</a> as the <a href="http://git-scm.com/">GIT</a> based 
 storage backend. And this is exactly what TrackDown was designed for.</p>
 
+<p>As an alternative you can at least mirror the issues from <a href="https://github.com/">GitHub</a> to
+have the notes with you and now the issue IDs for offline code commits.</p>
+
 <h2>
 <a id="gitlab" class="anchor" href="#gitlab" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GitLab</h2>
 
@@ -539,6 +542,9 @@ integration and usefull tools and details.</p>
 <p>So in this case it is possible to leave out the ticketing of <a href="https://gitlab.com/">GitLab</a> 
 and use TrackDown with <a href="https://gitlab.com/">GitLab</a> as the <a href="http://git-scm.com/">GIT</a> based 
 storage backend. And this is exactly what TrackDown was designed for.</p>
+
+<p>As an alternative you can at least mirror the issues from <a href="https://gitlab.com/">GitLab</a> to
+have the notes with you and now the issue IDs for offline code commits.</p>
 
 <h2>
 <a id="trac" class="anchor" href="#trac" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Trac</h2>
@@ -587,7 +593,7 @@ version of <a href="http://mdwiki.info">MDWiki</a> <a href="https://github.com/m
 <h1>
 <a id="migration" class="anchor" href="#migration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Migration</h1>
 
-<p>To facilitate the use of TrackDown the option of migrating an existing base
+<p>To facilitate the use of TrackDown, the option of migrating an existing base
 of tickets is of course helpful. The choice, which systems are taken as a
 data source for such a migration is driven by personal needs.</p>
 
@@ -598,12 +604,15 @@ data source for such a migration is driven by personal needs.</p>
 possible to connect a workspace to its <a href="https://github.com/">GitHub</a> issue tracker and
 mirror tickets for offline use.</p>
 
-<p>It is not intended for changeing the issues in the issue collection file.</p>
+<p>The mirror - of course - is not intended for changeing the issues in the issue 
+collection file. State changes will most likely be triggered on <a href="https://github.com/">GitHub</a> 
+by your commit messages or manually, after which a call of the mirroring script
+can be helpfull.</p>
 
 <p>Instead of <code>trackdown.sh use</code> issue <code>trackdown.sh github</code> to setup the mirror
 connection.</p>
 
-<pre><code>trackdown.sh gihthub &lt;apitoken&gt; &lt;projectname&gt; &lt;owner&gt;
+<pre><code>trackdown.sh github &lt;apitoken&gt; &lt;projectname&gt; &lt;owner&gt;
 </code></pre>
 
 <p>Afterwards anytime you can connect to the <a href="https://github.com/">GitHub</a> system, collect the 
@@ -619,13 +628,18 @@ current mirror state to you local issue collection file and the roadmap.</p>
 possible to connect a workspace to its <a href="https://gitlab.com/">GitLab</a> issue tracker and
 mirror tickets for offline use.</p>
 
-<p>It is not intended for changeing the issues in the issue collection file.</p>
+<p>The mirror - of course - is not intended for changeing the issues in the issue 
+collection file. State changes will most likely be triggered on <a href="https://gitlab.com/">GitLab</a> 
+by your commit messages or manually, after which a call of the mirroring script
+can be helpfull.</p>
 
 <p>Instead of <code>trackdown.sh use</code> issue <code>trackdown.sh gitlab</code> to setup the mirror
 connection.</p>
 
-<pre><code>trackdown.sh gitlab &lt;apitoken&gt; &lt;projectname&gt; https://&lt;gitlab.host&gt;/
+<pre><code>trackdown.sh gitlab &lt;apitoken&gt; &lt;projectname&gt; [https://&lt;gitlab.host&gt;]
 </code></pre>
+
+<p>If you ommit the url prefix, <code>https://gitlab.com</code> is used.</p>
 
 <p>Afterwards anytime you can connect to the <a href="https://gitlab.com/">GitLab</a> system, collect the 
 current mirror state to you local issue collection file and the roadmap.</p>
@@ -644,6 +658,69 @@ Assigning XYZ to user 68
 <p>You have to provide the issues <em>real</em> id - not the short one - and the id of
 the user, which is also always exported to the issue collection file to 
 facility this.</p>
+
+<h2>
+<a id="gogs-offline-mirror" class="anchor" href="#gogs-offline-mirror" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Gogs Offline Mirror</h2>
+
+<p>For disconnected situations which TrackDown is supposed to support, it is
+possible to connect a workspace to its <a href="https://gogs.io/">Gogs</a> issue tracker and mirror 
+tickets for offline use.</p>
+
+<p>This is supposed to work with <a href="pikacode">Pikacode</a> as the available instance
+in the cloud and the community managed fork <a href="https://gitea.io/">Gitea</a>.</p>
+
+<p>The mirror - of course - is not intended for changeing the issues in the issue 
+collection file. State changes will most likely be triggered on the <a href="https://gogs.io/">Gogs</a>
+instance in use  by your commit messages or manually, after which a call of the 
+mirroring script can be helpfull.</p>
+
+<p>Instead of <code>trackdown.sh use</code> issue <code>trackdown.sh gogs</code> to setup the mirror
+connection.</p>
+
+<pre><code>trackdown.sh gogs &lt;apitoken&gt; &lt;projectname&gt; [https://&lt;gitlab.host&gt;]
+</code></pre>
+
+<p>If you ommit the url prefix, <code>https://v2.pikacode.com</code> is used.</p>
+
+<p>Afterwards anytime you can connect to the <a href="https://gogs.io/">gogs</a> system, collect the 
+current mirror state to you local issue collection file and the roadmap.</p>
+
+<pre><code>trackdown.sh mirror
+</code></pre>
+
+<h2>
+<a id="bitbucketorg-offline-mirror" class="anchor" href="#bitbucketorg-offline-mirror" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bitbucket.org Offline Mirror</h2>
+
+<p>For disconnected situations which TrackDown is supposed to support, it is
+possible to connect a workspace to its <a href="https://bitbucket.org/">Bitbucket.org</a> issue 
+tracker and mirror tickets for offline use.</p>
+
+<p>Some of my stalled projects reside therer and I already did an export of the
+issue tracker contents, which <a href="https://bitbucket.org/">Bitbucket.org</a> support, and now added
+the offline mirror capabililties to this tool for smother migration away from
+the prorietary issue tracker.</p>
+
+<p>The mirror again is not intended for changeing the issues in the issue 
+collection file. State changes will most likely be triggered on 
+<a href="https://bitbucket.org/">Bitbucket.org</a> by your commit messages or manually, after which a 
+call of the mirroring script can be helpfull.</p>
+
+<p>Instead of <code>trackdown.sh use</code> issue <code>trackdown.sh github</code> to setup the mirror
+connection.</p>
+
+<pre><code>trackdown.sh bitbucket &lt;projectname&gt; &lt;owner&gt;
+</code></pre>
+
+<p>Afterwards anytime you can connect to the <a href="https://bitbucket.org/">Bitbucket.org</a> system, 
+collect the current mirror state to you local issue collection file and the 
+roadmap.</p>
+
+<pre><code>trackdown.sh mirror
+</code></pre>
+
+<p>In the case of <a href="https://bitbucket.org/">Bitbucket.org</a>, the mirror script has to ask for
+you password on bitbucket, since the are no secure API tokens available as far
+as I know.</p>
 
 <h2>
 <a id="redmine" class="anchor" href="#redmine" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Redmine</h2>
@@ -697,11 +774,11 @@ exported to the issue collection file to  facility this.</p>
 <a id="migration-1" class="anchor" href="#migration-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Migration</h3>
 
 <p>When you think this information mirrored right now is sufficient to cut the ties,
-you can setup the created issues collection and roadmap as the repository
-and do a <code>trackdown.sh use</code>.</p>
+you can setup the created issue collection and roadmap as the repository and do 
+a <code>trackdown.sh use</code>.</p>
 
-<p>The full migration is not covered by a command yet and setting up mirrored
-data in the special TrackDown branch must be accomplished manually.</p>
+<p>The full migration is not covered by a command yet and setting up mirrored data 
+in the special TrackDown branch must be accomplished manually.</p>
 
 <h1>
 <a id="issues-1" class="anchor" href="#issues-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Issues</h1>
@@ -732,19 +809,6 @@ and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.</p>
 
 <h2>
-<a id="github-offline-mirror-in-progress" class="anchor" href="#github-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GITHUB offline mirror (in progress)</h2>
-
-<p><em>nth</em></p>
-
-<p>Trackdown should be capable of translating <a href="https://github.com/">GitHub</a> JSON exports of 
-tickets to the special markdown format given here as a mirror for offline use.</p>
-
-<p>Martin Goellnitz  / Sun Nov 13 21:19:35 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/35a52a9d751029ac5cbc3730ea28a3fc682663ce">35a52a9d751029ac5cbc3730ea28a3fc682663ce</a></p>
-
-<pre><code>refs #GITHUB mirroring in its first incarnation of yet another mirror type
-</code></pre>
-
-<h2>
 <a id="gitlab-offline-mirror-in-progress" class="anchor" href="#gitlab-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GITLAB offline mirror (in progress)</h2>
 
 <p><em>nth</em></p>
@@ -770,6 +834,19 @@ tickets to the special markdown format given here as a mirror for offline use.</
 <p>Martin Goellnitz  / Sun Nov 13 19:52:31 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/34e0dcec0c72fc0fafe0887a966e392163d6df44">34e0dcec0c72fc0fafe0887a966e392163d6df44</a></p>
 
 <pre><code>refs #GITLAB issues exports should at least be usable up to 100 issues
+</code></pre>
+
+<h2>
+<a id="github-offline-mirror-in-progress" class="anchor" href="#github-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GITHUB offline mirror (in progress)</h2>
+
+<p><em>nth</em></p>
+
+<p>Trackdown should be capable of translating <a href="https://github.com/">GitHub</a> JSON exports of 
+tickets to the special markdown format given here as a mirror for offline use.</p>
+
+<p>Martin Goellnitz  / Sun Nov 13 21:19:35 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/35a52a9d751029ac5cbc3730ea28a3fc682663ce">35a52a9d751029ac5cbc3730ea28a3fc682663ce</a></p>
+
+<pre><code>refs #GITHUB mirroring in its first incarnation of yet another mirror type
 </code></pre>
 
 <h2>
@@ -810,6 +887,40 @@ project history.</p>
 <p>Martin Goellnitz  / Sun Nov 13 12:55:45 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/a745c43eb4a444bae91dc15d2b601f78e63e8722">a745c43eb4a444bae91dc15d2b601f78e63e8722</a></p>
 
 <pre><code>refs #REDMINE mirror now extracts more details from the original tickets
+</code></pre>
+
+<h2>
+<a id="bitbucket-issue-tracker-offline-mirror-in-progress" class="anchor" href="#bitbucket-issue-tracker-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BITBUCKET issue tracker offline mirror (in progress)</h2>
+
+<p><em>nth</em></p>
+
+<p>Trackdown should be capable of translating <a href="https://bitbucket.org/">Bitbucket.org</a> JSON 
+exports of tickets to the special markdown format given here as a mirror for 
+offline use. </p>
+
+<p>Martin Goellnitz  / Sat Dec 3 13:05:30 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/53f1165e8e009ca843909c6d67daaabc7a318f6c">53f1165e8e009ca843909c6d67daaabc7a318f6c</a></p>
+
+<pre><code>refs #BITBUCKET support started in a first basic version
+</code></pre>
+
+<h2>
+<a id="gogs-and-gitea-offline-mirror-in-progress" class="anchor" href="#gogs-and-gitea-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GOGS and gitea offline mirror (in progress)</h2>
+
+<p><em>nth</em></p>
+
+<p>Trackdown should be capable of translating <a href="https://gogs.io/">gogs</a> JSON exports of 
+tickets to the special markdown format given here as a mirror for offline use.
+This also adds <a href="https://gitea.io/">gitea</a> and has a public instance at <a href="https://v2.pikacode.com/">Pikacode</a>,
+which can be used as a default.</p>
+
+<p>Martin Goellnitz  / Sat Dec 3 02:56:16 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/e438fa86d8f6d112565899dcbfec466001ea13b4">e438fa86d8f6d112565899dcbfec466001ea13b4</a></p>
+
+<pre><code>refs #GOGS support initiated with reasonable output in the first step
+</code></pre>
+
+<p>Martin Goellnitz  / Sat Dec 3 03:03:44 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/58a55bc60edc6b451722b6d96b7c598ff8a39522">58a55bc60edc6b451722b6d96b7c598ff8a39522</a></p>
+
+<pre><code>refs #GOGS related commands missed their documentation
 </code></pre>
 
 <h2>
