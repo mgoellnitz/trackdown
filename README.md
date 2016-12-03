@@ -20,6 +20,8 @@ flows of tickets though, since you will be having only one file with plain
 [Markdown][markdown] with your issues - and optionally other stuff - collected 
 in it.
 
+Roadmap [here](https://github.com/mgoellnitz/trackdown/blob/master/roadmap.md)
+and [here](https://gitlab.com/mgoellnitz/trackdown/blob/master/roadmap.md)
 
 # Design
 
@@ -764,7 +766,7 @@ Right now we have three collections/iterations/sprints in this issue list:
 - *nth* This feature is nice to have but can be left out.
 - *oos* This issue is relevant but out of the scope of this project.
 
-## NETBEANS interoperation not working due to missing hook implementation in [JGit][jgit] (in progress)
+## NETBEANS interoperation not working due to missing hook implementation in JGit (in progress)
 
 *oos*
 
