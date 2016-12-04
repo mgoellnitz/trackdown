@@ -32,5 +32,5 @@
 0% (0 / 1) completed
 100% (1 / 1) in progress
 
-* NETBEANS interoperation not working due to missing hook implementation in [JGit][jgit] (in progress)
+* NETBEANS interoperation not working due to missing hook implementation in JGit (in progress)
 
