@@ -89,11 +89,6 @@ if [ ! -z "$STATUS" ] ; then
   sed -i.remove -e "s/##\ $ID\ \(.*\)\ (.*)/## $ID \1/g" $ISSUES
   sed -i.remove -e "s/##\ $ID\ \(.*\)/## $ID \1 ($STATUS)/g" $ISSUES
   rm $ISSUES.remove
-  # grep -n "^\#\#\ " $ISSUES
-  # echo ""
-  # grep -n "^\#\#\ " $ISSUES|grep -A1 "${ID}.*$STATUS"
-  # echo ""
-  # grep -n "^\#\#\ " $ISSUES|grep -A1 "${ID}.*$STATUS|tail -1"
   ISLAST=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${ID}.*$STATUS" |tail -1|grep $ID`
   # echo "last: $ISLAST"
   if [ -z "$ISLAST" ] ; then
