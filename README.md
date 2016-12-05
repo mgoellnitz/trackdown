@@ -301,6 +301,21 @@ The term "target version" could also be read as "release" or "sprint" or
 anything which describes your development process best.
 
 
+## Copy Milestone/Release Contents
+
+The comman `copy` is used to extract the issues related to a given milestone,
+release, version, or whatever your terinology might be to a separate file
+named after the given parameter. So
+
+```
+  trackdown.sh copy 1.1
+```
+
+copies all notes for the issues marked with "1.1" as a version marker to a
+separate file 1.1.md to obtain release notes and get the resolved issues from
+the base issue collection file for your current work.
+
+
 ## Issues
 
 The command
