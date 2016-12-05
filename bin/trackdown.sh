@@ -168,7 +168,6 @@ fi
 if [ "$CMD" = "issues" ] ; then
 
   # Location of the issues file
-  ISSUES="$2"
   if [ -z "$ISSUES" ] ; then
     ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
   fi
@@ -176,6 +175,41 @@ if [ "$CMD" = "issues" ] ; then
     ISSUES=".git/trackdown/issues.md"
   fi
   grep "^\#\#\ " $ISSUES | sed -e "s/^##\ /- /g"
+
+fi
+
+
+# copy all issues for a given milestore to a separate file
+if [ "$CMD" = "copy" ] ; then
+
+  # Location of the issues file
+  ISSUES=$3
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  fi
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=".git/trackdown/issues.md"
+  fi
+  echo $ISSUES
+  LINES=`cat $ISSUES|wc -l`
+  MILESTONE=$2
+  echo $LINES / $MILESTONE
+  # grep -n -B2 "^\*$2\*" $ISSUES
+  echo "# Issues resoled in $2" > "$MILESTONE.md"
+  echo "" >> "$MILESTONE.md"
+  for START in `grep -n -B2 "^\*$MILESTONE\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1` ; do 
+    REST=$[ $LINES - $START + 1 ]
+    # tail -$REST $ISSUES
+    SIZE=`tail -$REST $ISSUES|grep -n ^\#\#\ |head -2|tail -1|cut -d ':' -f 1`
+    echo "Geht los ab Zeile $START mit $SIZE Zeilen."
+    if [ $SIZE = 1 ] ; then
+      echo "letzter!"
+      tail -$REST $ISSUES >> "$MILESTONE.md"
+    else 
+      tail -$REST $ISSUES | head -$[ $SIZE - 1 ] >> "$MILESTONE.md"
+    fi
+    
+  done
 
 fi
 
@@ -459,7 +493,7 @@ if [ "$CMD" = "mirror" ] ; then
       s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
       echo "## $id $SUBJECT ($s)" >>$ISSUES
       echo "" >>$ISSUES
-      VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/No Milestone/g'|sed -e 's/.*name...\(.*\)"./*\1*/g'`
+      VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/*No Milestone*/g'|sed -e 's/.*name...\(.*\)"./*\1*/g'`
       ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
       echo -n "${VERSION}"  >>$ISSUES
       if [ "$ASSIGNEE" != "null" ] ; then
