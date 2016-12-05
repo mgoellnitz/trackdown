@@ -3,10 +3,10 @@
 ## 1.0:
 
 77% (7 / 9) completed
-11% (1 / 9) in progress
+22% (2 / 9) in progress
 
 * ASSIGNMENT of issues should be part of the format and tooling (in progress)
-* COPY release notes.
+* COPY release notes. (in progress)
 * ROADMAP should show percentage for issues already started (resolved)
 * SETUP tracking repository symmetrically (resolved)
 * SYNCHRONIZE roadmap also on unhandled commits (resolved)
@@ -15,16 +15,23 @@
 * HASH of the commit should be part of the listing (resolved)
 * PREFIX hashes in commit notes to form a URL (resolved)
 
-## nth:
+## mirror:
 
 0% (0 / 6) completed
 83% (5 / 6) in progress
 
+* MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
 * GITLAB offline mirror (in progress)
 * GITHUB offline mirror (in progress)
 * REDMINE offline mirror (in progress)
 * BITBUCKET issue tracker offline mirror (in progress)
 * GOGS and gitea offline mirror (in progress)
+
+## nth:
+
+0% (0 / 1) completed
+0% (0 / 1) in progress
+
 * MULTIISSUE There can be only one issue per commit.
 
 ## oos:

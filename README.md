@@ -846,6 +846,10 @@ project history.
 
     refs #REDMINE mirroring started
 
+ Martin Goellnitz  / Sun Nov 13 01:51:12 2016 [de3417d6789e59219d8d9616d5498c857f33cb32](https://github.com/mgoellnitz/trackdown/commit/de3417d6789e59219d8d9616d5498c857f33cb32)
+
+    refs #REDMINE mirror users don't have to use git for this purpose - smarter .gitignore handling alongside
+
  Martin Goellnitz  / Sun Nov 13 02:48:36 2016 [7211c3ce7b6f7bed464fa6c866239b5ced3bd4e2](https://github.com/mgoellnitz/trackdown/commit/7211c3ce7b6f7bed464fa6c866239b5ced3bd4e2)
 
     refs #REDMINE mirror shoud overwrite issue collection and no always append
@@ -902,7 +906,7 @@ to the current user
 
     refs #ASSIGNMENT of issues to me now listable
 
-## COPY release notes.
+## COPY release notes. (in progress)
 
 *1.0*
 
@@ -910,9 +914,9 @@ When closing a release or sprint, it should be possible to copy all the resolved
 issues to a new [Markdown][markdown] file to remove them from the issue 
 collection and have a contribution to release notes.
 
- Martin Goellnitz  / Sun Nov 13 01:51:12 2016 [de3417d6789e59219d8d9616d5498c857f33cb32](https://github.com/mgoellnitz/trackdown/commit/de3417d6789e59219d8d9616d5498c857f33cb32)
+ Martin Goellnitz  / Tue Dec 6 00:40:57 2016 [54ffed9d2f60172195089bdbd13c6bca4828c98b](https://github.com/mgoellnitz/trackdown/commit/54ffed9d2f60172195089bdbd13c6bca4828c98b)
 
-    refs #REDMINE mirror users don't have to use git for this purpose - smarter .gitignore handling alongside
+    refs #COPY release notes
 
 ## ROADMAP should show percentage for issues already started (resolved)
 
