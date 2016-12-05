@@ -760,9 +760,10 @@ in the special TrackDown branch must be accomplished manually.
 
 # Issues
 
-Right now we have three collections/iterations/sprints in this issue list:
+Right now we have three areas/iterations/sprints in this issue list:
 
 - *1.0* This should be accomplished before an 1.0 release.
+- *mirror* Everything related to just mirroring issue collection is collected here
 - *nth* This feature is nice to have but can be left out.
 - *oos* This issue is relevant but out of the scope of this project.
 
@@ -779,9 +780,18 @@ I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.
 
+## MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
+
+*mirror*
+
+For users of the mirror feature of collections with Redmine, GitHub, Gitlab, 
+and Gogs a hook implementation should mirror the issue collection on push
+to keep it updated in exactly the situations where the local machine must
+be connected to the remote site - or at least somehow to the internet.
+
 ## GITLAB offline mirror (in progress)
 
-*nth*
+*mirror*
 
 Trackdown should be capable of translating [GitLab][gitlab] JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.
@@ -804,7 +814,7 @@ tickets to the special markdown format given here as a mirror for offline use.
 
 ## GITHUB offline mirror (in progress)
 
-*nth*
+*mirror*
 
 Trackdown should be capable of translating [GitHub][github] JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.
@@ -815,7 +825,7 @@ tickets to the special markdown format given here as a mirror for offline use.
 
 ## REDMINE offline mirror (in progress)
 
-*nth*
+*mirror*
 
 For how historical reasons I have projects with [Redmine][redmine] ticketing in 
 use and with still relevant tickets. Some of them might even be a candidate to 
@@ -850,7 +860,7 @@ project history.
 
 ## BITBUCKET issue tracker offline mirror (in progress)
 
-*nth*
+*mirror*
 
 Trackdown should be capable of translating [Bitbucket.org][bitbucket] JSON 
 exports of tickets to the special markdown format given here as a mirror for 
@@ -862,7 +872,7 @@ offline use.
 
 ## GOGS and gitea offline mirror (in progress)
 
-*nth*
+*mirror*
 
 Trackdown should be capable of translating [gogs][gogs] JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.
