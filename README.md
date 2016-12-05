@@ -933,6 +933,10 @@ collection and have a contribution to release notes.
 
     refs #COPY release notes
 
+ Martin Goellnitz  / Tue Dec 6 00:53:17 2016 [42a073d10652ea3d3c72d82b72ca0f77c7511bb0](https://github.com/mgoellnitz/trackdown/commit/42a073d10652ea3d3c72d82b72ca0f77c7511bb0)
+
+    refs #COPY command needs documentation
+
 ## ROADMAP should show percentage for issues already started (resolved)
 
 *1.0*
