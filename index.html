@@ -146,10 +146,7 @@ when the solution is brought into production.</p>
 <h3>
 <a id="target-version" class="anchor" href="#target-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Target Version</h3>
 
-<p>Onyl digits, letters and dots. No spaces allowed.</p>
-
-<pre><code>  Future-Work Will be evaluated to calculate your project's roadmap
-</code></pre>
+<p>Only digits, letters and dots. No spaces allowed.</p>
 
 <h3>
 <a id="description" class="anchor" href="#description" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Description</h3>
@@ -199,14 +196,14 @@ repository and not in any other location of your chosing, you need to modify the
 least one commit for this to work. To initialize a <a href="http://git-scm.com/">GIT</a> repository that 
 way, call the script</p>
 
-<pre><code>  trackdown.sh init
+<pre><code>trackdown.sh init
 </code></pre>
 
 <p>This creates the TrackDown thread for the issue tracking. You have to manually
 propagate this thread to your upstream repositories. TrackDown does not
 interfere with your remote workflow.</p>
 
-<pre><code>  git push original trackdown
+<pre><code>git push original trackdown
 </code></pre>
 
 <p>Initialization must only be executed once for a repository and all of its forks 
@@ -224,17 +221,17 @@ integrated with your source code <a href="http://git-scm.com/">GIT</a> commits.<
 
 <p>To start using TrackDown for the respective clone you have to issue</p>
 
-<pre><code>  trackdown.sh use
+<pre><code>trackdown.sh use
 </code></pre>
 
 <p>when using the TrackDown branch in the source code repository or</p>
 
-<pre><code>  trackdown.sh use &lt;path/to/issues.md&gt;
+<pre><code>trackdown.sh use &lt;path/to/issues.md&gt;
 </code></pre>
 
 <p>like in</p>
 
-<pre><code>  trackdown.sh use ../wiki/issues.md
+<pre><code>trackdown.sh use ../wiki/issues.md
 </code></pre>
 
 <p>when using TrackDown with the issue collection file at a different location.
@@ -262,8 +259,7 @@ of JGit (Version 4.6 an up).</p>
 <p>Right now TrackDown understands only two commands in the commit messages. </p>
 
 <h2>
-<a id="refs-id" class="anchor" href="#refs-id" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>refs <em>id</em>
-</h2>
+<a id="refs-idid" class="anchor" href="#refs-idid" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>refs #<em>id</em>[,<em>id</em>...]</h2>
 
 <p>Reference the commit in the list of commits at the end of the issue text.</p>
 
@@ -271,14 +267,17 @@ of JGit (Version 4.6 an up).</p>
 </code></pre>
 
 <p>This command changes the state to "in progress" from anything like new, nothing,
-or even resolved</p>
+or even resolved. If the commit relates to more than one issue, the issues can be
+separated by commas.</p>
 
-<pre><code>  (Future work: lifts the issue up to the top of the list)
+<pre><code>git commit -m "fixes #ONEID,ANOTHERID - comment" files...
+</code></pre>
+
+<pre><code>(Future work: lifts the issue up to the top of the list)
 </code></pre>
 
 <h2>
-<a id="resolvesresolvefixes-id" class="anchor" href="#resolvesresolvefixes-id" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>resolves|resolve|fixes <em>id</em>
-</h2>
+<a id="resolvesresolvefixes-idid" class="anchor" href="#resolvesresolvefixes-idid" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>resolves|resolve|fixes #<em>id</em>[,<em>id</em>...]</h2>
 
 <p>Reference the commit in the list of commits at the end of the issue text.</p>
 
@@ -286,9 +285,13 @@ or even resolved</p>
 </code></pre>
 
 <p>This command changes the state to "resolved" from anything like new, nothing, or
-in progress</p>
+in progress. If the commit relates to more than one issue, the issues can be
+separated by commas.</p>
 
-<pre><code>  (Future work: moves the issue to the top the part of the list where the resolved issues reside)
+<pre><code>git commit -m "fixes #ONEID,ANOTHERID - comment" files...
+</code></pre>
+
+<pre><code>(Future work: moves the issue to the top the part of the list where the resolved issues reside)
 </code></pre>
 
 <h1>
@@ -303,7 +306,7 @@ available:</p>
 <p>Provided that the issues in the issue collection file are marked with version
 labels like suggested, the command</p>
 
-<pre><code>  trackdown.sh roadmap
+<pre><code>trackdown.sh roadmap
 </code></pre>
 
 <p>prints out a complete roadmap of the project sorted by "target versions" in 
@@ -318,7 +321,7 @@ anything which describes your development process best.</p>
 <p>The command <code>ls</code> is used to show all issues marked for a given "target version" 
 like in</p>
 
-<pre><code>  trackdown.sh ls 1.1
+<pre><code>trackdown.sh ls 1.1
 </code></pre>
 
 <p>where all issues intended to be completed in "target version" 1.1 are listed.</p>
@@ -327,11 +330,25 @@ like in</p>
 anything which describes your development process best.</p>
 
 <h2>
+<a id="copy-milestonerelease-contents" class="anchor" href="#copy-milestonerelease-contents" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Copy Milestone/Release Contents</h2>
+
+<p>The comman <code>copy</code> is used to extract the issues related to a given milestone,
+release, version, or whatever your terinology might be to a separate file
+named after the given parameter. So</p>
+
+<pre><code>trackdown.sh copy 1.1
+</code></pre>
+
+<p>copies all notes for the issues marked with "1.1" as a version marker to a
+separate file 1.1.md to obtain release notes and get the resolved issues from
+the base issue collection file for your current work.</p>
+
+<h2>
 <a id="issues" class="anchor" href="#issues" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Issues</h2>
 
 <p>The command</p>
 
-<pre><code>  trackdown.sh issues
+<pre><code>trackdown.sh issues
 </code></pre>
 
 <p>lists all potential issues in the issue collection. Potential means in this case,
@@ -340,7 +357,7 @@ issue collection file, which might be interpreted as issues.</p>
 
 <p>Optionally you can add a path to an issue collection file as a parameter like in</p>
 
-<pre><code>  trackdown.sh issues ../wiki/issues.md
+<pre><code>trackdown.sh issues ../wiki/issues.md
 </code></pre>
 
 <h2>
@@ -348,7 +365,7 @@ issue collection file, which might be interpreted as issues.</p>
 
 <p>The command</p>
 
-<pre><code>  trackdown.sh mine
+<pre><code>trackdown.sh mine
 </code></pre>
 
 <p>lists all issues in the issue collection, which are marked with a</p>
@@ -368,12 +385,12 @@ issue collection file, which might be interpreted as issues.</p>
 <p>Optionally you can add a path to an issue collection file as an additional parameter 
 like in</p>
 
-<pre><code>  trackdown.sh mine ../wiki/issues.md
+<pre><code>trackdown.sh mine ../wiki/issues.md
 </code></pre>
 
 <p>or</p>
 
-<pre><code>  trackdown.sh mine UserName ../wiki/issues.md
+<pre><code>trackdown.sh mine UserName ../wiki/issues.md
 </code></pre>
 
 <h1>
@@ -423,6 +440,9 @@ commit message online for every commit. To use this facility place a prefix
 in the config file where hash of a commit can be appended to for a valid
 link for that commit.</p>
 
+<p>It TrackDown discovers common GIT services it tries to automatically discover
+the correct prefix für URLs pointing to single commits.</p>
+
 <h2>
 <a id="username-for-assignments" class="anchor" href="#username-for-assignments" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Username for assignments</h2>
 
@@ -437,7 +457,8 @@ a commit message related to a ticket, but just the progress flag will be set.</p
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h1>
 
 <p>Just copy the files from bin/ to a place on your $PATH for now. Perhaps we will
-add something more convenient later.</p>
+add something more convenient later. For some functions - especially in the
+area of issue tracker mirror - <a href="https://stedolan.github.io/jq/">jq</a> needs to be installed.</p>
 
 <p>Of course this way the remaining Windows users are locked out.</p>
 
@@ -579,7 +600,7 @@ file:///home/me/somewhere/thats/green/repo/wiki.html#!roadmap.md
 overview of the issues as the roadmap.</p>
 
 <p>When you also use GitLab, GitHub, or Bitbucket Wikis, <a href="http://mdwiki.info">MDWiki</a> has
-a different understanding, how links should be interpreted. TO get a fully
+a different understanding, how links should be interpreted. To get a fully
 compatible local and remote viewing setup for these cases, a patched
 version of <a href="http://mdwiki.info">MDWiki</a> <a href="https://github.com/mgoellnitz/mdwiki/">exists on GitHub</a>.</p>
 
@@ -680,7 +701,7 @@ mirroring script can be helpfull.</p>
 <p>Instead of <code>trackdown.sh use</code> issue <code>trackdown.sh gogs</code> to setup the mirror
 connection.</p>
 
-<pre><code>trackdown.sh gogs &lt;apitoken&gt; &lt;projectname&gt; [https://&lt;gitlab.host&gt;]
+<pre><code>trackdown.sh gogs &lt;apitoken&gt; &lt;projectname&gt; [https://&lt;gogs.host&gt;]
 </code></pre>
 
 <p>If you ommit the url prefix, <code>https://v2.pikacode.com</code> is used.</p>
@@ -771,7 +792,7 @@ Assigning XYZ to user 68
 </code></pre>
 
 <p>You have to provide the id of the user - not its name, which is also always 
-exported to the issue collection file to  facility this.</p>
+exported to the issue collection file to facility this.</p>
 
 <h3>
 <a id="migration-1" class="anchor" href="#migration-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Migration</h3>
@@ -786,11 +807,13 @@ in the special TrackDown branch must be accomplished manually.</p>
 <h1>
 <a id="issues-1" class="anchor" href="#issues-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Issues</h1>
 
-<p>Right now we have three collections/iterations/sprints in this issue list:</p>
+<p>Right now we have three areas/iterations/sprints in this issue list:</p>
 
 <ul>
 <li>
 <em>1.0</em> This should be accomplished before an 1.0 release.</li>
+<li>
+<em>mirror</em> Everything related to just mirroring issue collection is collected here</li>
 <li>
 <em>nth</em> This feature is nice to have but can be left out.</li>
 <li>
@@ -812,9 +835,19 @@ and it now is part of the latest nightly builds. Interoperation with trackdown
 could not be tested so far.</p>
 
 <h2>
+<a id="mirrorhook-for-update-of-the-local-mirror-and-roadmap-for-mirrored-issue-collections" class="anchor" href="#mirrorhook-for-update-of-the-local-mirror-and-roadmap-for-mirrored-issue-collections" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections</h2>
+
+<p><em>mirror</em></p>
+
+<p>For users of the mirror feature of collections with Redmine, GitHub, Gitlab, 
+and Gogs a hook implementation should mirror the issue collection on push
+to keep it updated in exactly the situations where the local machine must
+be connected to the remote site - or at least somehow to the internet.</p>
+
+<h2>
 <a id="gitlab-offline-mirror-in-progress" class="anchor" href="#gitlab-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GITLAB offline mirror (in progress)</h2>
 
-<p><em>nth</em></p>
+<p><em>mirror</em></p>
 
 <p>Trackdown should be capable of translating <a href="https://gitlab.com/">GitLab</a> JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.</p>
@@ -842,7 +875,7 @@ tickets to the special markdown format given here as a mirror for offline use.</
 <h2>
 <a id="github-offline-mirror-in-progress" class="anchor" href="#github-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GITHUB offline mirror (in progress)</h2>
 
-<p><em>nth</em></p>
+<p><em>mirror</em></p>
 
 <p>Trackdown should be capable of translating <a href="https://github.com/">GitHub</a> JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.</p>
@@ -852,10 +885,12 @@ tickets to the special markdown format given here as a mirror for offline use.</
 <pre><code>refs #GITHUB mirroring in its first incarnation of yet another mirror type
 </code></pre>
 
-<h2>
-<a id="redmine-offline-mirror-in-progress" class="anchor" href="#redmine-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>REDMINE offline mirror (in progress)</h2>
+<p>Martin Goellnitz  / Tue Dec 6 18:19:54 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/8ec2c02ebfd241b9b8599ef0fd0b3ebf763907e2">8ec2c02ebfd241b9b8599ef0fd0b3ebf763907e2</a></p>
 
-<p><em>nth</em></p>
+<pre><code>refs #GITHUB automatically discover single commit URLs für github and the others
+</code></pre>
+
+<p><em>mirror</em></p>
 
 <p>For how historical reasons I have projects with <a href="http://www.redmine.org/">Redmine</a> ticketing in 
 use and with still relevant tickets. Some of them might even be a candidate to 
@@ -877,6 +912,11 @@ project history.</p>
 <pre><code>refs #REDMINE mirroring started
 </code></pre>
 
+<p>Martin Goellnitz  / Sun Nov 13 01:51:12 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/de3417d6789e59219d8d9616d5498c857f33cb32">de3417d6789e59219d8d9616d5498c857f33cb32</a></p>
+
+<pre><code>refs #REDMINE mirror users don't have to use git for this purpose - smarter .gitignore handling alongside
+</code></pre>
+
 <p>Martin Goellnitz  / Sun Nov 13 02:48:36 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/7211c3ce7b6f7bed464fa6c866239b5ced3bd4e2">7211c3ce7b6f7bed464fa6c866239b5ced3bd4e2</a></p>
 
 <pre><code>refs #REDMINE mirror shoud overwrite issue collection and no always append
@@ -895,7 +935,7 @@ project history.</p>
 <h2>
 <a id="bitbucket-issue-tracker-offline-mirror-in-progress" class="anchor" href="#bitbucket-issue-tracker-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BITBUCKET issue tracker offline mirror (in progress)</h2>
 
-<p><em>nth</em></p>
+<p><em>mirror</em></p>
 
 <p>Trackdown should be capable of translating <a href="https://bitbucket.org/">Bitbucket.org</a> JSON 
 exports of tickets to the special markdown format given here as a mirror for 
@@ -909,7 +949,7 @@ offline use. </p>
 <h2>
 <a id="gogs-and-gitea-offline-mirror-in-progress" class="anchor" href="#gogs-and-gitea-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GOGS and gitea offline mirror (in progress)</h2>
 
-<p><em>nth</em></p>
+<p><em>mirror</em></p>
 
 <p>Trackdown should be capable of translating <a href="https://gogs.io/">gogs</a> JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.
@@ -943,7 +983,7 @@ to the current user</p>
 </code></pre>
 
 <h2>
-<a id="copy-release-notes" class="anchor" href="#copy-release-notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>COPY release notes.</h2>
+<a id="copy-release-notes-in-progress" class="anchor" href="#copy-release-notes-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>COPY release notes. (in progress)</h2>
 
 <p><em>1.0</em></p>
 
@@ -951,9 +991,14 @@ to the current user</p>
 issues to a new <a href="https://daringfireball.net/projects/markdown/">Markdown</a> file to remove them from the issue 
 collection and have a contribution to release notes.</p>
 
-<p>Martin Goellnitz  / Sun Nov 13 01:51:12 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/de3417d6789e59219d8d9616d5498c857f33cb32">de3417d6789e59219d8d9616d5498c857f33cb32</a></p>
+<p>Martin Goellnitz  / Tue Dec 6 00:40:57 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/54ffed9d2f60172195089bdbd13c6bca4828c98b">54ffed9d2f60172195089bdbd13c6bca4828c98b</a></p>
 
-<pre><code>refs #REDMINE mirror users don't have to use git for this purpose - smarter .gitignore handling alongside
+<pre><code>refs #COPY release notes
+</code></pre>
+
+<p>Martin Goellnitz  / Tue Dec 6 00:53:17 2016 <a href="https://github.com/mgoellnitz/trackdown/commit/42a073d10652ea3d3c72d82b72ca0f77c7511bb0">42a073d10652ea3d3c72d82b72ca0f77c7511bb0</a></p>
+
+<pre><code>refs #COPY command needs documentation
 </code></pre>
 
 <h2>
@@ -1057,11 +1102,21 @@ collection file resulting in callable HTTP-links.</p>
 </code></pre>
 
 <h2>
-<a id="multiissue-there-can-be-only-one-issue-per-commit" class="anchor" href="#multiissue-there-can-be-only-one-issue-per-commit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>MULTIISSUE There can be only one issue per commit.</h2>
+<a id="multiissue-there-can-be-only-one-issue-per-commit-resolved" class="anchor" href="#multiissue-there-can-be-only-one-issue-per-commit-resolved" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>MULTIISSUE There can be only one issue per commit. (resolved)</h2>
 
-<p><em>nth</em></p>
+<p><em>1.0</em></p>
 
 <p>Right now we only support the extraction of one issues ID per <a href="http://git-scm.com/">GIT</a> commit.</p>
+
+<p>Martin Goellnitz Tue Dec 6 18:20:48 2016</p>
+
+<pre><code>refs #MULTIISSUE command can be issues in the commit message
+</code></pre>
+
+<p>Martin Goellnitz Tue Dec 6 18:52:52 2016</p>
+
+<pre><code>fixes #MULTIISSUE needed documentation and a fix
+</code></pre>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/mgoellnitz/trackdown">Trackdown</a> is maintained by <a href="https://github.com/mgoellnitz">mgoellnitz</a>.</span>
