@@ -1047,7 +1047,7 @@ collection file resulting in callable HTTP-links.
 
 ## MULTIISSUE There can be only one issue per commit. (in progress)
 
-*nth*
+*1.0*
 
 Right now we only support the extraction of one issues ID per [GIT][git] commit.
 

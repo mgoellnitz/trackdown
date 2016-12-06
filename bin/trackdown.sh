@@ -36,6 +36,14 @@ function checkTrackdown {
   fi
 }
 
+# Exit if not in a git repository root directory
+function checkGit {
+  if [ ! -d .git ] ; then
+    echo "Not in a GIT repository. Exiting."
+    exit
+  fi
+}
+
 # Do common setup steps for collection for mirror type $1
 function setupCollectionReference {
   COLLECTION=$1-collection.md
