@@ -20,7 +20,7 @@ CMD=$1
 ISSUES=$2
 DIR=`dirname $0`
 
-# $0 message to issue when not given $2 parameter to check
+# $1 message to issue when not given $2 parameter to check
 function bailOnZero {
   if [ -z "$2" ] ; then
     echo $1
@@ -36,12 +36,25 @@ function checkTrackdown {
   fi
 }
 
-# Exit if not in a git repository root directory
-function checkGit {
-  if [ ! -d .git ] ; then
-    echo "Not in a GIT repository. Exiting."
-    exit
+# Do common setup steps for collection for mirror type $1
+function setupCollectionReference {
+  COLLECTION=$1-collection.md
+  echo "autocommit=false" > .trackdown/config
+  echo "autopush=false" >> .trackdown/config
+  echo "location=$COLLECTION" >> .trackdown/config
+  CHECK=`grep .trackdown .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/.trackdown" >> .gitignore
   fi
+  CHECK=`grep $COLLECTION .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/$COLLECTION" >> .gitignore
+  fi
+  CHECK=`grep roadmap.md .gitignore|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "/roadmap.md" >> .gitignore
+  fi
+  echo "mirror.type=$1" >> .trackdown/config
 }
 
 
@@ -132,6 +145,7 @@ if [ "$CMD" = "mine" ] ; then
     ME="$USER"
   fi
   grep -B2 "Currently.assigned.to...$ME" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'
+
 fi
 
 
@@ -193,16 +207,12 @@ if [ "$CMD" = "copy" ] ; then
   if [ -z "$ISSUES" ] ; then
     ISSUES=".git/trackdown/issues.md"
   fi
-  echo $ISSUES
   LINES=`cat $ISSUES|wc -l`
   MILESTONE=$2
-  echo $LINES / $MILESTONE
-  # grep -n -B2 "^\*$2\*" $ISSUES
   echo "# Issues resoled in $2" > "$MILESTONE.md"
   echo "" >> "$MILESTONE.md"
   for START in `grep -n -B2 "^\*$MILESTONE\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1` ; do 
     REST=$[ $LINES - $START + 1 ]
-    # tail -$REST $ISSUES
     SIZE=`tail -$REST $ISSUES|grep -n ^\#\#\ |head -2|tail -1|cut -d ':' -f 1`
     echo "Geht los ab Zeile $START mit $SIZE Zeilen."
     if [ $SIZE = 1 ] ; then
@@ -211,7 +221,6 @@ if [ "$CMD" = "copy" ] ; then
     else 
       tail -$REST $ISSUES | head -$[ $SIZE - 1 ] >> "$MILESTONE.md"
     fi
-    
   done
 
 fi
@@ -247,13 +256,30 @@ if [ "$CMD" = "use" ] ; then
     git config --local user.name "$NAME"
     cd ../..
     echo "autocommit=true" > .trackdown/config
-    echo "autopush=true" >>  .trackdown/config
-    echo "location=.git/trackdown/issues.md" >>  .trackdown/config
+    echo "autopush=true" >> .trackdown/config
+    echo "location=.git/trackdown/issues.md" >> .trackdown/config
   else
     echo "autocommit=false" > .trackdown/config
-    echo "autopush=false" >>  .trackdown/config
-    echo "location=$ISSUES" >>  .trackdown/config
+    echo "autopush=false" >> .trackdown/config
+    echo "location=$ISSUES" >> .trackdown/config
   fi
+
+  REMOTE=`grep -A2 remote.\"origin  */.git/config |grep "url ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|cut -d '/' -f 1|cut -d ':' -f 1`
+  CASE=`echo $REMOTE|cut -d '/' -f 1`
+  echo "Remote system is $REMOTE."
+  if "$CASE" = "github.com" ] ; then
+    echo "Discovered github remote"
+    echo "prefix https://$REMOTE/commit/" >> .trackdown/config
+  fi
+  if "$CASE" = "v2.pikacode.com" ] ; then
+    echo "Discovered pikacode gogs remote"
+    echo "prefix https://$REMOTE/commit/" >> .trackdown/config
+  fi
+  if "$CASE" = "bitbucket.org" ] ; then
+    echo "Discovered bitbucket.org remote"
+    echo "prefix https://$REMOTE/commits/" >> .trackdown/config
+  fi
+
   ID=`dirname $ISSUES`
   # echo "id: $ID"
   if [ "." != "$ID" ] ; then
@@ -719,22 +745,7 @@ if [ "$CMD" = "gitlab" ] ; then
   URL=${4:-https://gitlab.com}
   PID=`curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects|jq '.[]|select(.name=="'$3'")|.id'`
   echo "Setting up TrackDown to mirror from $3 ($PID) on $URL"
-  echo "autocommit=false" > .trackdown/config
-  echo "autopush=false" >>  .trackdown/config
-  echo "location=gitlab-issues.md" >>  .trackdown/config
-  CHECK=`grep .trackdown .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/.trackdown" >> .gitignore
-  fi
-  CHECK=`grep gitlab-issues.md .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/gitlab-issues.md" >> .gitignore
-  fi
-  CHECK=`grep roadmap.md .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/roadmap.md" >> .gitignore
-  fi
-  echo "mirror.type=gitlab" >> .trackdown/config
+  setupCollectionReference gitlab
   echo "gitlab.url=$URL" >> .trackdown/config
   echo "gitlab.project=$PID" >> .trackdown/config
   echo "gitlab.key=$2" >> .trackdown/config
@@ -762,22 +773,8 @@ if [ "$CMD" = "github" ] ; then
     exit
   fi
   echo "Setting up TrackDown to mirror $3 owned by $4 from github.com"
-  echo "autocommit=false" > .trackdown/config
-  echo "autopush=false" >>  .trackdown/config
-  echo "location=github-issues.md" >>  .trackdown/config
-  CHECK=`grep .trackdown .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/.trackdown" >> .gitignore
-  fi
-  CHECK=`grep github-issues.md .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/github-issues.md" >> .gitignore
-  fi
-  CHECK=`grep roadmap.md .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/roadmap.md" >> .gitignore
-  fi
-  echo "mirror.type=github" >> .trackdown/config
+  setupCollectionReference github
+  echo "prefix=https://github.com/$4/$3/commit/" >> .trackdown/config
   echo "github.owner=$4" >> .trackdown/config
   echo "github.project=$3" >> .trackdown/config
   echo "github.key=$2" >> .trackdown/config
@@ -804,22 +801,8 @@ if [ "$CMD" = "bitbucket" ] ; then
     exit
   fi
   echo "Setting up TrackDown to mirror $2 as $3 from bitbucket.org"
-  echo "autocommit=false" > .trackdown/config
-  echo "autopush=false" >>  .trackdown/config
-  echo "location=bitbucket-issues.md" >>  .trackdown/config
-  CHECK=`grep .trackdown .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/.trackdown" >> .gitignore
-  fi
-  CHECK=`grep bitbucket-issues.md .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/bitbucket-issues.md" >> .gitignore
-  fi
-  CHECK=`grep roadmap.md .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/roadmap.md" >> .gitignore
-  fi
-  echo "mirror.type=bitbucket" >> .trackdown/config
+  setupCollectionReference bitbucket
+  echo "prefix=https://bitbucket.org/$3/$2/commits/" >> .trackdown/config
   echo "bitbucket.user=$3" >> .trackdown/config
   echo "bitbucket.project=$2" >> .trackdown/config
   # echo "bitbucket.key=$3" >> .trackdown/config
@@ -847,22 +830,7 @@ if [ "$CMD" = "redmine" ] ; then
     echo "Mirror setup already done in this repository with type $MIRROR."
     exit
   fi
-  echo "autocommit=false" > .trackdown/config
-  echo "autopush=false" >>  .trackdown/config
-  echo "location=redmine-issues.md" >>  .trackdown/config
-  CHECK=`grep .trackdown .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/.trackdown" >> .gitignore
-  fi
-  CHECK=`grep redmine-issues.md .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/redmine-issues.md" >> .gitignore
-  fi
-  CHECK=`grep roadmap.md .gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/roadmap.md" >> .gitignore
-  fi
-  echo "mirror.type=redmine" >> .trackdown/config
+  setupCollectionReference redmine
   echo "redmine.url=$4" >> .trackdown/config
   echo "redmine.project=$3" >> .trackdown/config
   echo "redmine.key=$2" >> .trackdown/config
@@ -891,8 +859,8 @@ if [ "$CMD" = "gogs" ] ; then
   fi
   echo "Setting up TrackDown to mirror from $3 on $URL"
   echo "autocommit=false" > .trackdown/config
-  echo "autopush=false" >>  .trackdown/config
-  echo "location=git-issues.md" >>  .trackdown/config
+  echo "autopush=false" >> .trackdown/config
+  echo "location=git-issues.md" >> .trackdown/config
   CHECK=`grep .trackdown .gitignore|wc -l`
   if [ $CHECK = 0 ] ; then
     echo "/.trackdown" >> .gitignore
@@ -905,6 +873,7 @@ if [ "$CMD" = "gogs" ] ; then
   if [ $CHECK = 0 ] ; then
     echo "/roadmap.md" >> .gitignore
   fi
+  echo "prefix=$URL/$3/commit/" >> .trackdown/config
   echo "mirror.type=gogs" >> .trackdown/config
   echo "gogs.url=$URL" >> .trackdown/config
   echo "gogs.project=$3" >> .trackdown/config

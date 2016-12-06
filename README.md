@@ -413,6 +413,9 @@ commit message online for every commit. To use this facility place a prefix
 in the config file where hash of a commit can be appended to for a valid
 link for that commit.
 
+It TrackDown discovers common GIT services it tries to automatically discover
+the correct prefix für URLs pointing to single commits.
+
 ## Username for assignments
 
 To allow to work with the user assignment of tickets, the name as used in the
@@ -426,7 +429,8 @@ a commit message related to a ticket, but just the progress flag will be set.
 # Installation
 
 Just copy the files from bin/ to a place on your $PATH for now. Perhaps we will
-add something more convenient later.
+add something more convenient later. For some functions - especially in the
+area of issue tracker mirror - [jq][jq] needs to be installed.
 
 Of course this way the remaining Windows users are locked out.
 
@@ -1041,3 +1045,4 @@ Right now we only support the extraction of one issues ID per [GIT][git] commit.
 [gitea]: https://gitea.io/
 [pikacode]: https://v2.pikacode.com/
 [mdwiki]: http://mdwiki.info
+[jq]: https://stedolan.github.io/jq/
