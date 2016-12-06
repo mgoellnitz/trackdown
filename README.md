@@ -1051,7 +1051,7 @@ collection file resulting in callable HTTP-links.
 
     resolve #PREFIX commit hashes to form clickable links
 
-## MULTIISSUE There can be only one issue per commit. (in progress)
+## MULTIISSUE There can be only one issue per commit. (resolved)
 
 *1.0*
 
@@ -1060,3 +1060,7 @@ Right now we only support the extraction of one issues ID per [GIT][git] commit.
 Martin Goellnitz Tue Dec 6 18:20:48 2016
 
     refs #MULTIISSUE command can be issues in the commit message
+
+Martin Goellnitz Tue Dec 6 18:52:52 2016
+
+    fixes #MULTIISSUE needed documentation and a fix

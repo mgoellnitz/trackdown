@@ -2,12 +2,13 @@
 
 ## 1.0:
 
-77% (7 / 9) completed
-22% (2 / 9) in progress
+80% (8 / 10) completed
+20% (2 / 10) in progress
 
 * ASSIGNMENT of issues should be part of the format and tooling (in progress)
 * COPY release notes. (in progress)
 * HASH of the commit should be part of the listing (resolved)
+* MULTIISSUE There can be only one issue per commit. (resolved)
 * PREFIX hashes in commit notes to form a URL (resolved)
 * ROADMAP should show percentage for issues already started (resolved)
 * ROOT directory of the source code must be a valid roadmap and issue file location (resolved)
@@ -25,13 +26,6 @@
 * GITHUB offline mirror (in progress)
 * GITLAB offline mirror (in progress)
 * GOGS and gitea offline mirror (in progress)
-
-## nth:
-
-0% (0 / 1) completed
-100% (1 / 1) in progress
-
-* MULTIISSUE There can be only one issue per commit. (in progress)
 
 ## oos:
 
