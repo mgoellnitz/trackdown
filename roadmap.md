@@ -27,6 +27,13 @@
 * GITLAB offline mirror (in progress)
 * GOGS and gitea offline mirror (in progress)
 
+## nth:
+
+0% (0 / 1) completed
+100% (1 / 1) in progress
+
+* MERCURIAL support should be added withthe same functionality as GIT (in progress)
+
 ## oos:
 
 0% (0 / 1) completed
