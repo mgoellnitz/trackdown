@@ -60,7 +60,7 @@ DATE=`git log -n 1|grep Date|cut -d ':' -f 2-10|cut -d '+' -f 1|cut -d '-' -f 1|
 LINE=`git log -n 1|tail -$[ $MSGLINES - 4 ]|grep \#`
 STATUS=""
 if [ ! -z "$LINE" ] ; then
-  ID=`echo $LINE|sed -e 's/.*#\([0-9a-zA-Z]*\).*/\1/g'`
+  ID=`echo $LINE|sed -e 's/.*#\([0-9a-zA-Z,]*\).*/\1/g'`
   MARKER=`echo $LINE|grep -i "refs \#$ID"`
   if [ ! -z "$MARKER" ] ; then
     STATUS="in progress"
@@ -79,38 +79,39 @@ if [ ! -z "$LINE" ] ; then
   fi
 fi
 HASH=`git log|head -1|cut -d ' ' -f 2`
-HASID=`grep "^\#\#\ ${ID}" $ISSUES`
-if [ -z "$HASID" ] ; then
-  echo "ID $ID not found in issues collection"
-  roadmap
-  exit
-fi
 echo "$ID $STATUS"
 if [ ! -z "$STATUS" ] ; then
-  sed -i.remove -e "s/##\ $ID\ \(.*\)\ (.*)/## $ID \1/g" $ISSUES
-  sed -i.remove -e "s/##\ $ID\ \(.*\)/## $ID \1 ($STATUS)/g" $ISSUES
-  rm $ISSUES.remove
-  ISLAST=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${ID}.*$STATUS" |tail -1|grep $ID`
-  # echo "last: $ISLAST"
-  if [ -z "$ISLAST" ] ; then
-    SECTION=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${ID}.*$STATUS"|tail -1|cut -d ':' -f 1`
-    LINES=`cat $ISSUES|wc -l`
-    # echo "SECTION $SECTION - LINES $LINES"
-    head -$[ $SECTION - 1 ] $ISSUES >>$ISSUES.remove
-    if [ -z "$PREFIX" ] ; then
-      echo "$AUTHOR /${DATE}(${HASH})" >>$ISSUES.remove
+  for TID in `echo "$ID"|sed -e 's/,/\ /g'`; do
+    HASID=`grep "^\#\#\ ${TID}" $ISSUES`
+    if [ ! -z "$HASID" ] ; then
+      sed -i.remove -e "s/##\ $TID\ \(.*\)\ (.*)/## $TID \1/g" $ISSUES
+      sed -i.remove -e "s/##\ $TID\ \(.*\)/## $TID \1 ($STATUS)/g" $ISSUES
+      rm $ISSUES.remove
+      ISLAST=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${ID}.*$STATUS" |tail -1|grep $TID`
+      # echo "last: $ISLAST"
+      if [ -z "$ISLAST" ] ; then
+        SECTION=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${ID}.*$STATUS"|tail -1|cut -d ':' -f 1`
+        LINES=`cat $ISSUES|wc -l`
+        # echo "SECTION $SECTION - LINES $LINES"
+        head -$[ $SECTION - 1 ] $ISSUES >>$ISSUES.remove
+        if [ -z "$PREFIX" ] ; then
+          echo "$AUTHOR /${DATE}(${HASH})" >>$ISSUES.remove
+        else
+          echo "$AUTHOR /${DATE}[${HASH}](${PREFIX}${HASH})" >>$ISSUES.remove
+        fi
+        git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES.remove
+        echo "" >>$ISSUES.remove
+        tail -$[ $LINES - $SECTION + 1 ] $ISSUES >>$ISSUES.remove
+        mv $ISSUES.remove $ISSUES
+      else
+        echo "" >>$ISSUES
+        echo $AUTHOR $DATE >>$ISSUES
+        git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES
+      fi
     else
-      echo "$AUTHOR /${DATE}[${HASH}](${PREFIX}${HASH})" >>$ISSUES.remove
+      echo "ID $TID not found in issues collection"
     fi
-    git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES.remove
-    echo "" >>$ISSUES.remove
-    tail -$[ $LINES - $SECTION + 1 ] $ISSUES >>$ISSUES.remove
-    mv $ISSUES.remove $ISSUES
-  else
-    echo "" >>$ISSUES
-    echo $AUTHOR $DATE >>$ISSUES
-    git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES
-  fi
+  done
 
   roadmap
 
@@ -121,8 +122,7 @@ if [ ! -z "$STATUS" ] ; then
     TRACKDOWN=`dirname $ISSUES`
     cd $TRACKDOWN
     echo "TrackDown: committing"
-    git commit -m "Committed for issue #$ID" issues.md > /dev/null
-    git commit -m "Committed for issue #$ID" roadmap.md > /dev/null
+    git commit -m "Committed for issue(s) #$ID" issues.md roadmap.md > /dev/null
     cd $WD
     AUTOPUSH=`grep autopush=true .trackdown/config`
     # echo "AUTOPUSH: $AUTOPUSH"
