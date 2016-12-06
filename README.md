@@ -777,6 +777,22 @@ The full migration is not covered by a command yet and setting up mirrored data
 in the special TrackDown branch must be accomplished manually.
 
 
+[markdown]: https://daringfireball.net/projects/markdown/
+[git]: http://git-scm.com/
+[trac]: http://trac.edgewall.org/
+[bitbucket]: https://bitbucket.org/
+[fossil]: http://fossil-scm.org/index.html/doc/trunk/www/index.wiki
+[gitlab]: https://gitlab.com/
+[github]: https://github.com/
+[jgit]: https://eclipse.org/jgit/
+[redmine]: http://www.redmine.org/
+[gogs]: https://gogs.io/
+[gitea]: https://gitea.io/
+[pikacode]: https://v2.pikacode.com/
+[mdwiki]: http://mdwiki.info
+[jq]: https://stedolan.github.io/jq/
+
+
 # Issues
 
 Right now we have three areas/iterations/sprints in this issue list:
@@ -842,7 +858,10 @@ tickets to the special markdown format given here as a mirror for offline use.
 
     refs #GITHUB mirroring in its first incarnation of yet another mirror type
 
-## REDMINE offline mirror (in progress)
+ Martin Goellnitz  / Tue Dec 6 18:19:54 2016 [8ec2c02ebfd241b9b8599ef0fd0b3ebf763907e2](https://github.com/mgoellnitz/trackdown/commit/8ec2c02ebfd241b9b8599ef0fd0b3ebf763907e2)
+
+    refs #GITHUB automatically discover single commit URLs für github and the others
+
 
 *mirror*
 
@@ -1026,23 +1045,12 @@ collection file resulting in callable HTTP-links.
 
     resolve #PREFIX commit hashes to form clickable links
 
-## MULTIISSUE There can be only one issue per commit.
+## MULTIISSUE There can be only one issue per commit. (in progress)
 
 *nth*
 
 Right now we only support the extraction of one issues ID per [GIT][git] commit.
 
-[markdown]: https://daringfireball.net/projects/markdown/
-[git]: http://git-scm.com/
-[trac]: http://trac.edgewall.org/
-[bitbucket]: https://bitbucket.org/
-[fossil]: http://fossil-scm.org/index.html/doc/trunk/www/index.wiki
-[gitlab]: https://gitlab.com/
-[github]: https://github.com/
-[jgit]: https://eclipse.org/jgit/
-[redmine]: http://www.redmine.org/
-[gogs]: https://gogs.io/
-[gitea]: https://gitea.io/
-[pikacode]: https://v2.pikacode.com/
-[mdwiki]: http://mdwiki.info
-[jq]: https://stedolan.github.io/jq/
+Martin Goellnitz Tue Dec 6 18:20:48 2016
+
+    refs #MULTIISSUE command can be issues in the commit message
