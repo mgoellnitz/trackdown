@@ -119,11 +119,7 @@ when the solution is brought into production.
 
 ### Target Version
 
-Onyl digits, letters and dots. No spaces allowed.
-
-```
-  Future-Work Will be evaluated to calculate your project's roadmap
-```
+Only digits, letters and dots. No spaces allowed.
 
 ### Description
 
@@ -169,7 +165,7 @@ least one commit for this to work. To initialize a [GIT][git] repository that
 way, call the script
 
 ```
-  trackdown.sh init
+trackdown.sh init
 ```
 
 This creates the TrackDown thread for the issue tracking. You have to manually
@@ -177,7 +173,7 @@ propagate this thread to your upstream repositories. TrackDown does not
 interfere with your remote workflow.
 
 ```
-  git push original trackdown
+git push original trackdown
 ```
 
 Initialization must only be executed once for a repository and all of its forks 
@@ -195,19 +191,19 @@ integrated with your source code [GIT][git] commits.
 To start using TrackDown for the respective clone you have to issue
 
 ```
-  trackdown.sh use
+trackdown.sh use
 ```
 
 when using the TrackDown branch in the source code repository or
 
 ```
-  trackdown.sh use <path/to/issues.md>
+trackdown.sh use <path/to/issues.md>
 ```
 
 like in
 
 ```
-  trackdown.sh use ../wiki/issues.md
+trackdown.sh use ../wiki/issues.md
 ```
 
 when using TrackDown with the issue collection file at a different location.
@@ -234,7 +230,7 @@ of JGit (Version 4.6 an up).
 
 Right now TrackDown understands only two commands in the commit messages. 
 
-## refs *id*
+## refs #*id*[,*id*...]
 
 Reference the commit in the list of commits at the end of the issue text.
 
@@ -243,13 +239,18 @@ git commit -m "refs #MYID - comment" files...
 ```
 
 This command changes the state to "in progress" from anything like new, nothing,
-or even resolved
+or even resolved. If the commit relates to more than one issue, the issues can be
+separated by commas.
 
 ```
-  (Future work: lifts the issue up to the top of the list)
+git commit -m "fixes #ONEID,ANOTHERID - comment" files...
 ```
 
-## resolves|resolve|fixes *id*
+```
+(Future work: lifts the issue up to the top of the list)
+```
+
+## resolves|resolve|fixes #*id*[,*id*...]
 
 Reference the commit in the list of commits at the end of the issue text.
 
@@ -258,10 +259,15 @@ git commit -m "fixes #MYID - comment" files...
 ```
 
 This command changes the state to "resolved" from anything like new, nothing, or
-in progress
+in progress. If the commit relates to more than one issue, the issues can be
+separated by commas.
 
 ```
-  (Future work: moves the issue to the top the part of the list where the resolved issues reside)
+git commit -m "fixes #ONEID,ANOTHERID - comment" files...
+```
+
+```
+(Future work: moves the issue to the top the part of the list where the resolved issues reside)
 ```
 
 
@@ -276,7 +282,7 @@ Provided that the issues in the issue collection file are marked with version
 labels like suggested, the command
 
 ```
-  trackdown.sh roadmap
+trackdown.sh roadmap
 ```
 
 prints out a complete roadmap of the project sorted by "target versions" in 
@@ -292,7 +298,7 @@ The command `ls` is used to show all issues marked for a given "target version"
 like in
 
 ```
-  trackdown.sh ls 1.1
+trackdown.sh ls 1.1
 ```
 
 where all issues intended to be completed in "target version" 1.1 are listed.
@@ -308,7 +314,7 @@ release, version, or whatever your terinology might be to a separate file
 named after the given parameter. So
 
 ```
-  trackdown.sh copy 1.1
+trackdown.sh copy 1.1
 ```
 
 copies all notes for the issues marked with "1.1" as a version marker to a
@@ -321,7 +327,7 @@ the base issue collection file for your current work.
 The command
 
 ```
-  trackdown.sh issues
+trackdown.sh issues
 ```
 
 lists all potential issues in the issue collection. Potential means in this case,
@@ -331,7 +337,7 @@ issue collection file, which might be interpreted as issues.
 Optionally you can add a path to an issue collection file as a parameter like in
 
 ```
-  trackdown.sh issues ../wiki/issues.md
+trackdown.sh issues ../wiki/issues.md
 ```
 
 
@@ -340,7 +346,7 @@ Optionally you can add a path to an issue collection file as a parameter like in
 The command
 
 ```
-  trackdown.sh mine
+trackdown.sh mine
 ```
 
 lists all issues in the issue collection, which are marked with a
@@ -359,13 +365,13 @@ Optionally you can add a path to an issue collection file as an additional param
 like in
 
 ```
-  trackdown.sh mine ../wiki/issues.md
+trackdown.sh mine ../wiki/issues.md
 ```
 
 or
 
 ```
-  trackdown.sh mine UserName ../wiki/issues.md
+trackdown.sh mine UserName ../wiki/issues.md
 ```
 
 
@@ -563,7 +569,7 @@ The output of Trackdown looks pretty usable in this setup and gives a good
 overview of the issues as the roadmap.
 
 When you also use GitLab, GitHub, or Bitbucket Wikis, [MDWiki][mdwiki] has
-a different understanding, how links should be interpreted. TO get a fully
+a different understanding, how links should be interpreted. To get a fully
 compatible local and remote viewing setup for these cases, a patched
 version of [MDWiki][mdwiki] [exists on GitHub](https://github.com/mgoellnitz/mdwiki/).
 
@@ -667,7 +673,7 @@ Instead of `trackdown.sh use` issue `trackdown.sh gogs` to setup the mirror
 connection.
 
 ```
-trackdown.sh gogs <apitoken> <projectname> [https://<gitlab.host>]
+trackdown.sh gogs <apitoken> <projectname> [https://<gogs.host>]
 ```
 
 If you ommit the url prefix, `https://v2.pikacode.com` is used.
@@ -764,7 +770,7 @@ Assigning XYZ to user 68
 ```
 
 You have to provide the id of the user - not its name, which is also always 
-exported to the issue collection file to  facility this.
+exported to the issue collection file to facility this.
 
 
 ### Migration

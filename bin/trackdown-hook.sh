@@ -84,13 +84,14 @@ if [ ! -z "$STATUS" ] ; then
   for TID in `echo "$ID"|sed -e 's/,/\ /g'`; do
     HASID=`grep "^\#\#\ ${TID}" $ISSUES`
     if [ ! -z "$HASID" ] ; then
+      echo "Issue $TID"
       sed -i.remove -e "s/##\ $TID\ \(.*\)\ (.*)/## $TID \1/g" $ISSUES
       sed -i.remove -e "s/##\ $TID\ \(.*\)/## $TID \1 ($STATUS)/g" $ISSUES
       rm $ISSUES.remove
-      ISLAST=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${ID}.*$STATUS" |tail -1|grep $TID`
+      ISLAST=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${TID}.*$STATUS" |tail -1|grep $TID`
       # echo "last: $ISLAST"
       if [ -z "$ISLAST" ] ; then
-        SECTION=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${ID}.*$STATUS"|tail -1|cut -d ':' -f 1`
+        SECTION=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${TID}.*$STATUS"|tail -1|cut -d ':' -f 1`
         LINES=`cat $ISSUES|wc -l`
         # echo "SECTION $SECTION - LINES $LINES"
         head -$[ $SECTION - 1 ] $ISSUES >>$ISSUES.remove
