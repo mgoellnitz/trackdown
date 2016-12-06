@@ -797,6 +797,7 @@ in the special TrackDown branch must be accomplished manually.
 [pikacode]: https://v2.pikacode.com/
 [mdwiki]: http://mdwiki.info
 [jq]: https://stedolan.github.io/jq/
+[hg]: https://www.mercurial-scm.org/
 
 
 # Issues
@@ -1064,3 +1065,10 @@ Martin Goellnitz Tue Dec 6 18:20:48 2016
 Martin Goellnitz Tue Dec 6 18:52:52 2016
 
     fixes #MULTIISSUE needed documentation and a fix
+
+## MERCURIAL support should be added withthe same functionality as GIT
+
+*nth*
+
+Like the scenario where TrackDown is used with a special branch within your
+GIT repository, this setup can also be achieved with [Mercurial][hg]
