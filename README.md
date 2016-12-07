@@ -10,8 +10,9 @@ In short: You are missing the "git clone" for your tickets from [GitLab][gitlab]
 code and wiki?
 
 You need issue tracking which works for distributed and potentially disconnected
-situations together with your distributed version control [GIT][git] and e.g. 
-also your distributed wiki editing through [GIT][git] as well?
+situations together with your distributed version control [GIT][git] or
+[Mercurial][hg] and e.g. also your distributed wiki editing through [GIT][git] 
+or [Mercurial][hg] as well?
 
 Then this here is for you!
 
@@ -31,12 +32,12 @@ workflow elements which are supported:
 The issues are defined and maintained in a single [Markdown][markdown] file 
 following the format given here.
 
-The [GIT][git] post-commit hook of TrackDown reads the commit messages and 
-modifies that issue collection if your commit messages relate to some of the 
-issues.
+The [GIT][git] post-commit hook or [Mercurial][hg] commit hook of TrackDown 
+reads the commit messages and  modifies that issue collection if your commit 
+messages relate to some of the  issues.
 
 Additionally a roadmap file is automatically maintained for your tickets.
-This roadmap file groupd the issue headline in groups according to their
+This roadmap file groups the issue's headlines in groups according to their
 version label and illustrated progress counting issues in progress and resolved
 issues.
 
@@ -44,9 +45,9 @@ The issue collection this way is held local on your machine and not remote in
 the database of a tracking system. (Which is something also [Fossil][fossil] 
 supports.) Like with the source code, it is pushed to remote repositories if 
 needed (or possible). The simple [Markdown][markdown] format and the usage of 
-[GIT][git] as a backend support distributed, shared editing and later merging of 
-the issues and the related notes in the issue collection. (This is where the 
-parallel with [Fossil][fossil] ends).
+[GIT][git] or [Mercurial][hg] as a backend support distributed, shared editing 
+and later merging of the issues and the related notes in the issue collection. 
+(This is where the  parallel with [Fossil][fossil] ends).
 
 
 # The Format
@@ -147,7 +148,7 @@ source code repository, or place it in a arbitrary place of your chosing.
 The first - default - way is to use it in a separate branch of your source code 
 repository. It is kept visible and editable through a symbolic link at the
 root level of the source code repository. Of course this file is touched
-automatically via commits to your sourcecode through the post-commit hook of
+automatically via commits to your sourcecode through the (post-)commit hook of
 TrackDown.
 
 The second way is to use the file at a different location - e.g. in the wiki of
@@ -160,20 +161,29 @@ issue collection file.
 
 If you want to track the issues in a TrackDown branch of your source code 
 repository and not in any other location of your chosing, you need to modify the 
-[GIT][git] repository accordingly. Your source code repository must contain at 
-least one commit for this to work. To initialize a [GIT][git] repository that 
-way, call the script
+[GIT][git] or [Mercurial][hg] repository accordingly. Your source code 
+repository must contain at  least one commit for this to work. 
+
+To initialize your source code repository that way, call the script
 
 ```
 trackdown.sh init
 ```
 
-This creates the TrackDown thread for the issue tracking. You have to manually
-propagate this thread to your upstream repositories. TrackDown does not
-interfere with your remote workflow.
+This creates the TrackDown branch for the issue tracking. For [GIT][git] 
+respositories, you have to manually propagate this thread to your upstream 
+repositories. 
 
 ```
-git push original trackdown
+git push origin trackdown
+```
+
+TrackDown does not interfere with your remote workflow for any version control
+system, so also for [Mercurial][hg] the trackdown branch will onyl show up
+in the remote repositories if you push it.
+
+```
+hg push
 ```
 
 Initialization must only be executed once for a repository and all of its forks 
@@ -186,7 +196,7 @@ out this step.
 
 Regardless of the location of the issue collection file, for each clone of the
 repository you have to set up the TrackDown tooling to be able to use it
-integrated with your source code [GIT][git] commits.
+integrated with your source code commits.
 
 To start using TrackDown for the respective clone you have to issue
 
@@ -207,11 +217,12 @@ trackdown.sh use ../wiki/issues.md
 ```
 
 when using TrackDown with the issue collection file at a different location.
-Automatic commit and push (see below) will be switched of in the latter case.
+Automatic commit and push (see below) will be switched off in the latter case.
 
-This creates a gitignored link issues.md in the root directory of your project
-pointing to the issue collection file and it will configure a post-commit hook
-for [GIT][git].
+This creates a (git or hg ignored) link issues.md in the root directory of your 
+project pointing to the issue collection file and it will configure a 
+post-commit hook for [GIT][git] or a commit hook for [Mercurial][hg] 
+respectively.
 
 After this step you can edit the issue collection file following the format
 mentioned here.
@@ -220,10 +231,12 @@ mentioned here.
 # Commands in the Commit Messages
 
 To support automatic reading of commit messages and modifying the issues
-collection alongside you work, TrackDown relies on a [GIT][git] implementation, 
-which is capable if executing the script hooks. 
+collection alongside you work. 
 
-[JGit ][jgit] is lacking this (for the post commit hooks used here) and as a 
+When using [GIT][git], TrackDown relies on an implementation, which is capable 
+of executing the script hooks. 
+
+[JGit ][jgit] is lacking this (for the post commit hooks used here), and as a 
 result NetBeans and Eclipse cannot use this mimik! With Eclipse you might be 
 lucky using the [nightly builds](http://download.eclipse.org/egit/updates-nightly/) 
 of JGit (Version 4.6 an up).
@@ -445,7 +458,10 @@ use.
 
 ## Prerequisites
 
-TrackDown relies on a [GIT][git] installation available on the path.
+TrackDown relies on a [GIT][git] or [Mercurial][hg] installation available on 
+the path when used with distributed version control as the backend. The 
+mirror feature in turn heavily relies in an installation of [jq][jq] available
+through your path.
 
 ## Compatibility
 
@@ -506,8 +522,9 @@ It has decent VCS solutions, a WIKI which can be used distributed through
 The only thing I'm missing is the distributed offline work for ticketing.
 
 So in this case it is possible to leave out the ticketing of [Bitbucket][bitbucket] 
-and use TrackDown with [Bitbucket][bitbucket] as the [GIT][git] based 
-storage backend. And this is exactly what TrackDown was designed for.
+and use TrackDown with [Bitbucket][bitbucket] as the [GIT][git] or 
+[Mercurial][hg] based storage backend. And this is exactly what TrackDown was 
+designed for.
 
 ## GitHub
 
