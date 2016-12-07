@@ -32,8 +32,9 @@
 code and wiki?</p>
 
 <p>You need issue tracking which works for distributed and potentially disconnected
-situations together with your distributed version control <a href="http://git-scm.com/">GIT</a> and e.g. 
-also your distributed wiki editing through <a href="http://git-scm.com/">GIT</a> as well?</p>
+situations together with your distributed version control <a href="http://git-scm.com/">GIT</a> or
+<a href="https://www.mercurial-scm.org/">Mercurial</a> and e.g. also your distributed wiki editing through <a href="http://git-scm.com/">GIT</a> 
+or <a href="https://www.mercurial-scm.org/">Mercurial</a> as well?</p>
 
 <p>Then this here is for you!</p>
 
@@ -54,12 +55,12 @@ workflow elements which are supported:</p>
 <p>The issues are defined and maintained in a single <a href="https://daringfireball.net/projects/markdown/">Markdown</a> file 
 following the format given here.</p>
 
-<p>The <a href="http://git-scm.com/">GIT</a> post-commit hook of TrackDown reads the commit messages and 
-modifies that issue collection if your commit messages relate to some of the 
-issues.</p>
+<p>The <a href="http://git-scm.com/">GIT</a> post-commit hook or <a href="https://www.mercurial-scm.org/">Mercurial</a> commit hook of TrackDown 
+reads the commit messages and  modifies that issue collection if your commit 
+messages relate to some of the  issues.</p>
 
 <p>Additionally a roadmap file is automatically maintained for your tickets.
-This roadmap file groupd the issue headline in groups according to their
+This roadmap file groups the issue's headlines in groups according to their
 version label and illustrated progress counting issues in progress and resolved
 issues.</p>
 
@@ -67,9 +68,9 @@ issues.</p>
 the database of a tracking system. (Which is something also <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a> 
 supports.) Like with the source code, it is pushed to remote repositories if 
 needed (or possible). The simple <a href="https://daringfireball.net/projects/markdown/">Markdown</a> format and the usage of 
-<a href="http://git-scm.com/">GIT</a> as a backend support distributed, shared editing and later merging of 
-the issues and the related notes in the issue collection. (This is where the 
-parallel with <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a> ends).</p>
+<a href="http://git-scm.com/">GIT</a> or <a href="https://www.mercurial-scm.org/">Mercurial</a> as a backend support distributed, shared editing 
+and later merging of the issues and the related notes in the issue collection. 
+(This is where the  parallel with <a href="http://fossil-scm.org/index.html/doc/trunk/www/index.wiki">Fossil</a> ends).</p>
 
 <h1>
 <a id="the-format" class="anchor" href="#the-format" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Format</h1>
@@ -178,7 +179,7 @@ source code repository, or place it in a arbitrary place of your chosing.</p>
 <p>The first - default - way is to use it in a separate branch of your source code 
 repository. It is kept visible and editable through a symbolic link at the
 root level of the source code repository. Of course this file is touched
-automatically via commits to your sourcecode through the post-commit hook of
+automatically via commits to your sourcecode through the (post-)commit hook of
 TrackDown.</p>
 
 <p>The second way is to use the file at a different location - e.g. in the wiki of
@@ -192,18 +193,26 @@ issue collection file.</p>
 
 <p>If you want to track the issues in a TrackDown branch of your source code 
 repository and not in any other location of your chosing, you need to modify the 
-<a href="http://git-scm.com/">GIT</a> repository accordingly. Your source code repository must contain at 
-least one commit for this to work. To initialize a <a href="http://git-scm.com/">GIT</a> repository that 
-way, call the script</p>
+<a href="http://git-scm.com/">GIT</a> or <a href="https://www.mercurial-scm.org/">Mercurial</a> repository accordingly. Your source code 
+repository must contain at  least one commit for this to work. </p>
+
+<p>To initialize your source code repository that way, call the script</p>
 
 <pre><code>trackdown.sh init
 </code></pre>
 
-<p>This creates the TrackDown thread for the issue tracking. You have to manually
-propagate this thread to your upstream repositories. TrackDown does not
-interfere with your remote workflow.</p>
+<p>This creates the TrackDown branch for the issue tracking. For <a href="http://git-scm.com/">GIT</a> 
+respositories, you have to manually propagate this thread to your upstream 
+repositories. </p>
 
-<pre><code>git push original trackdown
+<pre><code>git push origin trackdown
+</code></pre>
+
+<p>TrackDown does not interfere with your remote workflow for any version control
+system, so also for <a href="https://www.mercurial-scm.org/">Mercurial</a> the trackdown branch will onyl show up
+in the remote repositories if you push it.</p>
+
+<pre><code>hg push
 </code></pre>
 
 <p>Initialization must only be executed once for a repository and all of its forks 
@@ -217,7 +226,7 @@ out this step.</p>
 
 <p>Regardless of the location of the issue collection file, for each clone of the
 repository you have to set up the TrackDown tooling to be able to use it
-integrated with your source code <a href="http://git-scm.com/">GIT</a> commits.</p>
+integrated with your source code commits.</p>
 
 <p>To start using TrackDown for the respective clone you have to issue</p>
 
@@ -235,11 +244,12 @@ integrated with your source code <a href="http://git-scm.com/">GIT</a> commits.<
 </code></pre>
 
 <p>when using TrackDown with the issue collection file at a different location.
-Automatic commit and push (see below) will be switched of in the latter case.</p>
+Automatic commit and push (see below) will be switched off in the latter case.</p>
 
-<p>This creates a gitignored link issues.md in the root directory of your project
-pointing to the issue collection file and it will configure a post-commit hook
-for <a href="http://git-scm.com/">GIT</a>.</p>
+<p>This creates a (git or hg ignored) link issues.md in the root directory of your 
+project pointing to the issue collection file and it will configure a 
+post-commit hook for <a href="http://git-scm.com/">GIT</a> or a commit hook for <a href="https://www.mercurial-scm.org/">Mercurial</a> 
+respectively.</p>
 
 <p>After this step you can edit the issue collection file following the format
 mentioned here.</p>
@@ -248,10 +258,12 @@ mentioned here.</p>
 <a id="commands-in-the-commit-messages" class="anchor" href="#commands-in-the-commit-messages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands in the Commit Messages</h1>
 
 <p>To support automatic reading of commit messages and modifying the issues
-collection alongside you work, TrackDown relies on a <a href="http://git-scm.com/">GIT</a> implementation, 
-which is capable if executing the script hooks. </p>
+collection alongside you work. </p>
 
-<p><a href="https://eclipse.org/jgit/">JGit </a> is lacking this (for the post commit hooks used here) and as a 
+<p>When using <a href="http://git-scm.com/">GIT</a>, TrackDown relies on an implementation, which is capable 
+of executing the script hooks. </p>
+
+<p><a href="https://eclipse.org/jgit/">JGit </a> is lacking this (for the post commit hooks used here), and as a 
 result NetBeans and Eclipse cannot use this mimik! With Eclipse you might be 
 lucky using the <a href="http://download.eclipse.org/egit/updates-nightly/">nightly builds</a> 
 of JGit (Version 4.6 an up).</p>
@@ -468,7 +480,10 @@ use.</p>
 <h2>
 <a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Prerequisites</h2>
 
-<p>TrackDown relies on a <a href="http://git-scm.com/">GIT</a> installation available on the path.</p>
+<p>TrackDown relies on a <a href="http://git-scm.com/">GIT</a> or <a href="https://www.mercurial-scm.org/">Mercurial</a> installation available on 
+the path when used with distributed version control as the backend. The 
+mirror feature in turn heavily relies in an installation of <a href="https://stedolan.github.io/jq/">jq</a> available
+through your path.</p>
 
 <h2>
 <a id="compatibility" class="anchor" href="#compatibility" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compatibility</h2>
@@ -534,8 +549,9 @@ It has decent VCS solutions, a WIKI which can be used distributed through
 <p>The only thing I'm missing is the distributed offline work for ticketing.</p>
 
 <p>So in this case it is possible to leave out the ticketing of <a href="https://bitbucket.org/">Bitbucket</a> 
-and use TrackDown with <a href="https://bitbucket.org/">Bitbucket</a> as the <a href="http://git-scm.com/">GIT</a> based 
-storage backend. And this is exactly what TrackDown was designed for.</p>
+and use TrackDown with <a href="https://bitbucket.org/">Bitbucket</a> as the <a href="http://git-scm.com/">GIT</a> or 
+<a href="https://www.mercurial-scm.org/">Mercurial</a> based storage backend. And this is exactly what TrackDown was 
+designed for.</p>
 
 <h2>
 <a id="github" class="anchor" href="#github" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GitHub</h2>
@@ -890,6 +906,9 @@ tickets to the special markdown format given here as a mirror for offline use.</
 <pre><code>refs #GITHUB automatically discover single commit URLs für github and the others
 </code></pre>
 
+<h2>
+<a id="redmine-offline-mirror-in-progress" class="anchor" href="#redmine-offline-mirror-in-progress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>REDMINE offline mirror (in progress)</h2>
+
 <p><em>mirror</em></p>
 
 <p>For how historical reasons I have projects with <a href="http://www.redmine.org/">Redmine</a> ticketing in 
@@ -1129,6 +1148,11 @@ GIT repository, this setup can also be achieved with <a href="https://www.mercur
 <p>Martin Goellnitz Wed Dec 7 00:46:36 2016</p>
 
 <pre><code>refs #MERCURIAL flavour of this projects started - hook equivalent completely missing
+</code></pre>
+
+<p>Martin Goellnitz Wed Dec 7 01:57:12 2016</p>
+
+<pre><code>refs #MERCURIAL got its own hook implementation
 </code></pre>
 
       <footer class="site-footer">
