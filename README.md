@@ -869,6 +869,7 @@ tickets to the special markdown format given here as a mirror for offline use.
 
     refs #GITHUB automatically discover single commit URLs für github and the others
 
+## REDMINE offline mirror (in progress)
 
 *mirror*
 
@@ -1076,3 +1077,7 @@ GIT repository, this setup can also be achieved with [Mercurial][hg]
 Martin Goellnitz Wed Dec 7 00:46:36 2016
 
     refs #MERCURIAL flavour of this projects started - hook equivalent completely missing
+
+Martin Goellnitz Wed Dec 7 01:57:12 2016
+
+    refs #MERCURIAL got its own hook implementation
