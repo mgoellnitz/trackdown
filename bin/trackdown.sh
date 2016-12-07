@@ -244,7 +244,7 @@ if [ "$CMD" = "use" ] ; then
       echo "GIT repository doesn't contain any branch. Exiting."
       exit
     fi
-    cp $DIR/trackdown-hook.sh .git/hooks/post-commit
+    cp $DIR/trackdown-git-hook.sh .git/hooks/post-commit
     chmod 755 .git/hooks/post-commit
     test ! -d .trackdown && mkdir .trackdown
     if [ -z "$ISSUES" ] ; then
@@ -272,15 +272,15 @@ if [ "$CMD" = "use" ] ; then
     test ! -z "$REMOTE" && echo "Remote system is $REMOTE."
     if [ "$CASE" = "github.com" ] ; then
       echo "Discovered github remote"
-      echo "prefix https://$REMOTE/commit/" >> .trackdown/config
+      echo "prefix=https://$REMOTE/commit/" >> .trackdown/config
     fi
     if [ "$CASE" = "v2.pikacode.com" ] ; then
       echo "Discovered pikacode gogs remote"
-      echo "prefix https://$REMOTE/commit/" >> .trackdown/config
+      echo "prefix=https://$REMOTE/commit/" >> .trackdown/config
     fi
     if [ "$CASE" = "bitbucket.org" ] ; then
       echo "Discovered bitbucket.org remote"
-      echo "prefix https://$REMOTE/commits/" >> .trackdown/config
+      echo "prefix=https://$REMOTE/commits/" >> .trackdown/config
     fi
   fi
   if [ -d .hg ] ; then
@@ -293,7 +293,7 @@ if [ "$CMD" = "use" ] ; then
       ISSUES=".hg/trackdown/issues.md"
       cd .hg
       hg clone --branch trackdown .. trackdown
-      test -f hgrc && cp hgrc trackdown/.hg
+      grep username hgrc >>trackdown/.hg/hgrc
       cd ..
       echo "autocommit=true" > .trackdown/config
       echo "autopush=true" >> .trackdown/config
@@ -301,15 +301,17 @@ if [ "$CMD" = "use" ] ; then
       echo "autocommit=false" > .trackdown/config
       echo "autopush=false" >> .trackdown/config
     fi
+    echo "[hooks]" >> .hg/hgrc
+    echo "commit=$DIR/trackdown-hg-hook.sh" >> .hg/hgrc
     IGNOREFILE=".hgignore"
 
     # TODO: Hg How to obtain remote reference here
-    REMOTE=`hg paths|grep "default ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|cut -d '/' -f 1|cut -d ':' -f 1`
+    REMOTE=`hg paths|grep "default ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
     echo "Remote system is $REMOTE."
     if [ "$CASE" = "bitbucket.org" ] ; then
       echo "Discovered bitbucket.org remote"
-      echo "prefix https://$REMOTE/commits/" >> .trackdown/config
+      echo "prefix=https://$REMOTE/commits/" >> .trackdown/config
     fi
 
   fi
@@ -349,7 +351,7 @@ if [ "$CMD" = "update" ] ; then
   if [ -d .git ] ; then
     TYPE=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
     if [ -z $TYPE ] ; then
-      cp $DIR/trackdown-hook.sh .git/hooks/post-commit
+      cp $DIR/trackdown-git-hook.sh .git/hooks/post-commit
       chmod 755 .git/hooks/post-commit
     else
       echo "This repository is set up as a mirror - no hoook update needed."
