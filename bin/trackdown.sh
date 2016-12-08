@@ -19,6 +19,15 @@
 CMD=$1
 ISSUES=$2
 DIR=`dirname $0`
+CWD=`pwd`
+
+while [ `pwd` != "/"  -a `ls -d .trackdown 2>&1|head -1|cut -d ' ' -f 1` != ".trackdown" ] ; do
+  cd ..
+done
+TDBASE=`pwd`
+TDCONFIG=$TDBASE/.trackdown/config
+cd $CWD
+echo "TrackDown base directory $TDBASE"
 
 # $1 message to issue when not given $2 parameter to check
 function bailOnZero {
@@ -30,34 +39,32 @@ function bailOnZero {
 
 # Exit if trackdown is not initialized
 function checkTrackdown {
-  if [ ! -f .trackdown/config ] ; then
-    echo "Project not initialized for trackdown use."
-    exit
-  fi
+    if [ ! -f $TDCONFIG ] ; then
+      echo "Project not initialized for trackdown use."
+      exit
+    fi
 }
 
 # Discover issues collection file from setup
 function discoverIssues {
   if [ -z "$ISSUES" ] ; then
-    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+    ISSUES=`test -f $TDCONFIG && grep location= $TDCONFIG|cut -d '=' -f 2`
+    if [ -z "$ISSUES" ] ; then
+      test -d $TDBASE/.git && ISSUES=".git/trackdown/issues.md"
+      test -d $TDBASE/.hg && ISSUES=".hg/trackdown/issues.md"
+    fi
+    ESCAPEDBASE=`echo $TDBASE|sed -e 's/\//\\\xxxxxx\//g'|sed -e 's/\xxxxxx//g'`
+    ISSUES=`echo $ISSUES|sed -e "s/^\([a-zA-Z0-9\.]\)/$ESCAPEDBASE\/\1/g"`
   fi
-  if [ -z "$ISSUES" ] ; then
-    if [ -d .git ] ; then
-      ISSUES=".git/trackdown/issues.md"
-    fi
-    if [ -d .hg ] ; then
-      ISSUES=".hg/trackdown/issues.md"
-    fi
+  if [ ! -f $ISSUES ] ; then
+    echo "No issue collection file found. Are we in a TrackDown context?"
+    exit
   fi
 }
 
 # Prevent mirror setup to occur repeatedly
 function preventRepeatedMirrorInit {
-  if [ ! -d .trackdown ] ; then
-    mkdir .trackdown
-    touch .trackdown/config
-  fi
-  MIRROR=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  MIRROR=`test -f $TDCONFIG && grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
   if [ ! -z $MIRROR ] ; then
     echo "Mirror setup already done in this repository with type $MIRROR."
     exit
@@ -66,23 +73,24 @@ function preventRepeatedMirrorInit {
 
 # Do common setup steps for collection for mirror type $1
 function setupCollectionReference {
-  COLLECTION=$1-collection.md
-  echo "autocommit=false" > .trackdown/config
-  echo "autopush=false" >> .trackdown/config
-  echo "location=$COLLECTION" >> .trackdown/config
-  CHECK=`grep .trackdown .gitignore|wc -l`
+  COLLECTION=$1-issues.md
+  test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
+  echo "autocommit=false" > $TDCONFIG
+  echo "autopush=false" >> $TDCONFIG
+  echo "location=$COLLECTION" >> $TDCONFIG
+  CHECK=`grep .trackdown $TDBASE/.gitignore|wc -l`
   if [ $CHECK = 0 ] ; then
-    echo "/.trackdown" >> .gitignore
+    echo "/.trackdown" >> $TDBASE/.gitignore
   fi
-  CHECK=`grep $COLLECTION .gitignore|wc -l`
+  CHECK=`grep $COLLECTION $TDBASE/.gitignore|wc -l`
   if [ $CHECK = 0 ] ; then
-    echo "/$COLLECTION" >> .gitignore
+    echo "/$COLLECTION" >> $TDBASE/.gitignore
   fi
-  CHECK=`grep roadmap.md .gitignore|wc -l`
+  CHECK=`grep roadmap.md $TDBASE/.gitignore|wc -l`
   if [ $CHECK = 0 ] ; then
-    echo "/roadmap.md" >> .gitignore
+    echo "/roadmap.md" >> $TDBASE/.gitignore
   fi
-  echo "mirror.type=$1" >> .trackdown/config
+  echo "mirror.type=$1" >> $TDCONFIG
 }
 
 
@@ -145,12 +153,7 @@ if [ "$CMD" = "ls" ] ; then
 
   # Location of the issues file
   ISSUES=$3
-  if [ -z "$ISSUES" ] ; then
-    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
-  fi
-  if [ -z "$ISSUES" ] ; then
-    ISSUES=".git/trackdown/issues.md"
-  fi
+  discoverIssues
   grep -B2 "^\*$2\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'
 
 fi
@@ -161,7 +164,7 @@ if [ "$CMD" = "mine" ] ; then
 
   discoverIssues
   if [ -z "$ME" ] ; then
-    ME=`grep me= .trackdown/config|cut -d '=' -f 2`
+    ME=`grep me= $TDCONFIG|cut -d '=' -f 2`
   fi
   if [ -z "$ME" ] ; then
     ME="$USER"
@@ -235,20 +238,20 @@ fi
 # use command
 if [ "$CMD" = "use" ] ; then
 
-  if [ -f .trackdown/config ] ; then
+  if [ -f $TDCONFIG ] ; then
     echo "Project already initialized for trackdown use."
     exit
   fi
-  if [ -d .git ] ; then
+  if [ -d $TDBASE/.git ] ; then
     if [ `git branch -l|wc -l` = 0 ] ; then
       echo "GIT repository doesn't contain any branch. Exiting."
       exit
     fi
-    cp $DIR/trackdown-git-hook.sh .git/hooks/post-commit
-    chmod 755 .git/hooks/post-commit
-    test ! -d .trackdown && mkdir .trackdown
+    cp $DIR/trackdown-git-hook.sh $TDBASE/.git/hooks/post-commit
+    chmod 755 $TDBASE/.git/hooks/post-commit
+    test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
     if [ -z "$ISSUES" ] ; then
-      ISSUES=".git/trackdown/issues.md"
+      ISSUES="$TDBASE/.git/trackdown/issues.md"
       NAME=`git config -l|grep user.name|cut -d '=' -f 2`
       MAIL=`git config -l|grep user.email|cut -d '=' -f 2`
       cd .git
@@ -259,31 +262,31 @@ if [ "$CMD" = "use" ] ; then
       git config --local user.email "$MAIL"
       git config --local user.name "$NAME"
       cd ../..
-      echo "autocommit=true" > .trackdown/config
-      echo "autopush=true" >> .trackdown/config
+      echo "autocommit=true" > $TDCONFIG
+      echo "autopush=true" >> $TDCONFIG
     else
-      echo "autocommit=false" > .trackdown/config
-      echo "autopush=false" >> .trackdown/config
+      echo "autocommit=false" > $TDCONFIG
+      echo "autopush=false" >> $TDCONFIG
     fi
-    IGNOREFILE=".gitignore"
+    IGNOREFILE="$TDBASE/.gitignore"
 
     REMOTE=`grep -A2 remote.\"origin  .git/config |grep "url ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|cut -d '/' -f 1|cut -d ':' -f 1`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
     test ! -z "$REMOTE" && echo "Remote system is $REMOTE."
     if [ "$CASE" = "github.com" ] ; then
       echo "Discovered github remote"
-      echo "prefix=https://$REMOTE/commit/" >> .trackdown/config
+      echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
     fi
     if [ "$CASE" = "v2.pikacode.com" ] ; then
       echo "Discovered pikacode gogs remote"
-      echo "prefix=https://$REMOTE/commit/" >> .trackdown/config
+      echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
     fi
     if [ "$CASE" = "bitbucket.org" ] ; then
       echo "Discovered bitbucket.org remote"
-      echo "prefix=https://$REMOTE/commits/" >> .trackdown/config
+      echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
     fi
   fi
-  if [ -d .hg ] ; then
+  if [ -d $TDBASE/.hg ] ; then
     if [ `hg branches|wc -l` = 0 ] ; then
       echo "Mercurial repository missing branches. Exiting."
       exit
@@ -291,19 +294,20 @@ if [ "$CMD" = "use" ] ; then
     test ! -d .trackdown && mkdir .trackdown
     if [ -z "$ISSUES" ] ; then
       ISSUES=".hg/trackdown/issues.md"
-      cd .hg
+      cd $TDBASE/.hg
       hg clone --branch trackdown .. trackdown
       grep username hgrc >>trackdown/.hg/hgrc
       cd ..
-      echo "autocommit=true" > .trackdown/config
-      echo "autopush=true" >> .trackdown/config
+      echo "autocommit=true" > $TDCONFIG
+      echo "autopush=true" >> $TDCONFIG
     else
-      echo "autocommit=false" > .trackdown/config
-      echo "autopush=false" >> .trackdown/config
+      echo "autocommit=false" > $TDCONFIG
+      echo "autopush=false" >> $TDCONFIG
     fi
     echo "[hooks]" >> .hg/hgrc
     echo "commit=$DIR/trackdown-hg-hook.sh" >> .hg/hgrc
-    IGNOREFILE=".hgignore"
+    cd $CWD
+    IGNOREFILE="$TDBASE/.hgignore"
 
     # TODO: Hg How to obtain remote reference here
     REMOTE=`hg paths|grep "default ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'`
@@ -311,14 +315,15 @@ if [ "$CMD" = "use" ] ; then
     echo "Remote system is $REMOTE."
     if [ "$CASE" = "bitbucket.org" ] ; then
       echo "Discovered bitbucket.org remote"
-      echo "prefix=https://$REMOTE/commits/" >> .trackdown/config
+      echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
     fi
 
   fi
-  if [ -f .trackdown/config ] ; then
-    echo "location=$ISSUES" >> .trackdown/config
+  if [ -f $TDCONFIG ] ; then
+    echo "location=$ISSUES" >> $TDCONFIG
     ID=`dirname $ISSUES`
     # echo "id: $ID"
+    cd $TDBASE
     if [ "." != "$ID" ] ; then
       ln -s $ISSUES issues.md
       ln -s `dirname $ISSUES`/roadmap.md roadmap.md
@@ -337,6 +342,7 @@ if [ "$CMD" = "use" ] ; then
         echo "/issues.md" >> $IGNOREFILE
       fi
     fi
+    cd $CWD
   else
     echo "Could not use trackdown in this repository due to missing DCVS (git/hg)."
   fi
@@ -348,11 +354,11 @@ fi
 if [ "$CMD" = "update" ] ; then
 
   checkTrackdown
-  if [ -d .git ] ; then
-    TYPE=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  if [ -d $TDBASE/.git ] ; then
+    TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
     if [ -z $TYPE ] ; then
-      cp $DIR/trackdown-git-hook.sh .git/hooks/post-commit
-      chmod 755 .git/hooks/post-commit
+      cp $DIR/trackdown-git-hook.sh $TDBASE/.git/hooks/post-commit
+      chmod 755 $TDBASE/.git/hooks/post-commit
     else
       echo "This repository is set up as a mirror - no hoook update needed."
     fi
@@ -367,10 +373,7 @@ fi
 if [ "$CMD" = "sync" ] ; then
 
   discoverIssues
-  WD=`pwd`
-  TRACKDOWN=`dirname $ISSUES`
-  cd $TRACKDOWN
-  if [ -d .git ] ; then
+  if [ -d $TDBASE/.git ] ; then
     if [ `git branch -l|wc -l` = 0 ] ; then
       echo "GIT repository does not contain any branch. Exiting."
     else
@@ -382,18 +385,19 @@ if [ "$CMD" = "sync" ] ; then
   else
     echo "Issues file is not located in a GIT repository."
   fi
-  cd $WD
+
 fi
 
 
 # init command
 if [ "$CMD" = "init" ] ; then
 
-  if [ -d .git ] ; then
+  if [ -d $TDBASE/.git ] ; then
     if [ `git log|wc -l` = 0 ] ; then
       echo "GIT repository missing commits. Exiting."
       exit
     fi
+    cd $TDBASE
     git stash
     BRANCH=`git branch|grep '*'|cut -d ' ' -f 2`
     git checkout --orphan trackdown
@@ -404,9 +408,11 @@ if [ "$CMD" = "init" ] ; then
     git commit -m "Empty issues collection" issues.md roadmap.md
     git checkout $BRANCH
     git stash apply
+    cd $CWD
     exit
   fi
   if [ -d .hg ] ; then
+    cd $TDBASE
     BRANCH=`hg branch`
     hg update -r 0
     hg branch trackdown
@@ -417,6 +423,7 @@ if [ "$CMD" = "init" ] ; then
     hg commit -m "Empty issues collection"
     hg push --new-branch
     hg update $BRANCH
+    cd $CWD
     exit
   fi
 
@@ -429,22 +436,20 @@ fi
 if [ "$CMD" = "mirror" ] ; then
  
   checkTrackdown
-  TYPE=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
   bailOnZero "No mirror setup done for this repository." $TYPE
+  discoverIssues
   if [ `jq 2>&1|wc -l` = 0 ] ; then
     echo "To use this functionality, jq must be installed."
     exit
   fi
-  if [ -z "$ISSUES" ] ; then
-    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
-  fi
   if [ $TYPE = "gitlab" ] ; then
     EXPORT="/tmp/issues.json"
-    URL=`grep gitlab.url= .trackdown/config|cut -d '=' -f 2`
+    URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab source url configured. Did you setup gitlab mirroring?" $URL
-    TOKEN=`grep gitlab.key= .trackdown/config|cut -d '=' -f 2`
+    TOKEN=`grep gitlab.key= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab api token configured. Did you setup gitlab mirroring?" $TOKEN
-    PROJECT=`grep gitlab.project= .trackdown/config|cut -d '=' -f 2`
+    PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
     URL="${URL}/api/v3/projects/$PROJECT/issues?per_page=100"
     curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
@@ -492,11 +497,11 @@ if [ "$CMD" = "mirror" ] ; then
 
   if [ $TYPE = "github" ] ; then
     EXPORT="/tmp/issues.json"
-    OWNER=`grep github.owner= .trackdown/config|cut -d '=' -f 2`
+    OWNER=`grep github.owner= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No github repository owner configured. Did you setup github mirroring?" $OWNER
-    TOKEN=`grep github.key= .trackdown/config|cut -d '=' -f 2`
+    TOKEN=`grep github.key= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No github api token configured. Did you setup github mirroring?" $TOKEN
-    PROJECT=`grep github.project= .trackdown/config|cut -d '=' -f 2`
+    PROJECT=`grep github.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No github project. Did you setup github mirroring?" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues?state=all"
     curl -H "Authorization: token $TOKEN" $URL >$EXPORT
@@ -549,11 +554,11 @@ if [ "$CMD" = "mirror" ] ; then
 
   if [ $TYPE = "redmine" ] ; then
     EXPORT="/tmp/issues.json"
-    BASEURL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
+    BASEURL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $BASEURL
-    KEY=`grep redmine.key= .trackdown/config|cut -d '=' -f 2`
+    KEY=`grep redmine.key= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine api key configured. Did you setup redmine mirroring?" $KEY
-    PROJECTS=`grep redmine.project= .trackdown/config|cut -d '=' -f 2`
+    PROJECTS=`grep redmine.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine project. Did you setup redmine mirroring?" $PROJECTS
     rm $ISSUES
     for PROJECT in `echo "$PROJECTS"|sed -e 's/,/\ /g'`; do
@@ -615,10 +620,10 @@ if [ "$CMD" = "mirror" ] ; then
 
   if [ $TYPE = "bitbucket" ] ; then
     EXPORT="/tmp/issues.json"
-    USER=`grep bitbucket.user= .trackdown/config|cut -d '=' -f 2`
+    USER=`grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No bitbucket.org user configured. Did you setup bitbucket.org mirroring?" $USER
     DISPLAY=`echo $USER|cut -d ':' -f 1`
-    PROJECT=`grep bitbucket.project= .trackdown/config|cut -d '=' -f 2`
+    PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No bitbucket.org project configured. Did you setup bitbucket.org mirroring?" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues"
     curl --basic -u $USER $URL >$EXPORT
@@ -629,6 +634,7 @@ if [ "$CMD" = "mirror" ] ; then
     RESULT=`jq '.error?|.message?' $EXPORT`
     if [ ! "$RESULT" = "null" ] ; then
       echo "Cannot mirror issues for bitbucket.org project ${PROJECT} as ${DISPLAY}: ${RESULT}"
+      cd $CWD
       exit
     fi
     echo "# Issues" >$ISSUES
@@ -665,11 +671,11 @@ if [ "$CMD" = "mirror" ] ; then
 
   if [ $TYPE = "gogs" ] ; then
     EXPORT="/tmp/issues.json"
-    URL=`grep gogs.url= .trackdown/config|cut -d '=' -f 2`
+    URL=`grep gogs.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gogs source url configured. Did you setup gogs mirroring?" $URL
-    TOKEN=`grep gogs.key= .trackdown/config|cut -d '=' -f 2`
+    TOKEN=`grep gogs.key= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gogs api token configured. Did you setup gogs mirroring?" $TOKEN
-    PROJECT=`grep gogs.project= .trackdown/config|cut -d '=' -f 2`
+    PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gogs/pikacode/gitea project. Did you setup gogs mirroring?" $PROJECT
     URL="${URL}/api/v1/repos/${PROJECT}/issues?state=all"
     curl -H "Authorization: token $TOKEN" $URL >$EXPORT
@@ -731,7 +737,7 @@ fi
 if [ "$CMD" = "remote" ] ; then
 
   checkTrackdown
-  TYPE=`grep mirror.type= .trackdown/config|cut -d '=' -f 2`
+  TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
   bailOnZero "No mirror setup done for this repository." $TYPE
   REMOTE=$2
   bailOnZero "No remote command given as the second parameter" $REMOTE
@@ -743,9 +749,9 @@ if [ "$CMD" = "remote" ] ; then
   bailOnZero "No parameter for the remote operation given as the forth parameter" $PARAM
   # echo "Parameter: $PARAM"
   if [ "$TYPE" = "redmine" ] ; then
-    URL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
+    URL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $URL
-    KEY=`grep redmine.key= .trackdown/config|cut -d '=' -f 2`
+    KEY=`grep redmine.key= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine api key configured. Did you setup redmine mirroring?" $KEY
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
@@ -761,11 +767,11 @@ if [ "$CMD" = "remote" ] ; then
     fi
   fi
   if [ "$TYPE" = "gitlab" ] ; then
-    URL=`grep gitlab.url= .trackdown/config|cut -d '=' -f 2`
+    URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab source url configured. Did you setup gitlab mirroring?" $URL
-    TOKEN=`grep gitlab.key= .trackdown/config|cut -d '=' -f 2`
+    TOKEN=`grep gitlab.key= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab api token configured. Did you setup gitlab mirroring?" $TOKEN
-    PROJECT=`grep gitlab.project= .trackdown/config|cut -d '=' -f 2`
+    PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
     if [ "$REMOTE" = "assign" ] ; then
       echo "Assigning $ISSUE to user $PARAM"
@@ -793,9 +799,9 @@ if [ "$CMD" = "gitlab" ] ; then
   PID=`curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects|jq '.[]|select(.name=="'$3'")|.id'`
   echo "Setting up TrackDown to mirror from $3 ($PID) on $URL"
   setupCollectionReference gitlab
-  echo "gitlab.url=$URL" >> .trackdown/config
-  echo "gitlab.project=$PID" >> .trackdown/config
-  echo "gitlab.key=$2" >> .trackdown/config
+  echo "gitlab.url=$URL" >> $TDCONFIG
+  echo "gitlab.project=$PID" >> $TDCONFIG
+  echo "gitlab.key=$2" >> $TDCONFIG
 
 fi
 
@@ -813,10 +819,10 @@ if [ "$CMD" = "github" ] ; then
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror $3 owned by $4 from github.com"
   setupCollectionReference github
-  echo "prefix=https://github.com/$4/$3/commit/" >> .trackdown/config
-  echo "github.owner=$4" >> .trackdown/config
-  echo "github.project=$3" >> .trackdown/config
-  echo "github.key=$2" >> .trackdown/config
+  echo "prefix=https://github.com/$4/$3/commit/" >> $TDCONFIG
+  echo "github.owner=$4" >> $TDCONFIG
+  echo "github.project=$3" >> $TDCONFIG
+  echo "github.key=$2" >> $TDCONFIG
 
 fi
 
@@ -833,9 +839,9 @@ if [ "$CMD" = "bitbucket" ] ; then
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror $2 as $3 from bitbucket.org"
   setupCollectionReference bitbucket
-  echo "prefix=https://bitbucket.org/$3/$2/commits/" >> .trackdown/config
-  echo "bitbucket.user=$3" >> .trackdown/config
-  echo "bitbucket.project=$2" >> .trackdown/config
+  echo "prefix=https://bitbucket.org/$3/$2/commits/" >> $TDCONFIG
+  echo "bitbucket.user=$3" >> $TDCONFIG
+  echo "bitbucket.project=$2" >> $TDCONFIG
 
 fi
 
@@ -853,9 +859,9 @@ if [ "$CMD" = "redmine" ] ; then
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror from $3 on $4"
   setupCollectionReference redmine
-  echo "redmine.url=$4" >> .trackdown/config
-  echo "redmine.project=$3" >> .trackdown/config
-  echo "redmine.key=$2" >> .trackdown/config
+  echo "redmine.url=$4" >> $TDCONFIG
+  echo "redmine.project=$3" >> $TDCONFIG
+  echo "redmine.key=$2" >> $TDCONFIG
 
 fi
 
@@ -873,9 +879,9 @@ if [ "$CMD" = "gogs" ] ; then
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror from $3 on $URL"
   setupCollectionReference gogs
-  echo "prefix=$URL/$3/commit/" >> .trackdown/config
-  echo "gogs.url=$URL" >> .trackdown/config
-  echo "gogs.project=$3" >> .trackdown/config
-  echo "gogs.key=$2" >> .trackdown/config
+  echo "prefix=$URL/$3/commit/" >> $TDCONFIG
+  echo "gogs.url=$URL" >> $TDCONFIG
+  echo "gogs.project=$3" >> $TDCONFIG
+  echo "gogs.key=$2" >> $TDCONFIG
 
 fi

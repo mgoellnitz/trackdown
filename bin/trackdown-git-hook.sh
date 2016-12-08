@@ -36,23 +36,25 @@ function roadmap {
   done
 }
 
-# Create config file if none exists
-if [ ! -f .trackdown/config ] ; then
-  if [ ! -d .trackdown ] ; then
-    mkdir .trackdown
-  fi
-  echo "autocommit=true" > .trackdown/config
-  echo "autopush=true" >>  .trackdown/config
-  echo "location=.git/trackdown/issues.md" >>  .trackdown/config
-  echo "/.trackdown" >> .gitignore
+VCS=git
+CWD=`pwd`
+while [ `pwd` != "/"  -a `ls -d .$VCS 2>&1|head -1|cut -d ' ' -f 1` != ".$VCS" ] ; do
+  cd ..
+done
+TDBASE=`pwd`
+TDCONFIG=$TDBASE/.trackdown/config
+echo "TrackDown: Base directory $TDBASE"
+cd $CWD
+if [ ! -f $TDCONFIG ] ; then
+  echo "TrackDown: Not in a TrackDown context - ignoring commit"
 fi
 # Location of the issues file
-ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+ISSUES=`grep location= $TDCONFIG|cut -d '=' -f 2`
 if [ -z "$ISSUES" ] ; then
-  ISSUES=".git/trackdown/issues.md"
+  echo "TrackDown: Issue colletion file not configured - ignoring commit"
 fi
 # Prefix for links to online commit descriptions
-PREFIX=`grep prefix= .trackdown/config|cut -d '=' -f 2`
+PREFIX=`grep prefix= $TDCONFIG|cut -d '=' -f 2`
 # echo "ISSUES $ISSUES"
 MSGLINES=`git log -n 1|wc -l`
 AUTHOR=`git log -n 1|grep Author|cut -d ':' -f 2-10|sed -e s/\<.*\>//g`
@@ -79,12 +81,12 @@ if [ ! -z "$LINE" ] ; then
   fi
 fi
 HASH=`git log|head -1|cut -d ' ' -f 2`
-echo "$ID $STATUS"
+echo "TrackDown: $ID $STATUS"
 if [ ! -z "$STATUS" ] ; then
   for TID in `echo "$ID"|sed -e 's/,/\ /g'`; do
     HASID=`grep "^\#\#\ ${TID}" $ISSUES`
     if [ ! -z "$HASID" ] ; then
-      echo "Issue $TID"
+      echo "TrackDown: Issue $TID"
       sed -i.remove -e "s/##\ $TID\ \(.*\)\ (.*)/## $TID \1/g" $ISSUES
       sed -i.remove -e "s/##\ $TID\ \(.*\)/## $TID \1 ($STATUS)/g" $ISSUES
       rm $ISSUES.remove
@@ -110,28 +112,24 @@ if [ ! -z "$STATUS" ] ; then
         git log -n 1|tail -$[ $MSGLINES - 3 ] >>$ISSUES
       fi
     else
-      echo "ID $TID not found in issues collection"
+      echo "TrackDown: ID $TID not found in issues collection"
     fi
   done
 
   roadmap
 
-  AUTOCOMMIT=`grep autocommit=true .trackdown/config`
+  AUTOCOMMIT=`grep autocommit=true $TDCONFIG`
   # echo "AUTOCOMMIT: $AUTOCOMMIT"
   if [ ! -z "$AUTOCOMMIT" ] ; then
     WD=`pwd`
     TRACKDOWN=`dirname $ISSUES`
-    cd $TRACKDOWN
     echo "TrackDown: committing"
-    git commit -m "Committed for issue(s) #$ID" issues.md roadmap.md > /dev/null
-    cd $WD
-    AUTOPUSH=`grep autopush=true .trackdown/config`
+    ( cd $TRACKDOWN ; ${VCS} commit -m "Committed for issue(s) #$ID" issues.md roadmap.md > /dev/null)
+    AUTOPUSH=`grep autopush=true $TDCONFIG`
     # echo "AUTOPUSH: $AUTOPUSH"
     if [ ! -z "$AUTOPUSH" ] ; then
-      cd $TRACKDOWN
       echo "TrackDown: pushing"
-      git push > /dev/null
-      cd $WD
+      ( cd $TRACKDOWN ; ${VCS} push > /dev/null )
     fi
   fi
 else 
