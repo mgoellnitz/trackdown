@@ -1105,3 +1105,7 @@ Martin Goellnitz Wed Dec 7 00:46:36 2016
 Martin Goellnitz Wed Dec 7 01:57:12 2016
 
     refs #MERCURIAL got its own hook implementation
+
+Martin Goellnitz Thu Dec 8 11:56:56 2016
+
+    refs #MERCURIAL ignore file fixed
