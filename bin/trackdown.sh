@@ -417,6 +417,10 @@ if [ "$CMD" = "init" ] ; then
       exit
     fi
     cd $TDBASE
+    if [ `git branch -l|sed -e s/^.\ //g|grep trackdown|wc -l` != 0 ] ; then
+      echo "TrackDown branch already present. Exiting."
+      exit
+    fi
     git stash
     BRANCH=`git branch|grep '*'|cut -d ' ' -f 2`
     git checkout --orphan trackdown

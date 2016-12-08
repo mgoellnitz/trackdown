@@ -6,7 +6,7 @@
 Issue Tracking with plain [Markdown][markdown].
 
 In short: You are missing the "git clone" for your tickets from [GitLab][gitlab], 
-[GitHub][github] or [Bitbucket][bitbucket] where we already have this for 
+[GitHub][github] or [Bitbucket][bitbucket], where we already have this for 
 code and wiki?
 
 You need issue tracking which works for distributed and potentially disconnected
