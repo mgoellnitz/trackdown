@@ -21,13 +21,13 @@ ISSUES=$2
 DIR=`dirname $0`
 CWD=`pwd`
 
-while [ `pwd` != "/"  -a `ls -d .trackdown 2>&1|head -1|cut -d ' ' -f 1` != ".trackdown" ] ; do
-  cd ..
-done
-TDBASE=`pwd`
-TDCONFIG=$TDBASE/.trackdown/config
-cd $CWD
-echo "TrackDown base directory $TDBASE"
+# wind up the directory tree until we find a hidden folder of the given name $1
+function windUp {
+  while [ `pwd` != "/"  -a `ls -d .$1 2>&1|head -1|cut -d ' ' -f 1` != ".$1" ] ; do
+    cd ..
+  done
+}
+
 
 # $1 message to issue when not given $2 parameter to check
 function bailOnZero {
@@ -147,6 +147,22 @@ if [ -z "$CMD" ] ; then
 
 fi
 
+
+windUp trackdown
+TDBASE=`pwd`
+# At least try to find a reference base directory from DVCS
+if [ ! -f .trackdown/config ] ; then
+  cd $CWD
+  windUp git
+  if [ ! -d .git ] ; then
+    cd $CWD
+    windUp hg
+  fi
+fi
+TDBASE=`pwd`
+cd $CWD
+TDCONFIG=$TDBASE/.trackdown/config
+echo "TrackDown base directory $TDBASE"
 
 # ls command to list potential issues in the collection for a certain release
 if [ "$CMD" = "ls" ] ; then
@@ -269,6 +285,8 @@ if [ "$CMD" = "use" ] ; then
       echo "autopush=false" >> $TDCONFIG
     fi
     IGNOREFILE="$TDBASE/.gitignore"
+    IFBEGIN="/"
+    IFEND=""
 
     REMOTE=`grep -A2 remote.\"origin  .git/config |grep "url ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|cut -d '/' -f 1|cut -d ':' -f 1`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
@@ -308,8 +326,9 @@ if [ "$CMD" = "use" ] ; then
     echo "commit=$DIR/trackdown-hg-hook.sh" >> .hg/hgrc
     cd $CWD
     IGNOREFILE="$TDBASE/.hgignore"
+    IFBEGIN="^"
+    IFEND="\$"
 
-    # TODO: Hg How to obtain remote reference here
     REMOTE=`hg paths|grep "default ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
     echo "Remote system is $REMOTE."
@@ -329,17 +348,17 @@ if [ "$CMD" = "use" ] ; then
       ln -s `dirname $ISSUES`/roadmap.md roadmap.md
       CHECK=`grep -s roadmap.md $IGNOREFILE|wc -l`
       if [ $CHECK = 0 ] ; then
-       echo "/roadmap.md" >> $IGNOREFILE
+       echo "${IFBEGIN}roadmap.md${IFEND}" >> $IGNOREFILE
       fi
     fi
     CHECK=`grep -s .trackdown $IGNOREFILE|wc -l`
     if [ $CHECK = 0 ] ; then
-      echo "/.trackdown" >> $IGNOREFILE
+      echo "${IFBEGIN}.trackdown${IFEND}" >> $IGNOREFILE
     fi
     if [ -h issues.md ] ; then
       CHECK=`grep issues.md $IGNOREFILE|wc -l`
       if [ $CHECK = 0 ] ; then
-        echo "/issues.md" >> $IGNOREFILE
+        echo "${IFBEGIN}issues.md${IFEND}" >> $IGNOREFILE
       fi
     fi
     cd $CWD
