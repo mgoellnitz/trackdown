@@ -582,7 +582,7 @@ file:///home/me/somewhere/thats/green/repo/wiki.html#!issues.md
 file:///home/me/somewhere/thats/green/repo/wiki.html#!roadmap.md
 ```
 
-The output of Trackdown looks pretty usable in this setup and gives a good
+The output of TrackDown looks pretty usable in this setup and gives a good
 overview of the issues as the roadmap.
 
 When you also use GitLab, GitHub, or Bitbucket Wikis, [MDWiki][mdwiki] has
@@ -836,7 +836,7 @@ library, which only supports a subsets of the [GIT][git] hooks - and not the
 ones we  use here.
 
 I already helped to add the post-commit hook which is needed by this project
-and it now is part of the latest nightly builds. Interoperation with trackdown
+and it now is part of the latest nightly builds. Interoperation with TrackDown
 could not be tested so far.
 
 ## MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
@@ -852,7 +852,7 @@ be connected to the remote site - or at least somehow to the internet.
 
 *mirror*
 
-Trackdown should be capable of translating [GitLab][gitlab] JSON exports of 
+TrackDown should be capable of translating [GitLab][gitlab] JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.
 
  Martin Goellnitz  / Sun Nov 13 19:10:27 2016 [29eb793d1caa2e42c1f120aa31e7ceb27929ca6b](https://github.com/mgoellnitz/trackdown/commit/29eb793d1caa2e42c1f120aa31e7ceb27929ca6b)
@@ -875,7 +875,7 @@ tickets to the special markdown format given here as a mirror for offline use.
 
 *mirror*
 
-Trackdown should be capable of translating [GitHub][github] JSON exports of 
+TrackDown should be capable of translating [GitHub][github] JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.
 
  Martin Goellnitz  / Sun Nov 13 21:19:35 2016 [35a52a9d751029ac5cbc3730ea28a3fc682663ce](https://github.com/mgoellnitz/trackdown/commit/35a52a9d751029ac5cbc3730ea28a3fc682663ce)
@@ -892,10 +892,10 @@ tickets to the special markdown format given here as a mirror for offline use.
 
 For how historical reasons I have projects with [Redmine][redmine] ticketing in 
 use and with still relevant tickets. Some of them might even be a candidate to 
-migrate to Trackdown for others it might be sufficient to get a current offline 
+migrate to TrackDown for others it might be sufficient to get a current offline 
 mirror when the repository is not available.
 
-Trackdown should be capable of translating [Redmine][redmine] JSON exports of 
+TrackDown should be capable of translating [Redmine][redmine] JSON exports of 
 tickets to the special markdown format given here. 
 
 For the mirror scenario, certain limitations are acceptable, 
@@ -936,7 +936,7 @@ project history.
 
 *mirror*
 
-Trackdown should be capable of translating [Bitbucket.org][bitbucket] JSON 
+TrackDown should be capable of translating [Bitbucket.org][bitbucket] JSON 
 exports of tickets to the special markdown format given here as a mirror for 
 offline use. 
 
@@ -948,7 +948,7 @@ offline use.
 
 *mirror*
 
-Trackdown should be capable of translating [gogs][gogs] JSON exports of 
+TrackDown should be capable of translating [gogs][gogs] JSON exports of 
 tickets to the special markdown format given here as a mirror for offline use.
 This also adds [gitea][gitea] and has a public instance at [Pikacode][pikacode],
 which can be used as a default.
@@ -1065,7 +1065,7 @@ commit should be part of the message alongside with the date and author.
 *1.0*
 
 Many git implementations provide links to single commits with their changes
-and other information. Provide configuration options for trackdown to extend
+and other information. Provide configuration options for TrackDown to extend
 the commit hashes to full URLs when adding a commit note to the issues 
 collection file resulting in callable HTTP-links.
 
