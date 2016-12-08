@@ -435,6 +435,9 @@ if [ "$CMD" = "mirror" ] ; then
     echo "To use this functionality, jq must be installed."
     exit
   fi
+  if [ -z "$ISSUES" ] ; then
+    ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
+  fi
   if [ $TYPE = "gitlab" ] ; then
     EXPORT="/tmp/issues.json"
     URL=`grep gitlab.url= .trackdown/config|cut -d '=' -f 2`
@@ -448,9 +451,6 @@ if [ "$CMD" = "mirror" ] ; then
     if [ ! -f $EXPORT ] ; then
       echo "JSON export file $EXPORT not found. Export seemed to have failed..."
       exit
-    fi
-    if [ -z "$ISSUES" ] ; then
-      ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
     fi
     echo "# Issues" >$ISSUES
     echo "" >>$ISSUES
@@ -488,7 +488,6 @@ if [ "$CMD" = "mirror" ] ; then
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' >>$ISSUES
       fi
     done
-    rm -f $EXPORT
   fi
 
   if [ $TYPE = "github" ] ; then
@@ -509,9 +508,6 @@ if [ "$CMD" = "mirror" ] ; then
     if [ ! -z "$RESULT" ] ; then
       echo "Cannot mirror issues for github project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
-    fi
-    if [ -z "$ISSUES" ] ; then
-      ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
     fi
     echo "# Issues" >$ISSUES
     echo "" >>$ISSUES
@@ -549,65 +545,72 @@ if [ "$CMD" = "mirror" ] ; then
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g' >>$ISSUES
       fi
     done
-    rm -f $EXPORT
   fi
 
   if [ $TYPE = "redmine" ] ; then
     EXPORT="/tmp/issues.json"
-    URL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
-    bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $URL
+    BASEURL=`grep redmine.url= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $BASEURL
     KEY=`grep redmine.key= .trackdown/config|cut -d '=' -f 2`
     bailOnZero "No redmine api key configured. Did you setup redmine mirroring?" $KEY
-    PROJECT=`grep redmine.project= .trackdown/config|cut -d '=' -f 2`
-    bailOnZero "No redmine project. Did you setup redmine mirroring?" $PROJECT
-    URL="${URL}/projects/$PROJECT/issues.json"
-    curl -H "X-Redmine-API-Key: $KEY" $URL >$EXPORT
-    if [ ! -f $EXPORT ] ; then
-      echo "JSON export file $EXPORT not found. Export seemed to have failed..."
-      exit
-    fi
-    if [ -z "$ISSUES" ] ; then
-      ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
-    fi
-    jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >$ISSUES
-    echo "" >>$ISSUES
-    echo "" >>$ISSUES
-    echo "[Roadmap](roadmap)" >>$ISSUES
-    for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
-      echo "" >>$ISSUES
-      echo "" >>$ISSUES
-      SUBJECT=`jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g'`
-      STATUS=`jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
-      s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
-      echo "## $id $SUBJECT ($s)" >>$ISSUES
-      echo "" >>$ISSUES
-      VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/*No Milestone*/g'|sed -e 's/.*name...\(.*\)"./*\1*/g'`
-      ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
-      echo -n "${VERSION}"  >>$ISSUES
-      if [ "$ASSIGNEE" != "null" ] ; then
-        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+    PROJECTS=`grep redmine.project= .trackdown/config|cut -d '=' -f 2`
+    bailOnZero "No redmine project. Did you setup redmine mirroring?" $PROJECTS
+    rm $ISSUES
+    for PROJECT in `echo "$PROJECTS"|sed -e 's/,/\ /g'`; do
+      echo "Project: $PROJECT"
+      URL="${BASEURL}/projects/$PROJECT/issues.json"
+      curl -H "X-Redmine-API-Key: $KEY" $URL >$EXPORT
+      if [ ! -f $EXPORT ] ; then
+        echo "JSON export file $EXPORT not found. Export seemed to have failed..."
+        exit
       fi
+      jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >>$ISSUES
       echo "" >>$ISSUES
       echo "" >>$ISSUES
-      echo "### Description" >>$ISSUES
-      echo "" >>$ISSUES
-      AUTHOR=`jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
-      if [ "$AUTHOR" != "null" ] ; then
-        echo "Author: \`$AUTHOR\`" >>$ISSUES
+      echo "[Roadmap](roadmap)" >>$ISSUES
+      for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
         echo "" >>$ISSUES
-      fi
-      jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
-        |sed -e 's/"//g'|sed -e 's/\\t//g' \
-        |sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
-        |sed -e 's/\&ouml;/ö/g'|sed -e 's/\&Ouml;/Ö/g' \
-        |sed -e 's/\&auml;/ä/g'|sed -e 's/\&Auml;/Ä/g' \
-        |sed -e 's/\&uuml;/ü/g'|sed -e 's/\&Uuml;/Ü/g' \
-        |sed -e 's/\&quot;/"/g'|sed -e 's/\&szlig;/ß/g' \
-        |sed -e 's/<strong>//g'|sed -e 's/<\/strong>//g' \
-        |sed -e 's/<h3>/\`/g'|sed -e 's/<\/h3>/\`/g' \
-        |sed -e 's/<p>//g'|sed -e 's/<\/p>//g' >>$ISSUES
+        echo "" >>$ISSUES
+        SUBJECT=`jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g'`
+        STATUS=`jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
+        s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
+        echo "## $id $SUBJECT ($s)" >>$ISSUES
+        echo "" >>$ISSUES
+        VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/*No Milestone*/g'|sed -e 's/.*name...\(.*\)"./*\1*/g'`
+        ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
+        echo -n "${VERSION}"  >>$ISSUES
+        if [ "$ASSIGNEE" != "null" ] ; then
+          echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+        fi
+        echo "" >>$ISSUES
+        echo "" >>$ISSUES
+        echo "### Description" >>$ISSUES
+        echo "" >>$ISSUES
+        AUTHOR=`jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
+        if [ "$AUTHOR" != "null" ] ; then
+          echo "Author: \`$AUTHOR\`" >>$ISSUES
+          echo "" >>$ISSUES
+        fi
+        jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
+          |sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
+          |sed -e 's/\&ouml;/ö/g'|sed -e 's/\&Ouml;/Ö/g' \
+          |sed -e 's/\&auml;/ä/g'|sed -e 's/\&Auml;/Ä/g' \
+          |sed -e 's/\&uuml;/ü/g'|sed -e 's/\&Uuml;/Ü/g' \
+          |sed -e 's/\&quot;/"/g'|sed -e 's/\&szlig;/ß/g' \
+          |sed -e 's/<strong>//g'|sed -e 's/<\/strong>//g' \
+          |sed -e 's/<a href=\\"\(.*\)\\">\(.*\)<\/a>/[\2](\1)/g' \
+          |sed -e 's/<h3>/\`/g'|sed -e 's/<\/h3>/\`/g' \
+          |sed -e 's/<em>/\`/g'|sed -e 's/<\/em>/\`/g' \
+          |sed -e 's/<u>/\`/g'|sed -e 's/<\/u>/\`/g' \
+          |sed -e 's/<ul>//g'|sed -e 's/<\/ul>//g' \
+          |sed -e 's/<ol>//g'|sed -e 's/<\/ol>//g' \
+          |sed -e 's/<span>//g'|sed -e 's/<\/span>//g' \
+          |sed -e 's/<li>/* /g'|sed -e 's/<\/li>//g' \
+          |sed -e 's/<p[\ =a-z0-9\\"]*>//g'|sed -e 's/<\/p>//g' \
+          |sed -e 's/^"//g'|sed -e 's/\\t//g' \
+          |sed -e 's/<br \/>//g' |sed -e 's/\\"/\`/g' >>$ISSUES
+      done
     done
-    rm $EXPORT
   fi
 
   if [ $TYPE = "bitbucket" ] ; then
@@ -627,9 +630,6 @@ if [ "$CMD" = "mirror" ] ; then
     if [ ! "$RESULT" = "null" ] ; then
       echo "Cannot mirror issues for bitbucket.org project ${PROJECT} as ${DISPLAY}: ${RESULT}"
       exit
-    fi
-    if [ -z "$ISSUES" ] ; then
-      ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
     fi
     echo "# Issues" >$ISSUES
     echo "" >>$ISSUES
@@ -661,7 +661,6 @@ if [ "$CMD" = "mirror" ] ; then
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g' >>$ISSUES
       fi
     done
-    rm -f $EXPORT
   fi
 
   if [ $TYPE = "gogs" ] ; then
@@ -682,9 +681,6 @@ if [ "$CMD" = "mirror" ] ; then
     if [ ! -z "$RESULT" ] ; then
       echo "Cannot mirror issues for gogs project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
-    fi
-    if [ -z "$ISSUES" ] ; then
-      ISSUES=`grep location= .trackdown/config|cut -d '=' -f 2`
     fi
     echo "# Issues" >$ISSUES
     echo "" >>$ISSUES
@@ -722,8 +718,8 @@ if [ "$CMD" = "mirror" ] ; then
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g' >>$ISSUES
       fi
     done
-    rm -f $EXPORT
   fi
+  rm -f $EXPORT
 
   RMDIR=`dirname $ISSUES`
   $0 roadmap >$RMDIR/roadmap.md
