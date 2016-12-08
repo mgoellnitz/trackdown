@@ -762,7 +762,7 @@ Instead of `trackdown.sh use` issue `trackdown.sh redmine` to setup the mirror
 connection.
 
 ```
-trackdown.sh redmine <apikey> <projectname> https://<redmine.host>/
+trackdown.sh redmine <apikey> <projectname>[,<projectname>...] https://<redmine.host>/
 ```
 
 Afterwards anytime you can connect to the [Redmine][redmine] system, collect the 
@@ -924,6 +924,10 @@ project history.
  Martin Goellnitz  / Sun Nov 13 12:55:45 2016 [a745c43eb4a444bae91dc15d2b601f78e63e8722](https://github.com/mgoellnitz/trackdown/commit/a745c43eb4a444bae91dc15d2b601f78e63e8722)
 
     refs #REDMINE mirror now extracts more details from the original tickets
+
+ Martin Goellnitz  / Thu Dec 8 02:36:38 2016 [ed8b05966665e9efe4bfe7e1ba70f0c4115f2296](https://github.com/mgoellnitz/trackdown/commit/ed8b05966665e9efe4bfe7e1ba70f0c4115f2296)
+
+    refs #REDMINE output enhanced when content is html-ish and multiple projects can be mirrored
 
 ## BITBUCKET issue tracker offline mirror (in progress)
 
