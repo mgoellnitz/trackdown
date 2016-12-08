@@ -898,8 +898,7 @@ mirror when the repository is not available.
 Trackdown should be capable of translating [Redmine][redmine] JSON exports of 
 tickets to the special markdown format given here. 
 
-For the mirror scenario, certain 
-limitations are acceptable, 
+For the mirror scenario, certain limitations are acceptable, 
 
 For  migration scenarios the commit lists should be included and even closed 
 tickets should be taken into account to not lose the relevant parts of the
@@ -928,6 +927,10 @@ project history.
  Martin Goellnitz  / Thu Dec 8 02:36:38 2016 [ed8b05966665e9efe4bfe7e1ba70f0c4115f2296](https://github.com/mgoellnitz/trackdown/commit/ed8b05966665e9efe4bfe7e1ba70f0c4115f2296)
 
     refs #REDMINE output enhanced when content is html-ish and multiple projects can be mirrored
+
+ Martin Goellnitz  / Thu Dec 8 02:43:49 2016 [83d19594298213d5b285f49aee4e3d2b293eb90d](https://github.com/mgoellnitz/trackdown/commit/83d19594298213d5b285f49aee4e3d2b293eb90d)
+
+    refs #REDMINE needed documentation hint for multi-project mirror
 
 ## BITBUCKET issue tracker offline mirror (in progress)
 
