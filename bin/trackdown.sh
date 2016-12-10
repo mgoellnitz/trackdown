@@ -259,18 +259,18 @@ if [ "$CMD" = "use" ] ; then
     exit
   fi
   if [ -d $TDBASE/.git ] ; then
-    if [ `git branch -l|wc -l` = 0 ] ; then
-      echo "GIT repository doesn't contain any branch. Exiting."
+    if [ `(git branch -r;git branch -l)|grep trackdown|wc -l` = 0 ] ; then
+      echo "GIT repository doesn't contain a trackdown branch. Did you issue the init command? Exiting."
       exit
     fi
     cp $DIR/trackdown-git-hook.sh $TDBASE/.git/hooks/post-commit
     chmod 755 $TDBASE/.git/hooks/post-commit
     test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
     if [ -z "$ISSUES" ] ; then
-      ISSUES="$TDBASE/.git/trackdown/issues.md"
+      ISSUES=".git/trackdown/issues.md"
       NAME=`git config -l|grep user.name|cut -d '=' -f 2`
       MAIL=`git config -l|grep user.email|cut -d '=' -f 2`
-      cd .git
+      cd $TDBASE/.git
       # git clone --single-branch --branch trackdown .. trackdown
       git clone --branch trackdown .. trackdown
       cd trackdown
@@ -288,7 +288,7 @@ if [ "$CMD" = "use" ] ; then
     IFBEGIN="/"
     IFEND=""
 
-    REMOTE=`grep -A2 remote.\"origin  .git/config |grep "url ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|cut -d '/' -f 1|cut -d ':' -f 1`
+    REMOTE=`grep -A2 remote.\"origin  .git/config |grep "url ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
     test ! -z "$REMOTE" && echo "Remote system is $REMOTE."
     if [ "$CASE" = "github.com" ] ; then
@@ -305,8 +305,8 @@ if [ "$CMD" = "use" ] ; then
     fi
   fi
   if [ -d $TDBASE/.hg ] ; then
-    if [ `hg branches|wc -l` = 0 ] ; then
-      echo "Mercurial repository missing branches. Exiting."
+    if [ `hg branches|grep trackdown|wc -l` = 0 ] ; then
+      echo "Mercurial repository missing trackdown branch. Did you issue the init command? Exiting."
       exit
     fi
     test ! -d .trackdown && mkdir .trackdown
@@ -340,12 +340,11 @@ if [ "$CMD" = "use" ] ; then
   fi
   if [ -f $TDCONFIG ] ; then
     echo "location=$ISSUES" >> $TDCONFIG
-    ID=`dirname $ISSUES`
-    # echo "id: $ID"
+    ID=`dirname $TDBASE/$ISSUES`
     cd $TDBASE
-    if [ "." != "$ID" ] ; then
-      ln -s $ISSUES issues.md
-      ln -s `dirname $ISSUES`/roadmap.md roadmap.md
+    if [ "$TDBASE" != "$ID" ] ; then
+      ln -sf $ISSUES issues.md
+      ln -sf `dirname $ISSUES`/roadmap.md roadmap.md
       CHECK=`grep -s roadmap.md $IGNOREFILE|wc -l`
       if [ $CHECK = 0 ] ; then
        echo "${IFBEGIN}roadmap.md${IFEND}" >> $IGNOREFILE
@@ -429,6 +428,7 @@ if [ "$CMD" = "init" ] ; then
     echo "# Roadmap" > roadmap.md
     git add -f issues.md roadmap.md
     git commit -m "Empty issues collection" issues.md roadmap.md
+    git checkout issues.md roadmap.md
     git checkout $BRANCH
     git stash apply
     cd $CWD
