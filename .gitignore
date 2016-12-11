@@ -2,3 +2,5 @@
 /.gradle
 /.nb-gradle*
 /.trackdown
+/roadmap.md
+/issues.md
