@@ -273,9 +273,9 @@ Martin Goellnitz Tue Dec 6 18:52:52 2016
 
     fixes #MULTIISSUE needed documentation and a fix
 
-## MERCURIAL support should be added withthe same functionality as GIT (in progress)
+## MERCURIAL support should be added withthe same functionality as GIT (resolved)
 
-*nth*
+*1.0*
 
 Like the scenario where TrackDown is used with a special branch within your
 GIT repository, this setup can also be achieved with Mercurial / hg.

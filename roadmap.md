@@ -5,12 +5,13 @@ TrackDown base directory /home/martin/proj/development/issues/trackdown
 
 ## 1.0:
 
-80% (8 / 10) completed
-20% (2 / 10) in progress
+81% (9 / 11) completed
+18% (2 / 11) in progress
 
 * ASSIGNMENT of issues should be part of the format and tooling (in progress)
 * COPY release notes. (in progress)
 * HASH of the commit should be part of the listing (resolved)
+* MERCURIAL support should be added withthe same functionality as GIT (resolved)
 * MULTIISSUE There can be only one issue per commit. (resolved)
 * PREFIX hashes in commit notes to form a URL (resolved)
 * ROADMAP should show percentage for issues already started (resolved)
@@ -30,13 +31,6 @@ TrackDown base directory /home/martin/proj/development/issues/trackdown
 * GITLAB offline mirror (in progress)
 * GOGS and gitea offline mirror (in progress)
 * REDMINE offline mirror (in progress)
-
-## nth:
-
-0% (0 / 1) completed
-100% (1 / 1) in progress
-
-* MERCURIAL support should be added withthe same functionality as GIT (in progress)
 
 ## oos:
 
