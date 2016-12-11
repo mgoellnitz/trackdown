@@ -22,12 +22,18 @@ could not be tested so far.
 
 ## MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
 
-*mirror*
+*nth*
 
 For users of the mirror feature of collections with Redmine, GitHub, Gitlab, 
 and Gogs a hook implementation should mirror the issue collection on push
 to keep it updated in exactly the situations where the local machine must
 be connected to the remote site - or at least somehow to the internet.
+
+_Note_
+
+This seems to be hard to accomplish with GIT, since there is only a `pre-push`
+hook available and we would need a `post-push` hook to get the right timing
+after the changes have been reflected in the remote issue tracking system.
 
 ## GITLAB offline mirror (in progress)
 
