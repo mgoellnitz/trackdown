@@ -1,4 +1,7 @@
+TrackDown base directory /home/martin/proj/development/issues/trackdown
 # Roadmap
+
+[Issue Collection](issues)
 
 ## 1.0:
 

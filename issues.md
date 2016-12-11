@@ -11,10 +11,10 @@ Right now we have three areas/iterations/sprints in this issue list:
 
 *oos*
 
-While some IDE integrations rely on the [GIT](http://git-scm.com/) command line tooling and thus 
-work perfectly together with this project, NetBeans decided to use the [JGit](https://eclipse.org/jgit/)
-library, which only supports a subsets of the [GIT](http://git-scm.com/) hooks - and not the 
-ones we  use here.
+While some IDE integrations rely on the [GIT](http://git-scm.com/) command line 
+tooling and thus work perfectly together with this project, NetBeans decided to 
+use the [JGit](https://eclipse.org/jgit/) library, which only supports a subsets 
+of the [GIT](http://git-scm.com/) hooks - and not the ones we  use here.
 
 I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with TrackDown
@@ -33,8 +33,9 @@ be connected to the remote site - or at least somehow to the internet.
 
 *mirror*
 
-TrackDown should be capable of translating [GitLab](https://gitlab.com/) JSON exports of 
-tickets to the special markdown format given here as a mirror for offline use.
+TrackDown should be capable of translating [GitLab](https://gitlab.com/) JSON 
+exports of  tickets to the special markdown format given here as a mirror for 
+offline use.
 
  Martin Goellnitz  / Sun Nov 13 19:10:27 2016 [29eb793d1caa2e42c1f120aa31e7ceb27929ca6b](https://github.com/mgoellnitz/trackdown/commit/29eb793d1caa2e42c1f120aa31e7ceb27929ca6b)
 
@@ -129,10 +130,10 @@ offline use.
 
 *mirror*
 
-TrackDown should be capable of translating [gogs](https://gogs.io/) JSON exports of 
-tickets to the special markdown format given here as a mirror for offline use.
-This also adds [gitea](https://gitea.io/) and has a public instance at [Pikacode](https://v2.pikacode.com/),
-which can be used as a default.
+TrackDown should be capable of translating [gogs](https://gogs.io/) JSON exports 
+of tickets to the special markdown format given here as a mirror for offline 
+use. This also adds [gitea](https://gitea.io/) and has a public instance at 
+[Pikacode](https://v2.pikacode.com/), which can be used as a default.
 
  Martin Goellnitz  / Sat Dec 3 02:56:16 2016 [e438fa86d8f6d112565899dcbfec466001ea13b4](https://github.com/mgoellnitz/trackdown/commit/e438fa86d8f6d112565899dcbfec466001ea13b4)
 
@@ -177,8 +178,8 @@ collection and have a contribution to release notes.
 
 *1.0*
 
-As with the number of resolved issues there should be a second value for
-the work in progress.
+As with the number of resolved issues there should be a second value for the 
+work in progress.
 
  Martin Goellnitz  / Tue Nov 8 20:03:51 2016 [2535f73db2aca2049a018f5b705e2604dc98f28b](https://github.com/mgoellnitz/trackdown/commit/2535f73db2aca2049a018f5b705e2604dc98f28b)
 
@@ -277,7 +278,7 @@ Martin Goellnitz Tue Dec 6 18:52:52 2016
 *nth*
 
 Like the scenario where TrackDown is used with a special branch within your
-GIT repository, this setup can also be achieved with Mercurial / hg
+GIT repository, this setup can also be achieved with Mercurial / hg.
 
 Martin Goellnitz Wed Dec 7 00:46:36 2016
 
