@@ -327,40 +327,6 @@ The term "target version" could also be read as "release" or "sprint" or
 anything which describes your development process best.
 
 
-## Copy Milestone/Release Contents
-
-The comman `copy` is used to extract the issues related to a given milestone,
-release, version, or whatever your terinology might be to a separate file
-named after the given parameter. So
-
-```
-trackdown.sh copy 1.1
-```
-
-copies all notes for the issues marked with "1.1" as a version marker to a
-separate file 1.1.md to obtain release notes and get the resolved issues from
-the base issue collection file for your current work.
-
-
-## Issues
-
-The command
-
-```
-trackdown.sh issues
-```
-
-lists all potential issues in the issue collection. Potential means in this case,
-that there may be some false positives if there are additional elements in your
-issue collection file, which might be interpreted as issues.
-
-Optionally you can add a path to an issue collection file as a parameter like in
-
-```
-trackdown.sh issues ../wiki/issues.md
-```
-
-
 ## My Tickets
 
 The command
@@ -392,6 +358,68 @@ or
 
 ```
 trackdown.sh mine UserName ../wiki/issues.md
+```
+
+
+## Show Issue Collection Changes Status
+
+To show the current state of the local editing of the issue collection and
+roadmap file, even if they reside in a special TrackDown branch and are only
+used as symbolic links in the source code repository, a shortcut command is
+available, giving a brief summary of the Mercurial or GIT state if the
+issue collection and roadmap file.
+
+```
+trackdown.sh status
+```
+
+
+## Quick Sync of Issue Collection and Roadmap
+
+Most times the editing changelog of the issue collection file and roadmap file
+don't present too much additional information for which is already held in
+the commit messages of the source code and the issue collection file itself.
+
+In such situations you can use the shortcut command `sync` to bring the
+issue collection and roadmap file on your machine and the remote repository
+in sync.
+
+```
+trackdown.sh sync
+```
+
+
+## Copy Milestone/Release Contents
+
+The comman `copy` is used to extract the issues related to a given milestone,
+release, version, or whatever your terinology might be to a separate file
+named after the given parameter. So
+
+```
+trackdown.sh copy 1.1
+```
+
+copies all notes for the issues marked with "1.1" as a version marker to a
+separate file 1.1.md to obtain release notes and get the resolved issues from
+the base issue collection file for your current work.
+
+
+## Issues
+
+The command
+
+```
+trackdown.sh issues
+```
+
+lists all potential issues in the issue collection. Potential means in this case,
+that there may be some false positives if there are additional elements in your
+issue collection file, which might be interpreted as issues.
+
+Optionally you can add a path to an issue collection file as a parameter like in
+
+```
+trackdown.sh issues ../wiki/issues.md
 ```
 
 

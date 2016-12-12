@@ -142,8 +142,11 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME redmine k p u"
   echo "  setup redmine mirroring project p with given apikey k and redmine base url u (needs jq)"
   echo ""
+  echo "$MYNAME status"
+  echo "  Show brief information about the GIT or Mercurial state of the issue collection Branch or Directory"
+  echo ""
   echo "$MYNAME sync"
-  echo "  directly push issues GIT to upstream (rarely usefull)"
+  echo "  Synchronize the remote repository with the TrackDown issues and roadmap for Mercurial and GIT"
 
 fi
 
@@ -270,7 +273,9 @@ if [ "$CMD" = "use" ] ; then
       ISSUES=".git/trackdown/issues.md"
       NAME=`git config -l|grep user.name|cut -d '=' -f 2`
       MAIL=`git config -l|grep user.email|cut -d '=' -f 2`
-      cd $TDBASE/.git
+      cd $TDBASE
+      git branch --set-upstream-to=origin/trackdown trackdown
+      cd .git
       # git clone --single-branch --branch trackdown .. trackdown
       git clone --branch trackdown .. trackdown
       cd trackdown
@@ -388,20 +393,57 @@ fi
 
 
 #  git remote sync command
+if [ "$CMD" = "status" ] ; then
+
+  discoverIssues
+  DIR=`dirname $ISSUES`
+  if [ -d $DIR/.git ] ; then
+    (cd $DIR ; git diff)
+  else
+    if [ -d $DIR/.hg ] ; then
+      (cd $DIR ; hg status)
+    else
+      (cd $DIR ; ls -l *.md)
+    fi
+  fi
+
+fi
+
+
+#  git remote sync command
 if [ "$CMD" = "sync" ] ; then
 
   discoverIssues
-  if [ -d $TDBASE/.git ] ; then
-    if [ `git branch -l|wc -l` = 0 ] ; then
-      echo "GIT repository does not contain any branch. Exiting."
-    else
-      git fetch
-      git rebase
-      git gc
-      git push
+  DIR=`dirname $ISSUES`
+  if [ -d $DIR/.git ] ; then
+    if [ `cd $DIR ; git branch -l|grep ^*|cut -d ' ' -f 2` != "trackdown" ] ; then
+      echo "Not working on a special trackdown branch. Exiting."
+      exit
     fi
-  else
-    echo "Issues file is not located in a GIT repository."
+    (cd $TDBASE ; git fetch)
+    (cd $DIR ; git commit -m "Issue collection update" $ISSUES)
+    echo "local fetch"
+    (cd $DIR ; git fetch)
+    (cd $DIR ; git rebase)
+    $0 roadmap >$DIR/roadmap.md
+    (cd $DIR ; git commit -m "Roadmap update"roadmap.md)
+    (cd $DIR ; git fetch)
+    (cd $DIR ; git rebase)
+    echo "local push"
+    (cd $DIR ; git push)
+    echo "remote push"
+    (cd $TDBASE ; git push origin trackdown)
+  fi
+  if [ -d $DIR/.hg ] ; then
+    if [ `cd $DIR ; hg branch` != "trackdown" ] ; then
+      echo "Not working on a special trackdown branch. Exiting."
+      exit
+    fi
+    (cd $DIR ; hg pull)
+    (cd $DIR ; hg commit -m "Issue collection update" $ISSUES)
+    $0 roadmap >$DIR/roadmap.md
+    (cd $DIR ; hg commit -m "Roadmap update"roadmap.md)
+    (cd $DIR ; hg push)
   fi
 
 fi
