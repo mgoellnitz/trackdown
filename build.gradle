@@ -20,7 +20,7 @@
 // Dummy gradle file to be able to edit sources easily from within my IDE netbeans.
 apply plugin: 'java'
 
-version = '0.2'
+version = '0.3-SNAPSHOT'
 
 sourceSets {
   main {
