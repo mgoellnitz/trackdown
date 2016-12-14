@@ -21,6 +21,9 @@ function roadmap {
   ROADMAP=${ROADMAP}/roadmap.md
   echo "# Roadmap" >$ROADMAP
   echo "" >>$ROADMAP
+  IC=`basename $ISSUES .md`
+  echo "[Issue Collection]($IC)" >>$ROADMAP
+  echo "" >>$ROADMAP
   for rr in `grep -A2 "^\#\#\ " $ISSUES|grep "^\*[A-Za-z0-9][A-Za-z0-9\._\ ]*\*"|cut -d '*' -f 2|sort|uniq|sed -e 's/\ /__/g'` ; do
     r=`echo $rr|sed -e 's/__/ /g'`
     TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`

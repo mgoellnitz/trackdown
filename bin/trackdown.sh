@@ -91,6 +91,7 @@ function setupCollectionReference {
     echo "/roadmap.md" >> $TDBASE/.gitignore
   fi
   echo "mirror.type=$1" >> $TDCONFIG
+  touch $TDBASE/$COLLECTION
 }
 
 
@@ -274,17 +275,29 @@ if [ "$CMD" = "use" ] ; then
       NAME=`git config -l|grep user.name|cut -d '=' -f 2`
       MAIL=`git config -l|grep user.email|cut -d '=' -f 2`
       cd $TDBASE
+      echo "prepare local"
+      test -z `git branch |grep trackdown|sed -e 's/\ /_/g'` && git branch trackdown
       git branch --set-upstream-to=origin/trackdown trackdown
+      REMOTE=`git remote get-url origin`
+      if [ -z "$REMOTE" ] ; then
+        REMOTE=".."
+      fi
       cd .git
       # git clone --single-branch --branch trackdown .. trackdown
-      git clone --branch trackdown .. trackdown
+      # git clone --branch trackdown .. trackdown
+      git clone --branch trackdown $REMOTE trackdown
       cd trackdown
       git config --local push.default simple
       git config --local user.email "$MAIL"
       git config --local user.name "$NAME"
+      # git remote remove origin
+      # git remote add origin $REMOTE
+      # git fetch
+      # git branch --set-upstream-to=origin/trackdown trackdown
+      # git rebase
       cd ../..
       echo "autocommit=true" > $TDCONFIG
-      echo "autopush=true" >> $TDCONFIG
+      echo "autopush=false" >> $TDCONFIG
     else
       echo "autocommit=false" > $TDCONFIG
       echo "autopush=false" >> $TDCONFIG
@@ -319,7 +332,7 @@ if [ "$CMD" = "use" ] ; then
       ISSUES=".hg/trackdown/issues.md"
       cd $TDBASE/.hg
       hg clone --branch trackdown .. trackdown
-      grep username hgrc >>trackdown/.hg/hgrc
+      test -f hgrc && grep username hgrc >>trackdown/.hg/hgrc
       cd ..
       echo "autocommit=true" > $TDCONFIG
       echo "autopush=true" >> $TDCONFIG
@@ -420,19 +433,19 @@ if [ "$CMD" = "sync" ] ; then
       echo "Not working on a special trackdown branch. Exiting."
       exit
     fi
-    (cd $TDBASE ; git fetch)
-    (cd $DIR ; git commit -m "Issue collection update" $ISSUES)
-    echo "local fetch"
+    echo "fetch"
     (cd $DIR ; git fetch)
+    echo "stash"
+    (cd $DIR ; git stash)
+    echo "rebase"
     (cd $DIR ; git rebase)
+    echo "apply"
+    (cd $DIR ; git stash apply)
     $0 roadmap >$DIR/roadmap.md
-    (cd $DIR ; git commit -m "Roadmap update"roadmap.md)
-    (cd $DIR ; git fetch)
-    (cd $DIR ; git rebase)
-    echo "local push"
+    echo "commit"
+    (cd $DIR ; git commit -m "Issue collection and roadmap update" $ISSUES roadmap.md)
+    echo "push"
     (cd $DIR ; git push)
-    echo "remote push"
-    (cd $TDBASE ; git push origin trackdown)
   fi
   if [ -d $DIR/.hg ] ; then
     if [ `cd $DIR ; hg branch` != "trackdown" ] ; then
@@ -440,9 +453,9 @@ if [ "$CMD" = "sync" ] ; then
       exit
     fi
     (cd $DIR ; hg pull)
-    (cd $DIR ; hg commit -m "Issue collection update" $ISSUES)
+    (cd $DIR ; hg update trackdown)
     $0 roadmap >$DIR/roadmap.md
-    (cd $DIR ; hg commit -m "Roadmap update"roadmap.md)
+    (cd $DIR ; hg commit -m "Issue collection and roadmap update" $ISSUES roadmap.md)
     (cd $DIR ; hg push)
   fi
 
@@ -453,12 +466,12 @@ fi
 if [ "$CMD" = "init" ] ; then
 
   if [ -d $TDBASE/.git ] ; then
+    cd $TDBASE
     if [ `git log|wc -l` = 0 ] ; then
       echo "GIT repository missing commits. Exiting."
       exit
     fi
-    cd $TDBASE
-    if [ `git branch -l|sed -e s/^.\ //g|grep trackdown|wc -l` != 0 ] ; then
+    if [ `(git branch -r;git branch -l)|sed -e s/^.\ //g|grep trackdown|wc -l` != 0 ] ; then
       echo "TrackDown branch already present. Exiting."
       exit
     fi
@@ -478,6 +491,14 @@ if [ "$CMD" = "init" ] ; then
   fi
   if [ -d .hg ] ; then
     cd $TDBASE
+    if [ `hg log|wc -l` = 0 ] ; then
+      echo "Mercurial repository missing commits. Exiting."
+      exit
+    fi
+    if [ `hg branches|grep trackdown|wc -l` != 0 ] ; then
+      echo "TrackDown branch already present. Exiting."
+      exit
+    fi
     BRANCH=`hg branch`
     hg update -r 0
     hg branch trackdown
