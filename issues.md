@@ -120,6 +120,10 @@ project history.
 
     refs #REDMINE needed documentation hint for multi-project mirror
 
+ Martin Goellnitz  / Sat Dec 17 00:52:30 2016 [fd5697f0f61a1106446586868706f52d4c0b0ce3](https://github.com/mgoellnitz/trackdown/commit/fd5697f0f61a1106446586868706f52d4c0b0ce3)
+
+    refs #REDMINE exports priority to issue collection mirror
+
 ## BITBUCKET issue tracker offline mirror (in progress)
 
 *mirror*

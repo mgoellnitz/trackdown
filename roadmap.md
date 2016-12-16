@@ -1,4 +1,3 @@
-TrackDown base directory /home/martin/proj/development/issues/trackdown
 # Roadmap
 
 [Issue Collection](issues)
@@ -22,15 +21,21 @@ TrackDown base directory /home/martin/proj/development/issues/trackdown
 
 ## mirror:
 
-0% (0 / 6) completed
-83% (5 / 6) in progress
+0% (0 / 5) completed
+100% (5 / 5) in progress
 
-* MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
 * BITBUCKET issue tracker offline mirror (in progress)
 * GITHUB offline mirror (in progress)
 * GITLAB offline mirror (in progress)
 * GOGS and gitea offline mirror (in progress)
 * REDMINE offline mirror (in progress)
+
+## nth:
+
+0% (0 / 1) completed
+0% (0 / 1) in progress
+
+* MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
 
 ## oos:
 
