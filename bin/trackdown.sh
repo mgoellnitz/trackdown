@@ -132,7 +132,7 @@ if [ -z "$CMD" ] ; then
   echo "  issue remote command c on issue i with parameter p on remote mirroring source system"
   echo ""
   echo "$MYNAME github k p o"
-  echo "  setup github mirroring project p of owner o with given apikey k(needs jq)"
+  echo "  setup github mirroring project p of owner o with given apikey k (needs jq)"
   echo ""
   echo "$MYNAME gitlab k p [u]"
   echo "  setup gitlab mirroring project p with given apikey k and gitlab base url u (needs jq) - u defaults to gitlab.com"
@@ -148,6 +148,7 @@ if [ -z "$CMD" ] ; then
   echo ""
   echo "$MYNAME sync"
   echo "  Synchronize the remote repository with the TrackDown issues and roadmap for Mercurial and GIT"
+  exit
 
 fi
 
@@ -166,7 +167,9 @@ fi
 TDBASE=`pwd`
 cd $CWD
 TDCONFIG=$TDBASE/.trackdown/config
-echo "TrackDown base directory $TDBASE"
+if [ "$CMD" != "roadmap" ] ; then 
+  echo "TrackDown base directory $TDBASE"
+fi
 
 # ls command to list potential issues in the collection for a certain release
 if [ "$CMD" = "ls" ] ; then
@@ -243,7 +246,7 @@ if [ "$CMD" = "copy" ] ; then
   for START in `grep -n -B2 "^\*$MILESTONE\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1` ; do 
     REST=$[ $LINES - $START + 1 ]
     SIZE=`tail -$REST $ISSUES|grep -n ^\#\#\ |head -2|tail -1|cut -d ':' -f 1`
-    echo "Geht los ab Zeile $START mit $SIZE Zeilen."
+    # echo "Starting at line $START with $SIZE lines."
     if [ $SIZE = 1 ] ; then
       echo "letzter!"
       tail -$REST $ISSUES >> "$MILESTONE.md"
@@ -669,11 +672,14 @@ if [ "$CMD" = "mirror" ] ; then
         echo "" >>$ISSUES
         VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/*No Milestone*/g'|sed -e 's/.*name...\(.*\)"./*\1*/g'`
         ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
+        PRIORITY=`jq  -c '.issues[]|select(.id == '$id')|.priority' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
         echo -n "${VERSION}"  >>$ISSUES
         if [ "$ASSIGNEE" != "null" ] ; then
           echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
         fi
         echo "" >>$ISSUES
+        echo "" >>$ISSUES
+        echo "### Priority: $PRIORITY" >>$ISSUES
         echo "" >>$ISSUES
         echo "### Description" >>$ISSUES
         echo "" >>$ISSUES
@@ -811,7 +817,7 @@ if [ "$CMD" = "mirror" ] ; then
       fi
     done
   fi
-  rm -f $EXPORT
+  # rm -f $EXPORT
 
   RMDIR=`dirname $ISSUES`
   $0 roadmap >$RMDIR/roadmap.md
