@@ -126,7 +126,8 @@ if [ ! -z "$STATUS" ] ; then
   if [ ! -z "$AUTOCOMMIT" ] ; then
     WD=`pwd`
     TRACKDOWN=`dirname $ISSUES`
-    echo "TrackDown: committing"
+    VCS=`test -d $TRACKDOWN/.hg && echo hg || echo git`
+    echo "TrackDown: committing with $VCS in $TRACKDOWN"
     ( cd $TRACKDOWN ; ${VCS} commit -m "Committed for issue(s) #$ID" issues.md roadmap.md > /dev/null)
     AUTOPUSH=`grep autopush=true $TDCONFIG`
     # echo "AUTOPUSH: $AUTOPUSH"
