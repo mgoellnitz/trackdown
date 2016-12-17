@@ -137,6 +137,9 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME gitlab k p [u]"
   echo "  setup gitlab mirroring project p with given apikey k and gitlab base url u (needs jq) - u defaults to gitlab.com"
   echo ""
+  echo "$MYNAME bitbucket p u"
+  echo "  setup bitbucket mirroring project p with for user u (needs jq)"
+  echo ""
   echo "$MYNAME gogs k p [u]"
   echo "  setup gogs, gitea or pikacode mirroring project p with given apikey k and gitlab base url u (needs jq) - u defaults to pikacode"
   echo ""
@@ -309,7 +312,7 @@ if [ "$CMD" = "use" ] ; then
     IFBEGIN="/"
     IFEND=""
 
-    REMOTE=`grep -A2 remote.\"origin  .git/config |grep "url ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
+    REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
     test ! -z "$REMOTE" && echo "Remote system is $REMOTE."
     if [ "$CASE" = "github.com" ] ; then
