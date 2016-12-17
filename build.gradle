@@ -17,24 +17,44 @@
  *
  */
 
-// Dummy gradle file to be able to edit sources easily from within my IDE netbeans.
-apply plugin: 'java'
+// Use the Java plugin to to get the sourceSets defined
+apply plugin: 'distribution'
+apply plugin: 'java-base'
 
 version = '0.3-SNAPSHOT'
 
 sourceSets {
   main {
     resources {
-      srcDir '.'
-      exclude '**/*.gradle'
+      srcDir 'bin'
+    }
+  }
+  test {
+    resources {
+      srcDir 'test'
     }
   }
 }
 
-task distribution(type: Zip) {
-   from 'bin/'
-   into 'usr/local/bin'
-   include '*'
-   archiveName "${project.name}-${project.version}.zip"
-   // destinationDir(file('/usr/local/bin'))
+distributions {
+    main {
+        contents {
+          from 'README.md'
+          from 'bin'
+          // into 'usr/local/bin'
+        }
+    }
+}
+
+check.doFirst {
+  def tests = fileTree('test') {
+    include '**/*.sh'
+    exclude '**/shelltest.sh'
+  }
+  tests.each { file ->
+    // print "$file \n"
+    exec {
+      commandLine "$file"
+    }
+  }
 }
