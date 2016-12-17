@@ -1,3 +1,3 @@
-/.trackdown
-/redmine-issues.md
-/roadmap.md
+^.trackdown$
+^redmine-issues.md$
+^roadmap.md$

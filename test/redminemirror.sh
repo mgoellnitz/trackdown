@@ -23,7 +23,7 @@ source $MYDIR/shelltest.sh
 # setup test
 before
 
-mkdir -p .git
+mkdir -p .hg
 
 # test setup variants
 OUTPUT=`$CWD/bin/trackdown.sh redmine|tail -1`
@@ -41,11 +41,12 @@ assertEquals "Unexpected redmine setup output" "$OUTPUT" "Setting up TrackDown t
 
 assertExists "Config file missing" .trackdown/config
 assertExists "Issue collection file missing" redmine-issues.md
+assertExists "VCS ignore file missing" .hgignore
 
 DIFF=`diff -u $MYDIR/redminemirror.config .trackdown/config`
 assertEquals "Unexpected redmine mirror configuration" "$DIFF" ""
 
-DIFF=`diff -u $MYDIR/redminemirror.ignore .gitignore`
+DIFF=`diff -u $MYDIR/redminemirror.ignore .hgignore`
 assertEquals "Unexpected redmine ignore file" "$DIFF" ""
 
 OUTPUT=`$CWD/bin/trackdown.sh redmine k markdown-demo https://redmine.org|tail -1`

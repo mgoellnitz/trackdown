@@ -44,6 +44,7 @@ assertEquals "Unexpected github setup output" "$OUTPUT" "Setting up TrackDown to
 
 assertExists "Config file missing" .trackdown/config
 assertExists "Issue collection file missing" github-issues.md
+assertExists "VCS ignore file missing" .gitignore
 
 DIFF=`diff -u $MYDIR/githubmirror.config .trackdown/config`
 assertEquals "Unexpected github mirror configuration" "$DIFF" ""

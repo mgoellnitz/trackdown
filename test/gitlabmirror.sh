@@ -38,6 +38,7 @@ assertEquals "Unexpected gitlab setup output" "$OUTPUT" "Setting up TrackDown to
 
 assertExists "Config file missing" .trackdown/config
 assertExists "Issue collection file missing" gitlab-issues.md
+assertExists "VCS ignore file missing" .gitignore
 
 DIFF=`diff -u $MYDIR/gitlabmirror.config .trackdown/config`
 assertEquals "Unexpected gitlab mirror configuration" "$DIFF" ""

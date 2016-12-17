@@ -38,6 +38,7 @@ assertEquals "Unexpected gogs setup output" "$OUTPUT" "Setting up TrackDown to m
 
 assertExists "Config file missing" .trackdown/config
 assertExists "Issue collection file missing" gogs-issues.md
+assertExists "VCS ignore file missing" .gitignore
 
 DIFF=`diff -u $MYDIR/gogsmirror.config .trackdown/config`
 assertEquals "Unexpected gogs mirror configuration" "$DIFF" ""

@@ -71,6 +71,24 @@ function preventRepeatedMirrorInit {
   fi
 }
 
+# Discovers the VCS in use and sets up ignore file suppport variables
+function ignoreFileHelper {
+  if [ -d $TDBASE/.git ] ; then
+    IGNOREFILE="$TDBASE/.gitignore"
+    IFBEGIN="/"
+    IFEND=""
+  fi
+  if [ -d $TDBASE/.hg ] ; then
+    IGNOREFILE="$TDBASE/.hgignore"
+    IFBEGIN="^"
+    IFEND="\$"
+  fi
+  CHECK=`grep -s .trackdown $IGNOREFILE|wc -l`
+  if [ $CHECK = 0 ] ; then
+    echo "${IFBEGIN}.trackdown${IFEND}" >> $IGNOREFILE
+  fi
+}
+
 # Do common setup steps for collection for mirror type $1
 function setupCollectionReference {
   COLLECTION=$1-issues.md
@@ -78,17 +96,14 @@ function setupCollectionReference {
   echo "autocommit=false" > $TDCONFIG
   echo "autopush=false" >> $TDCONFIG
   echo "location=$COLLECTION" >> $TDCONFIG
-  CHECK=`(test -f $TDBASE/.gitignore && grep .trackdown $TDBASE/.gitignore)|wc -l`
+  ignoreFileHelper
+  CHECK=`grep -s $COLLECTION $IGNOREFILE|wc -l`
   if [ $CHECK = 0 ] ; then
-    echo "/.trackdown" >> $TDBASE/.gitignore
+    echo "${IFBEGIN}$COLLECTION${IFEND}" >> $IGNOREFILE
   fi
-  CHECK=`grep $COLLECTION $TDBASE/.gitignore|wc -l`
+  CHECK=`grep -s roadmap.md $IGNOREFILE|wc -l`
   if [ $CHECK = 0 ] ; then
-    echo "/$COLLECTION" >> $TDBASE/.gitignore
-  fi
-  CHECK=`grep roadmap.md $TDBASE/.gitignore|wc -l`
-  if [ $CHECK = 0 ] ; then
-    echo "/roadmap.md" >> $TDBASE/.gitignore
+   echo "${IFBEGIN}roadmap.md${IFEND}" >> $IGNOREFILE
   fi
   echo "mirror.type=$1" >> $TDCONFIG
   touch $TDBASE/$COLLECTION
@@ -161,10 +176,10 @@ TDBASE=`pwd`
 # At least try to find a reference base directory from DVCS
 if [ ! -f .trackdown/config ] ; then
   cd $CWD
-  windUp git
-  if [ ! -d .git ] ; then
+  windUp hg
+  if [ ! -d .hg ] ; then
     cd $CWD
-    windUp hg
+    windUp git
   fi
 fi
 TDBASE=`pwd`
@@ -308,9 +323,6 @@ if [ "$CMD" = "use" ] ; then
       echo "autocommit=false" > $TDCONFIG
       echo "autopush=false" >> $TDCONFIG
     fi
-    IGNOREFILE="$TDBASE/.gitignore"
-    IFBEGIN="/"
-    IFEND=""
 
     REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
@@ -349,9 +361,6 @@ if [ "$CMD" = "use" ] ; then
     echo "[hooks]" >> .hg/hgrc
     echo "commit=$DIR/trackdown-hg-hook.sh" >> .hg/hgrc
     cd $CWD
-    IGNOREFILE="$TDBASE/.hgignore"
-    IFBEGIN="^"
-    IFEND="\$"
 
     REMOTE=`hg paths|grep "default ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
@@ -366,6 +375,7 @@ if [ "$CMD" = "use" ] ; then
     echo "location=$ISSUES" >> $TDCONFIG
     ID=`dirname $TDBASE/$ISSUES`
     cd $TDBASE
+    ignoreFileHelper
     if [ "$TDBASE" != "$ID" ] ; then
       ln -sf $ISSUES issues.md
       ln -sf `dirname $ISSUES`/roadmap.md roadmap.md
@@ -373,10 +383,6 @@ if [ "$CMD" = "use" ] ; then
       if [ $CHECK = 0 ] ; then
        echo "${IFBEGIN}roadmap.md${IFEND}" >> $IGNOREFILE
       fi
-    fi
-    CHECK=`grep -s .trackdown $IGNOREFILE|wc -l`
-    if [ $CHECK = 0 ] ; then
-      echo "${IFBEGIN}.trackdown${IFEND}" >> $IGNOREFILE
     fi
     if [ -h issues.md ] ; then
       CHECK=`grep issues.md $IGNOREFILE|wc -l`

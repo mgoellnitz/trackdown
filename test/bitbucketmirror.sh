@@ -23,6 +23,7 @@ source $MYDIR/shelltest.sh
 # setup test
 before
 
+mkdir -p .hg
 mkdir -p .git
 
 # test setup variants
@@ -38,11 +39,12 @@ assertEquals "Unexpected bitbucket setup output" "$OUTPUT" "Setting up TrackDown
 
 assertExists "Config file missing" .trackdown/config
 assertExists "Issue collection file missing" bitbucket-issues.md
+assertExists "VCS ignore file missing" .hgignore
 
 DIFF=`diff -u $MYDIR/bitbucketmirror.config .trackdown/config`
 assertEquals "Unexpected bitbucket mirror configuration" "$DIFF" ""
 
-DIFF=`diff -u $MYDIR/bitbucketmirror.ignore .gitignore`
+DIFF=`diff -u $MYDIR/bitbucketmirror.ignore .hgignore`
 assertEquals "Unexpected bitbucket ignore file" "$DIFF" ""
 
 OUTPUT=`$CWD/bin/trackdown.sh bitbucket markdown-demo mgoellnitz|tail -1`
