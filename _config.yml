@@ -1,0 +1,8 @@
+title: Trackdown
+description: TrackDown - Issue Tracking with plain Markdown. If you are missing the "git clone" for your tickets from github.com or bitbucket.org, then this is for you. A lightweight Ticketing System for distributed and unconnected small Teams.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
