@@ -78,7 +78,7 @@ function setupCollectionReference {
   echo "autocommit=false" > $TDCONFIG
   echo "autopush=false" >> $TDCONFIG
   echo "location=$COLLECTION" >> $TDCONFIG
-  CHECK=`grep .trackdown $TDBASE/.gitignore|wc -l`
+  CHECK=`(test -f $TDBASE/.gitignore && grep .trackdown $TDBASE/.gitignore)|wc -l`
   if [ $CHECK = 0 ] ; then
     echo "/.trackdown" >> $TDBASE/.gitignore
   fi
@@ -535,8 +535,8 @@ if [ "$CMD" = "mirror" ] ; then
     echo "To use this functionality, jq must be installed."
     exit
   fi
+  EXPORT="/tmp/issues.json"
   if [ $TYPE = "gitlab" ] ; then
-    EXPORT="/tmp/issues.json"
     URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab source url configured. Did you setup gitlab mirroring?" $URL
     TOKEN=`grep gitlab.key= $TDCONFIG|cut -d '=' -f 2`
@@ -588,7 +588,6 @@ if [ "$CMD" = "mirror" ] ; then
   fi
 
   if [ $TYPE = "github" ] ; then
-    EXPORT="/tmp/issues.json"
     OWNER=`grep github.owner= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No github repository owner configured. Did you setup github mirroring?" $OWNER
     TOKEN=`grep github.key= $TDCONFIG|cut -d '=' -f 2`
@@ -645,7 +644,6 @@ if [ "$CMD" = "mirror" ] ; then
   fi
 
   if [ $TYPE = "redmine" ] ; then
-    EXPORT="/tmp/issues.json"
     BASEURL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $BASEURL
     KEY=`grep redmine.key= $TDCONFIG|cut -d '=' -f 2`
@@ -714,7 +712,6 @@ if [ "$CMD" = "mirror" ] ; then
   fi
 
   if [ $TYPE = "bitbucket" ] ; then
-    EXPORT="/tmp/issues.json"
     USER=`grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No bitbucket.org user configured. Did you setup bitbucket.org mirroring?" $USER
     DISPLAY=`echo $USER|cut -d ':' -f 1`
@@ -765,7 +762,6 @@ if [ "$CMD" = "mirror" ] ; then
   fi
 
   if [ $TYPE = "gogs" ] ; then
-    EXPORT="/tmp/issues.json"
     URL=`grep gogs.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gogs source url configured. Did you setup gogs mirroring?" $URL
     TOKEN=`grep gogs.key= $TDCONFIG|cut -d '=' -f 2`
@@ -820,7 +816,7 @@ if [ "$CMD" = "mirror" ] ; then
       fi
     done
   fi
-  # rm -f $EXPORT
+  rm -f $EXPORT
 
   RMDIR=`dirname $ISSUES`
   $0 roadmap >$RMDIR/roadmap.md
