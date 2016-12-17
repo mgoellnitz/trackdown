@@ -283,7 +283,7 @@ Martin Goellnitz Tue Dec 6 18:52:52 2016
 
     fixes #MULTIISSUE needed documentation and a fix
 
-## MERCURIAL support should be added withthe same functionality as GIT (resolved)
+## MERCURIAL support should be added withthe same functionality as GIT (in progress)
 
 *1.0*
 
@@ -301,3 +301,7 @@ Martin Goellnitz Wed Dec 7 01:57:12 2016
 Martin Goellnitz Thu Dec 8 11:56:56 2016
 
     refs #MERCURIAL ignore file fixed
+
+Martin Goellnitz Sat Dec 17 21:17:49 2016
+
+    refs #MERCURIAL repositories may also be the root of mirrors
