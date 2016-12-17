@@ -32,7 +32,8 @@ function after {
 # assert that variable $2 has value $3, outputs message $1 otherwise
 function assertEquals {
   if [ "$2" != "$3" ] ; then
-    echo "$1: $2 - $3"
+    echo "$1: '$2' - expected '$3'"
+    pwd
     exit 1
   fi
 }
@@ -41,6 +42,7 @@ function assertEquals {
 function assertExists {
   if [ ! -f $2 ] ; then 
     echo "$1: $2" 
+    pwd
     exit 1
   fi
 }

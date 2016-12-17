@@ -17,9 +17,8 @@ assertEquals "Unexpected bitbucket setup output" "$OUTPUT" "No project name give
 OUTPUT=`$CWD/bin/trackdown.sh bitbucket markdown-demo|tail -1`
 assertEquals "Unexpected bitbucket setup output" "$OUTPUT" "No username given as the second parameter"
 
-# test setup variants
 OUTPUT=`$CWD/bin/trackdown.sh bitbucket markdown-demo backendzeit|tail -1`
-assertEquals "Unexpected bitbucket setup output" "$OUTPUT" "Setting up TrackDown to mirror markdown-demo as mgoellnitz from bitbucket.org"
+assertEquals "Unexpected bitbucket setup output" "$OUTPUT" "Setting up TrackDown to mirror markdown-demo as backendzeit from bitbucket.org"
 
 assertExists "Config file missing" .trackdown/config
 assertExists "Issue collection file missing" bitbucket-issues.md
@@ -27,7 +26,9 @@ assertExists "Issue collection file missing" bitbucket-issues.md
 DIFF=`diff -u $MYDIR/bitbucketmirror.config .trackdown/config`
 assertEquals "Unexpected bitbucket mirror configuration" "$DIFF" ""
 
-# test setup variants
+DIFF=`diff -u $MYDIR/bitbucketmirror.ignore .gitignore`
+assertEquals "Unexpected bitbucket ignore file" "$DIFF" ""
+
 OUTPUT=`$CWD/bin/trackdown.sh bitbucket markdown-demo mgoellnitz|tail -1`
 assertEquals "Unexpected bitbucket setup output" "$OUTPUT" "Mirror setup already done in this repository with type bitbucket."
 

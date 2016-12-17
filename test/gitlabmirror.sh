@@ -26,7 +26,9 @@ assertExists "Issue collection file missing" gitlab-issues.md
 DIFF=`diff -u $MYDIR/gitlabmirror.config .trackdown/config`
 assertEquals "Unexpected gitlab mirror configuration" "$DIFF" ""
 
-# test setup variants
+DIFF=`diff -u $MYDIR/gitlabmirror.ignore .gitignore`
+assertEquals "Unexpected gitlab ignore file" "$DIFF" ""
+
 OUTPUT=`$CWD/bin/trackdown.sh gitlab markdown-demo mgoellnitz|tail -1`
 assertEquals "Unexpected gitlab setup output" "$OUTPUT" "Mirror setup already done in this repository with type gitlab."
 

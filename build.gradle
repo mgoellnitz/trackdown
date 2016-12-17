@@ -37,16 +37,19 @@ sourceSets {
 }
 
 distributions {
-    main {
-        contents {
-          from 'README.md'
-          from 'bin'
-          // into 'usr/local/bin'
-        }
+  main {
+    contents {
+      from 'README.md'
+      from 'bin'
+      // into 'usr/local/bin'
     }
+  }
 }
 
 check.doFirst {
+  exec {
+    commandLine "mkdir", "-p", "$buildDir/test/.trackdown"
+  }
   def tests = fileTree('test') {
     include '**/*.sh'
     exclude '**/shelltest.sh'
