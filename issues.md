@@ -184,6 +184,10 @@ collection and have a contribution to release notes.
 
     refs #COPY command needs documentation
 
+ Martin Goellnitz  / Sun Dec 18 19:47:41 2016 [3afd354f7313dbe442aad2eda95b6352d1df196b](https://github.com/mgoellnitz/trackdown/commit/3afd354f7313dbe442aad2eda95b6352d1df196b)
+
+    refs #COPY of the release notes should reside next to roadmap file
+
 ## ROADMAP should show percentage for issues already started (resolved)
 
 *1.0*
