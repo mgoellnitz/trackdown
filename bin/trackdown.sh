@@ -257,8 +257,9 @@ if [ "$CMD" = "copy" ] ; then
   # Location of the issues file
   ISSUES=$3
   discoverIssues
+  ISSUEDIR=`dirname $ISSUES`
   LINES=`cat $ISSUES|wc -l`
-  MILESTONE=$2
+  MILESTONE=$ISSUEDIR/$2
   echo "# Issues resoled in $2" > "$MILESTONE.md"
   echo "" >> "$MILESTONE.md"
   for START in `grep -n -B2 "^\*$MILESTONE\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1` ; do 
