@@ -109,6 +109,14 @@ function setupCollectionReference {
   touch $TDBASE/$COLLECTION
 }
 
+# check if export result file $1 exists. Bails otherwise...
+function checkExport {
+  if [ ! -f $1 ] ; then
+    echo "JSON export file $1 not found. Export seemed to have failed..."
+    exit
+  fi
+}
+
 
 # usage command
 if [ -z "$CMD" ] ; then
@@ -140,8 +148,8 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME init"
   echo "  init issue tracking within GIT or Mercurial branch"
   echo ""
-  echo "$MYNAME mirror"
-  echo "  sync with reviously setup tracking master (gitlab, redmine, github, gogs, gitea, pikacode - needs jq)"
+  echo "$MYNAME mirror [i]"
+  echo "  sync with reviously setup tracking master (gitlab, redmine, github, gogs, gitea, pikacode - needs jq) - use optional issue export file i"
   echo ""
   echo "$MYNAME remote c i p"
   echo "  issue remote command c on issue i with parameter p on remote mirroring source system"
@@ -537,12 +545,13 @@ if [ "$CMD" = "mirror" ] ; then
   checkTrackdown
   TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
   bailOnZero "No mirror setup done for this repository." $TYPE
+  unset ISSUES
   discoverIssues
   if [ `jq 2>&1|wc -l` = 0 ] ; then
     echo "To use this functionality, jq must be installed."
     exit
   fi
-  EXPORT="/tmp/issues.json"
+  EXPORT=${2:-"/tmp/issues.json"}
   if [ $TYPE = "gitlab" ] ; then
     URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab source url configured. Did you setup gitlab mirroring?" $URL
@@ -551,11 +560,10 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
     URL="${URL}/api/v3/projects/$PROJECT/issues?per_page=100"
-    curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
     if [ ! -f $EXPORT ] ; then
-      echo "JSON export file $EXPORT not found. Export seemed to have failed..."
-      exit
+      curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
     fi
+    checkExport $EXORT
     echo "# Issues" >$ISSUES
     echo "" >>$ISSUES
     echo "" >>$ISSUES
@@ -602,11 +610,10 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep github.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No github project. Did you setup github mirroring?" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues?state=all"
-    curl -H "Authorization: token $TOKEN" $URL >$EXPORT
     if [ ! -f $EXPORT ] ; then
-      echo "JSON export file $EXPORT not found. Export seemed to have failed..."
-      exit
+      curl -H "Authorization: token $TOKEN" $URL >$EXPORT
     fi
+    checkExport $EXORT
     RESULT=`jq '.message?' $EXPORT`
     if [ ! -z "$RESULT" ] ; then
       echo "Cannot mirror issues for github project ${OWNER}/${PROJECT}: ${RESULT}"
@@ -661,11 +668,10 @@ if [ "$CMD" = "mirror" ] ; then
     for PROJECT in `echo "$PROJECTS"|sed -e 's/,/\ /g'`; do
       echo "Project: $PROJECT"
       URL="${BASEURL}/projects/$PROJECT/issues.json"
-      curl -H "X-Redmine-API-Key: $KEY" $URL >$EXPORT
       if [ ! -f $EXPORT ] ; then
-        echo "JSON export file $EXPORT not found. Export seemed to have failed..."
-        exit
+        curl -H "X-Redmine-API-Key: $KEY" $URL >$EXPORT
       fi
+      checkExport $EXORT
       jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >>$ISSUES
       echo "" >>$ISSUES
       echo "" >>$ISSUES
@@ -725,11 +731,10 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No bitbucket.org project configured. Did you setup bitbucket.org mirroring?" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues"
-    curl --basic -u $USER $URL >$EXPORT
     if [ ! -f $EXPORT ] ; then
-      echo "JSON export file $EXPORT not found. Export seemed to have failed..."
-      exit
+      curl --basic -u $USER $URL >$EXPORT
     fi
+    checkExport $EXORT
     RESULT=`jq '.error?|.message?' $EXPORT`
     if [ ! "$RESULT" = "null" ] ; then
       echo "Cannot mirror issues for bitbucket.org project ${PROJECT} as ${DISPLAY}: ${RESULT}"
@@ -776,11 +781,10 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gogs/pikacode/gitea project. Did you setup gogs mirroring?" $PROJECT
     URL="${URL}/api/v1/repos/${PROJECT}/issues?state=all"
-    curl -H "Authorization: token $TOKEN" $URL >$EXPORT
     if [ ! -f $EXPORT ] ; then
-      echo "JSON export file $EXPORT not found. Export seemed to have failed..."
-      exit
+      curl -H "Authorization: token $TOKEN" $URL >$EXPORT
     fi
+    checkExport $EXORT
     RESULT=`jq '.message?' $EXPORT`
     if [ ! -z "$RESULT" ] ; then
       echo "Cannot mirror issues for gogs project ${OWNER}/${PROJECT}: ${RESULT}"
