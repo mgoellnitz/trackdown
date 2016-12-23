@@ -124,6 +124,10 @@ project history.
 
     refs #REDMINE exports priority to issue collection mirror
 
+ Martin Goellnitz  / Fri Dec 23 01:09:35 2016 [257a45fb29231a28def2c08ba3c196f58f96d83b](https://github.com/mgoellnitz/trackdown/commit/257a45fb29231a28def2c08ba3c196f58f96d83b)
+
+    refs #REDMINE migration support with custom export file
+
 ## BITBUCKET issue tracker offline mirror (in progress)
 
 *mirror*
