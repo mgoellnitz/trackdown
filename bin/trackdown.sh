@@ -268,14 +268,13 @@ if [ "$CMD" = "copy" ] ; then
   ISSUEDIR=`dirname $ISSUES`
   LINES=`cat $ISSUES|wc -l`
   MILESTONE=$ISSUEDIR/$2
-  echo "# Issues resoled in $2" > "$MILESTONE.md"
+  echo "# Issues resolved in $2" > "$MILESTONE.md"
   echo "" >> "$MILESTONE.md"
-  for START in `grep -n -B2 "^\*$MILESTONE\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1` ; do 
+  for START in `grep -n -B2 "^\*$2\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1` ; do 
     REST=$[ $LINES - $START + 1 ]
     SIZE=`tail -$REST $ISSUES|grep -n ^\#\#\ |head -2|tail -1|cut -d ':' -f 1`
     # echo "Starting at line $START with $SIZE lines."
     if [ $SIZE = 1 ] ; then
-      echo "letzter!"
       tail -$REST $ISSUES >> "$MILESTONE.md"
     else 
       tail -$REST $ISSUES | head -$[ $SIZE - 1 ] >> "$MILESTONE.md"
