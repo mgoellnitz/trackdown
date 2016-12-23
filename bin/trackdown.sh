@@ -117,6 +117,13 @@ function checkExport {
   fi
 }
 
+# Create issue collection header with title $1 in issue collection file
+function issueCollectionHeader {
+  echo "# $1" >$ISSUES
+  echo "" >>$ISSUES
+  echo "" >>$ISSUES
+  echo "[Roadmap](roadmap)" >>$ISSUES
+}
 
 # usage command
 if [ -z "$CMD" ] ; then
@@ -148,8 +155,8 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME init"
   echo "  init issue tracking within GIT or Mercurial branch"
   echo ""
-  echo "$MYNAME mirror [i]"
-  echo "  sync with reviously setup tracking master (gitlab, redmine, github, gogs, gitea, pikacode - needs jq) - use optional issue export file i"
+  echo "$MYNAME mirror"
+  echo "  sync with reviously setup tracking master (gitlab, redmine, github, gogs, gitea, pikacode - needs jq)"
   echo ""
   echo "$MYNAME remote c i p"
   echo "  issue remote command c on issue i with parameter p on remote mirroring source system"
@@ -559,14 +566,9 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
     URL="${URL}/api/v3/projects/$PROJECT/issues?per_page=100"
-    if [ ! -f $EXPORT ] ; then
-      curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
-    fi
-    checkExport $EXORT
-    echo "# Issues" >$ISSUES
-    echo "" >>$ISSUES
-    echo "" >>$ISSUES
-    echo "[Roadmap](roadmap)" >>$ISSUES
+    curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
+    checkExport $EXPORT
+    issueCollectionHeader  "Issues"
     for id in `jq  -c '.[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
@@ -609,19 +611,14 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep github.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No github project. Did you setup github mirroring?" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues?state=all"
-    if [ ! -f $EXPORT ] ; then
-      curl -H "Authorization: token $TOKEN" $URL >$EXPORT
-    fi
-    checkExport $EXORT
+    curl -H "Authorization: token $TOKEN" $URL >$EXPORT
+    checkExport $EXPORT
     RESULT=`jq '.message?' $EXPORT`
     if [ ! -z "$RESULT" ] ; then
       echo "Cannot mirror issues for github project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
-    echo "# Issues" >$ISSUES
-    echo "" >>$ISSUES
-    echo "" >>$ISSUES
-    echo "[Roadmap](roadmap)" >>$ISSUES
+    issueCollectionHeader  "Issues"
     for id in `jq  -c '.[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
@@ -666,59 +663,63 @@ if [ "$CMD" = "mirror" ] ; then
     rm $ISSUES
     for PROJECT in `echo "$PROJECTS"|sed -e 's/,/\ /g'`; do
       echo "Project: $PROJECT"
-      URL="${BASEURL}/projects/$PROJECT/issues.json"
-      if [ ! -f $EXPORT ] ; then
-        curl -H "X-Redmine-API-Key: $KEY" $URL >$EXPORT
-      fi
-      checkExport $EXORT
-      jq  -c '.issues[0]|.project' $EXPORT|sed -e 's/.*name...\(.*\)"./# \1/g' >>$ISSUES
-      echo "" >>$ISSUES
-      echo "" >>$ISSUES
-      echo "[Roadmap](roadmap)" >>$ISSUES
-      for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
-        echo "" >>$ISSUES
-        echo "" >>$ISSUES
-        SUBJECT=`jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g'`
-        STATUS=`jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
-        s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
-        echo "## $id $SUBJECT ($s)" >>$ISSUES
-        echo "" >>$ISSUES
-        VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/*No Milestone*/g'|sed -e 's/.*name...\(.*\)"./*\1*/g'`
-        ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
-        PRIORITY=`jq  -c '.issues[]|select(.id == '$id')|.priority' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
-        echo -n "${VERSION}"  >>$ISSUES
-        if [ "$ASSIGNEE" != "null" ] ; then
-          echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
-        fi
-        echo "" >>$ISSUES
-        echo "" >>$ISSUES
-        echo "### Priority: $PRIORITY" >>$ISSUES
-        echo "" >>$ISSUES
-        echo "### Description" >>$ISSUES
-        echo "" >>$ISSUES
-        AUTHOR=`jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
-        if [ "$AUTHOR" != "null" ] ; then
-          echo "Author: \`$AUTHOR\`" >>$ISSUES
+      issueCollectionHeader  "$PROJECT"
+      COUNT=0
+      OFFSET=0
+      PAGE=1
+      until [ $OFFSET -gt $COUNT ] ; do
+        URL="${BASEURL}/projects/$PROJECT/issues.json?page=$PAGE"'&limit=100&f\[\]=status_id&op\[status_id\]=*&set_filter=1'
+        curl -H "X-Redmine-API-Key: $KEY" "$URL" >$EXPORT
+        checkExport $EXPORT
+        PAGE=$[ $PAGE + 1 ]
+        COUNT=`jq  -c '.total_count' $EXPORT`
+        OFFSET=`jq  -c '.offset' $EXPORT`
+        test $OFFSET -lt $COUNT && echo "continue $OFFSET - $COUNT"
+        for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
+           echo "" >>$ISSUES
           echo "" >>$ISSUES
-        fi
-        jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
-          |sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
-          |sed -e 's/\&ouml;/ö/g'|sed -e 's/\&Ouml;/Ö/g' \
-          |sed -e 's/\&auml;/ä/g'|sed -e 's/\&Auml;/Ä/g' \
-          |sed -e 's/\&uuml;/ü/g'|sed -e 's/\&Uuml;/Ü/g' \
-          |sed -e 's/\&quot;/"/g'|sed -e 's/\&szlig;/ß/g' \
-          |sed -e 's/<strong>//g'|sed -e 's/<\/strong>//g' \
-          |sed -e 's/<a href=\\"\(.*\)\\">\(.*\)<\/a>/[\2](\1)/g' \
-          |sed -e 's/<h3>/\`/g'|sed -e 's/<\/h3>/\`/g' \
-          |sed -e 's/<em>/\`/g'|sed -e 's/<\/em>/\`/g' \
-          |sed -e 's/<u>/\`/g'|sed -e 's/<\/u>/\`/g' \
-          |sed -e 's/<ul>//g'|sed -e 's/<\/ul>//g' \
-          |sed -e 's/<ol>//g'|sed -e 's/<\/ol>//g' \
-          |sed -e 's/<span>//g'|sed -e 's/<\/span>//g' \
-          |sed -e 's/<li>/* /g'|sed -e 's/<\/li>//g' \
-          |sed -e 's/<p[\ =a-z0-9\\"]*>//g'|sed -e 's/<\/p>//g' \
-          |sed -e 's/^"//g'|sed -e 's/\\t//g' \
-          |sed -e 's/<br \/>//g' |sed -e 's/\\"/\`/g' >>$ISSUES
+          SUBJECT=`jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g'`
+          STATUS=`jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
+          s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
+          echo "## $id $SUBJECT ($s)" >>$ISSUES
+          echo "" >>$ISSUES
+          VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/*No Milestone*/g'|sed -e 's/.*name...\(.*\)"./*\1*/g'`
+          ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
+          PRIORITY=`jq  -c '.issues[]|select(.id == '$id')|.priority' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
+          echo -n "${VERSION}"  >>$ISSUES
+          if [ "$ASSIGNEE" != "null" ] ; then
+            echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+          fi
+          echo "" >>$ISSUES
+          echo "" >>$ISSUES
+          echo "### Priority: $PRIORITY" >>$ISSUES
+          echo "" >>$ISSUES
+          echo "### Description" >>$ISSUES
+          echo "" >>$ISSUES
+          AUTHOR=`jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
+          if [ "$AUTHOR" != "null" ] ; then
+            echo "Author: \`$AUTHOR\`" >>$ISSUES
+            echo "" >>$ISSUES
+          fi
+          jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
+            |sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
+            |sed -e 's/\&ouml;/ö/g'|sed -e 's/\&Ouml;/Ö/g' \
+            |sed -e 's/\&auml;/ä/g'|sed -e 's/\&Auml;/Ä/g' \
+            |sed -e 's/\&uuml;/ü/g'|sed -e 's/\&Uuml;/Ü/g' \
+            |sed -e 's/\&quot;/"/g'|sed -e 's/\&szlig;/ß/g' \
+            |sed -e 's/<strong>//g'|sed -e 's/<\/strong>//g' \
+            |sed -e 's/<a href=\\"\(.*\)\\">\(.*\)<\/a>/[\2](\1)/g' \
+            |sed -e 's/<h3>/\`/g'|sed -e 's/<\/h3>/\`/g' \
+            |sed -e 's/<em>/\`/g'|sed -e 's/<\/em>/\`/g' \
+            |sed -e 's/<u>/\`/g'|sed -e 's/<\/u>/\`/g' \
+            |sed -e 's/<ul>//g'|sed -e 's/<\/ul>//g' \
+            |sed -e 's/<ol>//g'|sed -e 's/<\/ol>//g' \
+            |sed -e 's/<span>//g'|sed -e 's/<\/span>//g' \
+            |sed -e 's/<li>/* /g'|sed -e 's/<\/li>//g' \
+            |sed -e 's/<p[\ =a-z0-9\\"]*>//g'|sed -e 's/<\/p>//g' \
+            |sed -e 's/^"//g'|sed -e 's/\\t//g' \
+            |sed -e 's/<br \/>//g' |sed -e 's/\\"/\`/g' >>$ISSUES
+        done
       done
     done
   fi
@@ -730,20 +731,15 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No bitbucket.org project configured. Did you setup bitbucket.org mirroring?" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues"
-    if [ ! -f $EXPORT ] ; then
-      curl --basic -u $USER $URL >$EXPORT
-    fi
-    checkExport $EXORT
+    curl --basic -u $USER $URL >$EXPORT
+    checkExport $EXPORT
     RESULT=`jq '.error?|.message?' $EXPORT`
     if [ ! "$RESULT" = "null" ] ; then
       echo "Cannot mirror issues for bitbucket.org project ${PROJECT} as ${DISPLAY}: ${RESULT}"
       cd $CWD
       exit
     fi
-    echo "# Issues" >$ISSUES
-    echo "" >>$ISSUES
-    echo "" >>$ISSUES
-    echo "[Roadmap](roadmap)" >>$ISSUES
+    issueCollectionHeader  "Issues"
     for id in `jq  -c '.values[].id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
@@ -780,19 +776,14 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gogs/pikacode/gitea project. Did you setup gogs mirroring?" $PROJECT
     URL="${URL}/api/v1/repos/${PROJECT}/issues?state=all"
-    if [ ! -f $EXPORT ] ; then
-      curl -H "Authorization: token $TOKEN" $URL >$EXPORT
-    fi
-    checkExport $EXORT
+    curl -H "Authorization: token $TOKEN" $URL >$EXPORT
+    checkExport $EXPORT
     RESULT=`jq '.message?' $EXPORT`
     if [ ! -z "$RESULT" ] ; then
       echo "Cannot mirror issues for gogs project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
-    echo "# Issues" >$ISSUES
-    echo "" >>$ISSUES
-    echo "" >>$ISSUES
-    echo "[Roadmap](roadmap)" >>$ISSUES
+    issueCollectionHeader  "Issues"
     for id in `jq  -c '.[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES

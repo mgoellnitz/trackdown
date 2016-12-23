@@ -834,14 +834,6 @@ a `trackdown.sh use`.
 The full migration is not covered by a command yet and setting up mirrored data 
 in the special TrackDown branch must be accomplished manually.
 
-As a support tool for this, you may present a custom exported json file to
-the mirror command and format this as an issue collection and generate the
-corresponding roadmap file.
-
-```
-trackdown.sh mirror export-file.json
-```
-
 
 [markdown]: https://daringfireball.net/projects/markdown/
 [git]: http://git-scm.com/
