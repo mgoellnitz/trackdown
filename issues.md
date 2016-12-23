@@ -192,6 +192,10 @@ collection and have a contribution to release notes.
 
     refs #COPY of the release notes should reside next to roadmap file
 
+ Martin Goellnitz  / Fri Dec 23 01:30:25 2016 [b88c3678c4daff263afba4a6a672bba904f37103](https://github.com/mgoellnitz/trackdown/commit/b88c3678c4daff263afba4a6a672bba904f37103)
+
+    refs #COPY issues fixed after file discovery change
+
 ## ROADMAP should show percentage for issues already started (resolved)
 
 *1.0*
