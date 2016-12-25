@@ -45,6 +45,14 @@ function checkTrackdown {
     fi
 }
 
+# Exit if jq is not installed
+function checkJq {
+  if [ `jq 2>&1|wc -l` = 0 ] ; then
+    echo "To use this functionality, jq must be installed."
+    exit
+  fi
+}
+
 # Discover issues collection file from setup
 function discoverIssues {
   if [ -z "$ISSUES" ] ; then
@@ -277,15 +285,27 @@ if [ "$CMD" = "copy" ] ; then
   MILESTONE=$ISSUEDIR/$2
   echo "# Issues resolved in $2" > "$MILESTONE.md"
   echo "" >> "$MILESTONE.md"
+  TOTALSIZE=0
+  COPY=$ISSUEDIR/$2-issues.md
+  cp $ISSUES $COPY
   for START in `grep -n -B2 "^\*$2\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1` ; do 
     REST=$[ $LINES - $START + 1 ]
-    SIZE=`tail -$REST $ISSUES|grep -n ^\#\#\ |head -2|tail -1|cut -d ':' -f 1`
+    SIZE=`tail -$REST $COPY|grep -n ^\#\#\ |head -2|tail -1|cut -d ':' -f 1`
+    # tail -$REST $ISSUES|head -1
     # echo "Starting at line $START with $SIZE lines."
     if [ $SIZE = 1 ] ; then
-      tail -$REST $ISSUES >> "$MILESTONE.md"
+      tail -$REST $COPY >> "$MILESTONE.md"
     else 
-      tail -$REST $ISSUES | head -$[ $SIZE - 1 ] >> "$MILESTONE.md"
+      tail -$REST $COPY | head -$[ $SIZE - 1 ] >> "$MILESTONE.md"
     fi
+    CSTART=$[ $START - $TOTALSIZE ]
+    # tail -$REST $COPY|head -1
+    # echo "Starting at line $CSTART with $SIZE lines."
+    CUT=`date +%s%N`.md
+    head -$[ $CSTART - 1 ] $COPY >$CUT
+    tail -$[ $REST - $SIZE + 1 ] $COPY >>$CUT
+    mv $CUT $COPY
+    TOTALSIZE=$[ $TOTALSIZE + $SIZE - 1 ]
   done
 
 fi
@@ -553,10 +573,7 @@ if [ "$CMD" = "mirror" ] ; then
   bailOnZero "No mirror setup done for this repository." $TYPE
   unset ISSUES
   discoverIssues
-  if [ `jq 2>&1|wc -l` = 0 ] ; then
-    echo "To use this functionality, jq must be installed."
-    exit
-  fi
+  checkJq
   EXPORT=${2:-"/tmp/issues.json"}
   if [ $TYPE = "gitlab" ] ; then
     URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
@@ -880,10 +897,7 @@ fi
 # gitlab command to setup a gitlab system as a remote mirror source
 if [ "$CMD" = "gitlab" ] ; then
 
-  if [ `jq 2>&1|wc -l` = 0 ] ; then
-    echo "To use this functionality, jq must be installed."
-    exit
-  fi
+  checkJq
   bailOnZero "No api token given as the first parameter" $2
   bailOnZero "No project name given as the second parameter" $3
   preventRepeatedMirrorInit
@@ -901,10 +915,7 @@ fi
 # github command to setup a github system as a remote mirror source
 if [ "$CMD" = "github" ] ; then
 
-  if [ `jq 2>&1|wc -l` = 0 ] ; then
-    echo "To use this functionality, jq must be installed."
-    exit
-  fi
+  checkJq
   bailOnZero "No api token given as the first parameter" $2
   bailOnZero "No project name given as the second parameter" $3
   bailOnZero "No username given as the third parameter" $4
@@ -922,10 +933,7 @@ fi
 # bitbucket command to setup bitbucket.org as a remote mirror source
 if [ "$CMD" = "bitbucket" ] ; then
 
-  if [ `jq 2>&1|wc -l` = 0 ] ; then
-    echo "To use this functionality, jq must be installed."
-    exit
-  fi
+  checkJq
   bailOnZero "No project name given as the first parameter" $2
   bailOnZero "No username given as the second parameter" $3
   preventRepeatedMirrorInit
@@ -941,10 +949,7 @@ fi
 # redmine command to setup a redmine system as a remote mirror source
 if [ "$CMD" = "redmine" ] ; then
 
-  if [ `jq 2>&1|wc -l` = 0 ] ; then
-    echo "To use this functionality, jq must be installed."
-    exit
-  fi
+  checkJq
   bailOnZero "No api key given as the first parameter" $2
   bailOnZero "No project name given as the second parameter" $3
   bailOnZero "No redmine instance base url given as the third parameter" $4
@@ -961,10 +966,7 @@ fi
 # gogs command to setup a gogs, gitea, or pikacode system as a remote mirror source
 if [ "$CMD" = "gogs" ] ; then
 
-  if [ `jq 2>&1|wc -l` = 0 ] ; then
-    echo "To use this functionality, jq must be installed."
-    exit
-  fi
+  checkJq
   bailOnZero "No api token given as the first parameter" $2
   bailOnZero "No project name given as the second parameter" $3
   URL=${4:-https://v2.pikacode.com}
