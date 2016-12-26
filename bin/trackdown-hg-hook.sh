@@ -39,14 +39,14 @@ function roadmap {
   done
 }
 
-VCS=hg
 CWD=`pwd`
-while [ `pwd` != "/"  -a `ls -d .$VCS 2>&1|head -1|cut -d ' ' -f 1` != ".$VCS" ] ; do
+while [ `pwd` != "/"  -a ! -d .trackdown ] ; do
   cd ..
 done
 TDBASE=`pwd`
+VCS=`test -d .hg && echo hg || echo git`
 TDCONFIG=$TDBASE/.trackdown/config
-echo "TrackDown: Base directory $TDBASE"
+echo "TrackDown-$VCS: Base directory $TDBASE"
 cd $CWD
 if [ ! -f $TDCONFIG ] ; then
   echo "TrackDown: Not in a TrackDown context - ignoring commit"
@@ -59,9 +59,18 @@ fi
 # Prefix for links to online commit descriptions
 PREFIX=`grep prefix= $TDCONFIG|cut -d '=' -f 2`
 # echo "ISSUES $ISSUES"
-AUTHOR=`hg log -l 1 --template "{author}\n"`
-DATE=`hg log -l 1 --template "{localdate(date)|date}\n"`
-LINE=`hg log -l 1 --template "{desc}\n"|grep \#`
+if [ $VCS = "hg" ] ; then
+  AUTHOR=`hg log -l 1 --template "{author}\n"`
+  DATE=`hg log -l 1 --template "{localdate(date)|date}\n"`
+  LINE=`hg log -l 1 --template "{desc}\n"|grep \#`
+  HASH=`hg log -l 1 --template "{node}\n"`
+fi
+if [ $VCS = "git" ] ; then
+  AUTHOR=`git log -n 1 --format=%an`
+  DATE=`git log -n 1 --format=%aD|cut -d '+' -f 1|sed -e 's/\ $//g'`
+  LINE=`git log -n 1 --format=%s|grep \#`
+  HASH=`git log -n 1 --format="%H"`
+fi
 STATUS=""
 if [ ! -z "$LINE" ] ; then
   ID=`echo $LINE|sed -e 's/.*#\([0-9a-zA-Z,]*\).*/\1/g'`
@@ -82,7 +91,6 @@ if [ ! -z "$LINE" ] ; then
     STATUS="resolved"
   fi
 fi
-HASH=`hg log -l 1 --template "{node}\n"`
 echo "TrackDown: $ID $STATUS"
 if [ ! -z "$STATUS" ] ; then
   for TID in `echo "$ID"|sed -e 's/,/\ /g'`; do
@@ -104,14 +112,27 @@ if [ ! -z "$STATUS" ] ; then
         else
           echo "$AUTHOR / ${DATE} [${HASH}](${PREFIX}${HASH})" >>$ISSUES.remove
         fi
-        hg log -l 1 --template "{desc}\n" >>$ISSUES.remove
-        echo "" >>$ISSUES.remove
-        tail -$[ $LINES - $SECTION + 1 ] $ISSUES >>$ISSUES.remove
-        mv $ISSUES.remove $ISSUES
+        FILE=$ISSUES.remove
       else
         echo "" >>$ISSUES
         echo $AUTHOR $DATE >>$ISSUES
-        hg log -l 1 --template "{desc}\n" >>$ISSUES
+        FILE=$ISSUES
+      fi
+      echo "" >>$FILE
+      if [ $VCS = "hg" ] ; then
+        hg log -l 1 --template "{desc}\n" >>$FILE
+      fi
+      if [ $VCS = "git" ] ; then
+        git log -n 1 --format="%s" >>$FILE
+        BODY=`git log -n 1 --format="%b"`
+        if [ ! -z "$BODY" ] ; then
+          git log -n 1 --format="%b" >>$FILE
+        fi
+      fi
+      if [ -z "$ISLAST" ] ; then
+        echo "" >>$ISSUES.remove
+        tail -$[ $LINES - $SECTION + 1 ] $ISSUES >>$ISSUES.remove
+        mv $ISSUES.remove $ISSUES
       fi
     else
       echo "TrackDown: ID $TID not found in issues collection"
