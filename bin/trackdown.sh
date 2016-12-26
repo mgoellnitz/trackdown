@@ -324,7 +324,7 @@ if [ "$CMD" = "use" ] ; then
       exit
     fi
     rm -f $TDBASE/.git/hooks/post-commit
-    ln -s $DIR/trackdown-git-hook.sh $TDBASE/.git/hooks/post-commit
+    ln -s $DIR/trackdown-hook.sh $TDBASE/.git/hooks/post-commit
     chmod 755 $TDBASE/.git/hooks/post-commit
     test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
     if [ -z "$ISSUES" ] ; then
@@ -395,7 +395,7 @@ if [ "$CMD" = "use" ] ; then
       echo "autopush=false" >> $TDCONFIG
     fi
     echo "[hooks]" >> .hg/hgrc
-    echo "commit=$DIR/trackdown-hg-hook.sh" >> .hg/hgrc
+    echo "commit=$DIR/trackdown-hook.sh" >> .hg/hgrc
     cd $CWD
 
     REMOTE=`hg paths|grep "default ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'`
@@ -442,7 +442,7 @@ if [ "$CMD" = "update" ] ; then
     TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
     if [ -z $TYPE ] ; then
       rm -f $TDBASE/.git/hooks/post-commit
-      ln -s $DIR/trackdown-git-hook.sh $TDBASE/.git/hooks/post-commit
+      ln -s $DIR/trackdown-hook.sh $TDBASE/.git/hooks/post-commit
       chmod 755 $TDBASE/.git/hooks/post-commit
     else
       echo "This repository is set up as a mirror - no hoook update needed."
