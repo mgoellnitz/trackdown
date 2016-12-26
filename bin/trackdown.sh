@@ -323,7 +323,8 @@ if [ "$CMD" = "use" ] ; then
       echo "GIT repository doesn't contain a trackdown branch. Did you issue the init command? Exiting."
       exit
     fi
-    cp $DIR/trackdown-git-hook.sh $TDBASE/.git/hooks/post-commit
+    rm -f $TDBASE/.git/hooks/post-commit
+    ln -s $DIR/trackdown-git-hook.sh $TDBASE/.git/hooks/post-commit
     chmod 755 $TDBASE/.git/hooks/post-commit
     test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
     if [ -z "$ISSUES" ] ; then
@@ -440,7 +441,8 @@ if [ "$CMD" = "update" ] ; then
   if [ -d $TDBASE/.git ] ; then
     TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
     if [ -z $TYPE ] ; then
-      cp $DIR/trackdown-git-hook.sh $TDBASE/.git/hooks/post-commit
+      rm -f $TDBASE/.git/hooks/post-commit
+      ln -s $DIR/trackdown-git-hook.sh $TDBASE/.git/hooks/post-commit
       chmod 755 $TDBASE/.git/hooks/post-commit
     else
       echo "This repository is set up as a mirror - no hoook update needed."
