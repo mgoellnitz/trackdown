@@ -4,13 +4,13 @@
 
 ## 1.0:
 
-72% (8 / 11) completed
-27% (3 / 11) in progress
+81% (9 / 11) completed
+18% (2 / 11) in progress
 
 * ASSIGNMENT of issues should be part of the format and tooling (in progress)
 * COPY release notes. (in progress)
-* MERCURIAL support should be added withthe same functionality as GIT (in progress)
 * HASH of the commit should be part of the listing (resolved)
+* MERCURIAL support should be added with the same functionality as GIT (resolved)
 * MULTIISSUE There can be only one issue per commit. (resolved)
 * PREFIX hashes in commit notes to form a URL (resolved)
 * ROADMAP should show percentage for issues already started (resolved)
