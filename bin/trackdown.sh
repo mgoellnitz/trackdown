@@ -319,15 +319,15 @@ if [ "$CMD" = "use" ] ; then
     exit
   fi
   if [ -d $TDBASE/.git ] ; then
-    if [ `(git branch -r;git branch -l)|grep trackdown|wc -l` = 0 ] ; then
-      echo "GIT repository doesn't contain a trackdown branch. Did you issue the init command? Exiting."
-      exit
-    fi
     rm -f $TDBASE/.git/hooks/post-commit
     ln -s $DIR/trackdown-hook.sh $TDBASE/.git/hooks/post-commit
     chmod 755 $TDBASE/.git/hooks/post-commit
     test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
     if [ -z "$ISSUES" ] ; then
+      if [ `(git branch -r;git branch -l)|grep trackdown|wc -l` = 0 ] ; then
+        echo "GIT repository doesn't contain a trackdown branch. Did you issue the init command? Exiting."
+        exit
+      fi
       ISSUES=".git/trackdown/issues.md"
       NAME=`git config -l|grep user.name|cut -d '=' -f 2`
       MAIL=`git config -l|grep user.email|cut -d '=' -f 2`
@@ -377,12 +377,12 @@ if [ "$CMD" = "use" ] ; then
     fi
   fi
   if [ -d $TDBASE/.hg ] ; then
-    if [ `hg branches|grep trackdown|wc -l` = 0 ] ; then
-      echo "Mercurial repository missing trackdown branch. Did you issue the init command? Exiting."
-      exit
-    fi
     test ! -d .trackdown && mkdir .trackdown
     if [ -z "$ISSUES" ] ; then
+      if [ `hg branches|grep trackdown|wc -l` = 0 ] ; then
+        echo "Mercurial repository missing trackdown branch. Did you issue the init command? Exiting."
+        exit
+      fi
       ISSUES=".hg/trackdown/issues.md"
       cd $TDBASE/.hg
       hg clone --branch trackdown .. trackdown
