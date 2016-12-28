@@ -134,13 +134,13 @@ if [ ! -z "$STATUS" ] ; then
       fi
       echo "" >>$FILE
       if [ $VCS = "hg" ] ; then
-        hg log -l 1 --template "{desc}\n" >>$FILE
+        hg log -l 1 --template "    {desc}\n" >>$FILE
       fi
       if [ $VCS = "git" ] ; then
-        git log -n 1 --format="%s" >>$FILE
+        git log -n 1 --format="    %s" >>$FILE
         BODY=`git log -n 1 --format="%b"`
         if [ ! -z "$BODY" ] ; then
-          git log -n 1 --format="%b" >>$FILE
+          git log -n 1 --format="    %b" >>$FILE
         fi
       fi
       if [ -z "$ISLAST" ] ; then
