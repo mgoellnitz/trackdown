@@ -831,8 +831,61 @@ When you think this information mirrored right now is sufficient to cut the ties
 you can setup the created issue collection and roadmap as the repository and do 
 a `trackdown.sh use`.
 
-The full migration is not covered by a command yet and setting up mirrored data 
-in the special TrackDown branch must be accomplished manually.
+The full migration is not covered by a command yet and setting up the mirrored 
+data in the special TrackDown branch or any other locaion of your chosing must 
+be accomplished manually. The needed steps include:
+
+*Latest Mirror*
+
+Get the latest mirrored data.
+
+```
+trackdown.sh mirror
+```
+
+*Remove Mirror Configuration*
+
+```
+rm -rf .trackdown
+```
+
+*Initialize Trackdown*
+
+Special Branch Flavour:
+
+```
+trackdown.sh init
+trackdown.sh use
+mv old-issues.md .git/trackdown/issues.md # or .hg
+roadmap.md .git/trackdown/roadmap.md # or .hg
+```
+
+Custom location - e.g. wiki
+
+```
+mv old-issues.md ../wiki/issues.md
+roadmap.md ../wiki/roadmap.md
+trackdown.sh use ../wiki/issues.md
+(cd wiki; git add issues.md roadmap.md)  # or hg
+```
+
+*Clean Up*
+
+Since the mirroring collects as much data as possible, it might be a good idea
+to separate already closed releases or milestones from the currently relevant
+issues in the issue collection. Use the copy command to do so:
+
+```
+trackdown.sh copy Milestone1
+```
+
+And now use the remaining issues as the new collection and add the separated
+issues as a chages/changelog part to your documentation.
+
+```
+mv ../wiki/Milestone1-issues.md ../wiki/issues.md
+(cd ../wiki ; git add Milestone1.md) # or hg
+```
 
 
 [markdown]: https://daringfireball.net/projects/markdown/
