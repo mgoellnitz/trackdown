@@ -2,11 +2,6 @@
 
 [Issue Collection](issues)
 
-## 1.0:
-
-81% (9 / 11) completed
-18% (2 / 11) in progress
-
 * ASSIGNMENT of issues should be part of the format and tooling (in progress)
 * COPY release notes. (in progress)
 * HASH of the commit should be part of the listing (resolved)
@@ -19,28 +14,14 @@
 * SYNCHRONIZE roadmap also on unhandled commits (resolved)
 * UPDATE command for the commit hook (resolved)
 
-## mirror:
-
-0% (0 / 5) completed
-100% (5 / 5) in progress
-
 * BITBUCKET issue tracker offline mirror (in progress)
 * GITHUB offline mirror (in progress)
 * GITLAB offline mirror (in progress)
 * GOGS and gitea offline mirror (in progress)
 * REDMINE offline mirror (in progress)
 
-## nth:
-
-0% (0 / 1) completed
-0% (0 / 1) in progress
-
 * MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
-
-## oos:
-
-0% (0 / 1) completed
-100% (1 / 1) in progress
+* GRAPHICAL progress bar for iterations in roadmap (resolved)
 
 * NETBEANS interoperation not working due to missing hook implementation in JGit (in progress)
 

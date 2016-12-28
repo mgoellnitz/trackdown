@@ -35,6 +35,18 @@ This seems to be hard to accomplish with GIT, since there is only a `pre-push`
 hook available and we would need a `post-push` hook to get the right timing
 after the changes have been reflected in the remote issue tracking system.
 
+## GRAPHICAL progress bar for iterations in roadmap (resolved)
+
+*nth*
+
+Not only output percentages about the progress a certain release, iteration,
+or sprint has made, but also present a graphical progress bar for easier
+overview about the current state.
+
+Martin Goellnitz / Wed, 28 Dec 2016 01:13:18 [415121a80ee3a216e9a02635df34b30dacb34f73](https://github.com/mgoellnitz/trackdown/commit/415121a80ee3a216e9a02635df34b30dacb34f73)
+
+resolves #GRAPHICAL progress bar in roadmap
+
 ## GITLAB offline mirror (in progress)
 
 *mirror*
