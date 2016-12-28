@@ -47,6 +47,10 @@ Martin Goellnitz / Wed, 28 Dec 2016 01:13:18 [415121a80ee3a216e9a02635df34b30dac
 
 resolves #GRAPHICAL progress bar in roadmap
 
+Martin Goellnitz / Wed, 28 Dec 2016 01:14:37 [30444b0522236166b34660802f12938b043935af](https://github.com/mgoellnitz/trackdown/commit/30444b0522236166b34660802f12938b043935af)
+
+fixes #GRAPHICAL progress bar generation in commit hook
+
 ## GITLAB offline mirror (in progress)
 
 *mirror*
