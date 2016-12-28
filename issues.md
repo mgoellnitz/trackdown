@@ -90,7 +90,7 @@ Martin Goellnitz / Tue Dec 6 18:19:54 2016 [8ec2c02ebfd241b9b8599ef0fd0b3ebf7639
 
     refs #GITHUB automatically discover single commit URLs für github and the others
 
-## REDMINE offline mirror (in progress)
+## REDMINE offline mirror (resolved)
 
 *mirror*
 
@@ -143,6 +143,10 @@ Martin Goellnitz / Sat Dec 17 00:52:30 2016 [fd5697f0f61a1106446586868706f52d4c0
 Martin Goellnitz / Fri Dec 23 01:09:35 2016 [257a45fb29231a28def2c08ba3c196f58f96d83b](https://github.com/mgoellnitz/trackdown/commit/257a45fb29231a28def2c08ba3c196f58f96d83b)
 
     refs #REDMINE migration support with custom export file
+
+Martin Goellnitz / Wed, 28 Dec 2016 01:57:29 [01c5211aa1ff2a2056439a1ee1c73ddc7d8ece98](https://github.com/mgoellnitz/trackdown/commit/01c5211aa1ff2a2056439a1ee1c73ddc7d8ece98)
+
+    resolves #REDMINE migration to trackdown now tested to be working
 
 ## BITBUCKET issue tracker offline mirror (in progress)
 

@@ -23,16 +23,16 @@
 
 ## mirror:
 
-[![100%](https://dummyimage.com/700x30/606060/FFFFFF.png&text=100%25)]()
+[![20%](https://dummyimage.com/140x30/000000/FFFFFF.png&text=20%25)]()[![80%](https://dummyimage.com/560x30/606060/FFFFFF.png&text=80%25)]()
 
-0% (0 / 5) completed 
-100% (5 / 5) in progress
+20% (1 / 5) completed 
+80% (4 / 5) in progress
 
 * BITBUCKET issue tracker offline mirror (in progress)
 * GITHUB offline mirror (in progress)
 * GITLAB offline mirror (in progress)
 * GOGS and gitea offline mirror (in progress)
-* REDMINE offline mirror (in progress)
+* REDMINE offline mirror (resolved)
 
 ## nth:
 
