@@ -368,7 +368,7 @@ if [ "$CMD" = "sync" ] ; then
     echo "commit"
     (cd $DIR ; git commit -m "Issue collection and roadmap update" $ISSUES roadmap.md)
     echo "push"
-    (cd $DIR ; git push)
+    (cd $DIR ; git gc ; git push)
   fi
   if [ -d $DIR/.hg ] ; then
     if [ `cd $DIR ; hg branch` != "trackdown" ] ; then
