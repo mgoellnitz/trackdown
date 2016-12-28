@@ -77,17 +77,16 @@ if [ ! -z "$STATUS" ] ; then
         SECTION=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${TID}.*$STATUS"|tail -1|cut -d ':' -f 1`
         LINES=`cat $ISSUES|wc -l`
         # echo "SECTION $SECTION - LINES $LINES"
-        head -$[ $SECTION - 1 ] $ISSUES >>$ISSUES.remove
-        if [ -z "$PREFIX" ] ; then
-          echo "$AUTHOR / ${DATE} (${HASH})" >>$ISSUES.remove
-        else
-          echo "$AUTHOR / ${DATE} [${HASH}](${PREFIX}${HASH})" >>$ISSUES.remove
-        fi
         FILE=$ISSUES.remove
+        head -$[ $SECTION - 1 ] $ISSUES >>$FILE
       else
-        echo "" >>$ISSUES
-        echo $AUTHOR $DATE >>$ISSUES
         FILE=$ISSUES
+        echo "" >>$FILE
+      fi
+      if [ -z "$PREFIX" ] ; then
+        echo "$AUTHOR / ${DATE} (${HASH})" >>$FILE
+      else
+        echo "$AUTHOR / ${DATE} [${HASH}](${PREFIX}${HASH})" >>$FILE
       fi
       echo "" >>$FILE
       if [ $VCS = "hg" ] ; then
