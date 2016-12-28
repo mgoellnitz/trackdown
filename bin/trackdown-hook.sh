@@ -16,60 +16,17 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-function roadmap {
-  ROADMAP=`dirname $ISSUES`
-  ROADMAP=${ROADMAP}/roadmap.md
-  echo "# Roadmap" >$ROADMAP
-  echo "" >>$ROADMAP
-  IC=`basename $ISSUES .md`
-  echo "[Issue Collection]($IC)" >>$ROADMAP
-  echo "" >>$ROADMAP
-  for rr in `grep -A2 "^\#\#\ " $ISSUES|grep "^\*[A-Za-z0-9][A-Za-z0-9\._\ ]*\*"|cut -d '*' -f 2|sort|uniq|sed -e 's/\ /__/g'` ; do
-    r=`echo $rr|sed -e 's/__/ /g'`
-    TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
-    RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(resolved)'|wc -l`
-    PROGRESS=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep '(in progress)'|wc -l`
-    RESPERC=$[$RESOLVED * 100 / $TOTAL]
-    PROPERC=$[$PROGRESS * 100 / $TOTAL]
-    RESTPERC=$[ 100 - $PROPERC - $RESPERC ]
-    echo "## ${r}:" >> $ROADMAP
-    echo "" >> $ROADMAP
-    if [ $RESPERC -gt 0 ] ; then
-      echo -n "[![$RESPERC%](https://dummyimage.com/$[ $RESPERC * 7 ]x30/000000/FFFFFF.png&text=$RESPERC%25)]()" >> $ROADMAP
-    fi
-    if [ $PROPERC -gt 0 ] ; then
-      echo -n "[![$PROPERC%](https://dummyimage.com/$[ $PROPERC * 7 ]x30/606060/FFFFFF.png&text=$PROPERC%25)]()" >> $ROADMAP
-    fi
-    if [ $RESTPERC -gt 0 ] ; then
-      echo -n "[![$RESTPERC%](https://dummyimage.com/$[ $RESTPERC * 7 ]x30/eeeeee/808080.png&text=$RESTPERC%25)]()" >> $ROADMAP
-    fi
-    echo "" >> $ROADMAP
-    echo "" >> $ROADMAP
-    echo "$RESPERC% ($RESOLVED / $TOTAL) completed " >> $ROADMAP
-    echo "$PROPERC% ($PROGRESS / $TOTAL) in progress" >> $ROADMAP
-    echo "" >> $ROADMAP
-    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'|awk '{print $NF,$0}'| sort | cut -f2- -d' ' >> $ROADMAP
-    echo "" >> $ROADMAP
-  done
-}
-
+DIR=`dirname $0`
+. $DIR/trackdown-lib.sh
 CWD=`pwd`
-while [ `pwd` != "/"  -a ! -d .trackdown ] ; do
-  cd ..
-done
+windUp trackdown
 TDBASE=`pwd`
 VCS=`test -d .hg && echo hg || echo git`
 TDCONFIG=$TDBASE/.trackdown/config
 echo "TrackDown-$VCS: Base directory $TDBASE"
 cd $CWD
-if [ ! -f $TDCONFIG ] ; then
-  echo "TrackDown: Not in a TrackDown context - ignoring commit"
-fi
-# Location of the issues file
-ISSUES=`grep location= $TDCONFIG|cut -d '=' -f 2`
-if [ -z "$ISSUES" ] ; then
-  echo "TrackDown: Issue colletion file not configured - ignoring commit"
-fi
+checkTrackdown
+discoverIssues
 # Prefix for links to online commit descriptions
 PREFIX=`grep prefix= $TDCONFIG|cut -d '=' -f 2`
 # echo "ISSUES $ISSUES"
@@ -153,7 +110,7 @@ if [ ! -z "$STATUS" ] ; then
     fi
   done
 
-  roadmap
+  writeRoadmap
 
   AUTOCOMMIT=`grep autocommit=true $TDCONFIG`
   # echo "AUTOCOMMIT: $AUTOCOMMIT"
@@ -171,5 +128,5 @@ if [ ! -z "$STATUS" ] ; then
     fi
   fi
 else 
-  roadmap
+  writeRoadmap
 fi
