@@ -127,7 +127,8 @@ function checkExport {
 
 # Create issue collection header with title $1 in issue collection file
 function issueCollectionHeader {
-  echo "# $1" >$ISSUES
+  test -z "$2" && echo -n "" > $ISSUES
+  echo "# $1" >>$ISSUES
   echo "" >>$ISSUES
   echo "" >>$ISSUES
   echo "[Roadmap](roadmap)" >>$ISSUES
@@ -238,7 +239,7 @@ if [ "$CMD" = "mine" ] ; then
 fi
 
 
-# ls command to list potential issues in the collection for a certain release
+# roadmap command to pretty print a roadmap
 if [ "$CMD" = "roadmap" ] ; then
 
   # Location of the issues file
@@ -253,10 +254,24 @@ if [ "$CMD" = "roadmap" ] ; then
     TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
     RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(resolved)'|wc -l`
     PROGRESS=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(in progress)'|wc -l`
+    RESPERC=$[$RESOLVED * 100 / $TOTAL]
+    PROPERC=$[$PROGRESS * 100 / $TOTAL]
+    RESTPERC=$[ 100 - $PROPERC - $RESPERC ]
     echo "## ${r}:"
     echo ""
-    echo "$[$RESOLVED * 100 / $TOTAL]% ($RESOLVED / $TOTAL) completed"
-    echo "$[$PROGRESS * 100 / $TOTAL]% ($PROGRESS / $TOTAL) in progress"
+    if [ $RESPERC -gt 0 ] ; then
+      echo -n "[![$RESPERC%](https://dummyimage.com/$[ $RESPERC * 7 ]x30/000000/FFFFFF.png&text=$RESPERC%25)]()"
+    fi
+    if [ $PROPERC -gt 0 ] ; then
+      echo -n "[![$PROPERC%](https://dummyimage.com/$[ $PROPERC * 7 ]x30/606060/FFFFFF.png&text=$PROPERC%25)]()"
+    fi
+    if [ $RESTPERC -gt 0 ] ; then
+      echo -n "[![$RESTPERC%](https://dummyimage.com/$[ $RESTPERC * 7 ]x30/eeeeee/808080.png&text=$RESTPERC%25)]()"
+    fi
+    echo ""
+    echo ""
+    echo "$RESPERC% ($RESOLVED / $TOTAL) completed "
+    echo "$PROPERC% ($PROGRESS / $TOTAL) in progress"
     echo ""
     grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'|awk '{print $NF,$0}'| sort | cut -f2- -d' '
     echo ""
@@ -587,7 +602,7 @@ if [ "$CMD" = "mirror" ] ; then
     URL="${URL}/api/v3/projects/$PROJECT/issues?per_page=100"
     curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
     checkExport $EXPORT
-    issueCollectionHeader  "Issues"
+    issueCollectionHeader "Issues"
     for id in `jq  -c '.[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
@@ -637,7 +652,7 @@ if [ "$CMD" = "mirror" ] ; then
       echo "Cannot mirror issues for github project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
-    issueCollectionHeader  "Issues"
+    issueCollectionHeader "Issues"
     for id in `jq  -c '.[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
@@ -682,7 +697,7 @@ if [ "$CMD" = "mirror" ] ; then
     rm $ISSUES
     for PROJECT in `echo "$PROJECTS"|sed -e 's/,/\ /g'`; do
       echo "Project: $PROJECT"
-      issueCollectionHeader  "$PROJECT"
+      issueCollectionHeader "$PROJECT" "append"
       COUNT=0
       OFFSET=0
       PAGE=1
@@ -699,7 +714,7 @@ if [ "$CMD" = "mirror" ] ; then
           echo "" >>$ISSUES
           SUBJECT=`jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g'`
           STATUS=`jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
-          s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'`
+          s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'|sed -e 's/Erledigt/Resolved/g'`
           echo "## $id $SUBJECT ($s)" >>$ISSUES
           echo "" >>$ISSUES
           VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/*No Milestone*/g'|sed -e 's/.*name...\(.*\)"./*\1*/g'`
@@ -758,7 +773,7 @@ if [ "$CMD" = "mirror" ] ; then
       cd $CWD
       exit
     fi
-    issueCollectionHeader  "Issues"
+    issueCollectionHeader "Issues"
     for id in `jq  -c '.values[].id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
@@ -802,7 +817,7 @@ if [ "$CMD" = "mirror" ] ; then
       echo "Cannot mirror issues for gogs project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
-    issueCollectionHeader  "Issues"
+    issueCollectionHeader "Issues"
     for id in `jq  -c '.[]|.id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
