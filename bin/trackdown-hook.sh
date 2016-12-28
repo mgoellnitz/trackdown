@@ -32,22 +32,22 @@ function roadmap {
     RESPERC=$[$RESOLVED * 100 / $TOTAL]
     PROPERC=$[$PROGRESS * 100 / $TOTAL]
     RESTPERC=$[ 100 - $PROPERC - $RESPERC ]
-    echo "## ${r}:"
-    echo ""
+    echo "## ${r}:" >> $ROADMAP
+    echo "" >> $ROADMAP
     if [ $RESPERC -gt 0 ] ; then
-      echo -n "[![$RESPERC%](https://dummyimage.com/$[ $RESPERC * 7 ]x30/000000/FFFFFF.png&text=$RESPERC%25)]()"
+      echo -n "[![$RESPERC%](https://dummyimage.com/$[ $RESPERC * 7 ]x30/000000/FFFFFF.png&text=$RESPERC%25)]()" >> $ROADMAP
     fi
     if [ $PROPERC -gt 0 ] ; then
-      echo -n "[![$PROPERC%](https://dummyimage.com/$[ $PROPERC * 7 ]x30/606060/FFFFFF.png&text=$PROPERC%25)]()"
+      echo -n "[![$PROPERC%](https://dummyimage.com/$[ $PROPERC * 7 ]x30/606060/FFFFFF.png&text=$PROPERC%25)]()" >> $ROADMAP
     fi
     if [ $RESTPERC -gt 0 ] ; then
-      echo -n "[![$RESTPERC%](https://dummyimage.com/$[ $RESTPERC * 7 ]x30/eeeeee/808080.png&text=$RESTPERC%25)]()"
+      echo -n "[![$RESTPERC%](https://dummyimage.com/$[ $RESTPERC * 7 ]x30/eeeeee/808080.png&text=$RESTPERC%25)]()" >> $ROADMAP
     fi
-    echo ""
-    echo ""
-    echo "$RESPERC% ($RESOLVED / $TOTAL) completed "
-    echo "$PROPERC% ($PROGRESS / $TOTAL) in progress"
-    echo ""
+    echo "" >> $ROADMAP
+    echo "" >> $ROADMAP
+    echo "$RESPERC% ($RESOLVED / $TOTAL) completed " >> $ROADMAP
+    echo "$PROPERC% ($PROGRESS / $TOTAL) in progress" >> $ROADMAP
+    echo "" >> $ROADMAP
     grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'|awk '{print $NF,$0}'| sort | cut -f2- -d' ' >> $ROADMAP
     echo "" >> $ROADMAP
   done
