@@ -88,7 +88,7 @@ Martin Goellnitz / Sun Nov 13 21:19:35 2016 [35a52a9d751029ac5cbc3730ea28a3fc682
 
 Martin Goellnitz / Tue Dec 6 18:19:54 2016 [8ec2c02ebfd241b9b8599ef0fd0b3ebf763907e2](https://github.com/mgoellnitz/trackdown/commit/8ec2c02ebfd241b9b8599ef0fd0b3ebf763907e2)
 
-    refs #GITHUB automatically discover single commit URLs für github and the others
+    refs #GITHUB automatically discover single commit URLs for github and the others
 
 ## REDMINE offline mirror (resolved)
 
