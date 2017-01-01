@@ -23,11 +23,11 @@ in it.
 
 The currently open issues of TrackDown itself can be found
 
-* [here](blob/trackdown/issues.md)
+* [here](../../blob/trackdown/issues.md)
 
 The corresponding roadmap is placed 
 
-* [here](blob/trackdown/roadmap.md)
+* [here](../blob/trackdown/roadmap.md)
 
 # Design
 
