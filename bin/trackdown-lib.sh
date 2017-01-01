@@ -134,8 +134,6 @@ function roadmap {
   echo "# Roadmap"
   echo ""
   IC=`basename $ISSUES .md`
-  echo "[Issue Collection]($IC)"
-  echo ""
   for rr in `grep -A2 "^\#\#\ " $ISSUES|grep "^\*[A-Za-z0-9][A-Za-z0-9\._\ ]*\*"|cut -d '*' -f 2|sort|uniq|sed -e 's/\ /__/g'` ; do
     r=`echo $rr|sed -e 's/__/ /g'`
     TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
