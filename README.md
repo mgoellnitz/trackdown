@@ -679,13 +679,11 @@ Instead of `trackdown.sh use` issue `trackdown.sh gitlab` to setup the mirror
 connection.
 
 ```
-trackdown.sh gitlab <apitoken> <username>/<projectname> [https://<gitlab.host>]
+trackdown.sh gitlab <apitoken> <projectname> [https://<gitlab.host>]
 ```
 
-If you ommit the url prefix, `https://gitlab.com` is used. The given username must
-be related to the apitoken and note, that the username needs to be given and not
-the group name. So project `https://gitlab.com/group/project` when used by user
-`author` must be called `author/project` in this case.
+If you ommit the url prefix, `https://gitlab.com` is used. The project name must
+be given without any group or user addition.
 
 Afterwards anytime you can connect to the [GitLab][gitlab] system, collect the 
 current mirror state to you local issue collection file and the roadmap.
