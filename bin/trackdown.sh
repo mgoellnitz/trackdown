@@ -69,7 +69,7 @@ if [ -z "$CMD" ] ; then
   echo "  setup bitbucket mirroring project p with for user u (needs jq)"
   echo ""
   echo "$MYNAME gogs k p [u]"
-  echo "  setup gogs, gitea or pikacode mirroring project p with given apikey k and gitlab base url u (needs jq) - u defaults to pikacode"
+  echo "  setup gogs, gitea or pikacode mirroring project p with given apikey k and gogs/gitea/pikacode base url u (needs jq) - u defaults to pikacode"
   echo ""
   echo "$MYNAME redmine k p u"
   echo "  setup redmine mirroring project p with given apikey k and redmine base url u (needs jq)"
