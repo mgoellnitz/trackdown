@@ -59,8 +59,8 @@ if [ -z "$CMD" ] ; then
   echo "$MYNAME remote c i p"
   echo "  issue remote command c on issue i with parameter p on remote mirroring source system"
   echo ""
-  echo "$MYNAME github k p o"
-  echo "  setup github mirroring project p of owner o with given apikey k (needs jq)"
+  echo "$MYNAME github p o k"
+  echo "  setup github mirroring project p of owner o with given apikey k (needs jq - values default to cloned project you're in)"
   echo ""
   echo "$MYNAME gitlab k p [u]"
   echo "  setup gitlab mirroring project p with given apikey k and gitlab base url u (needs jq) - u defaults to gitlab.com"
@@ -100,6 +100,18 @@ VCS=`test -d .hg && echo hg || echo git`
 TDCONFIG=$TDBASE/.trackdown/config
 echo "TrackDown-$VCS: base directory $TDBASE"
 cd $CWD
+if [ "$VCS" == "git" ] ; then
+  REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
+fi
+if [ "$VCS" == "hg" ] ; then
+  REMOTE=`hg paths default|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
+fi
+if [ ! -z "$REMOTE" ] ; then
+  CASE=`echo $REMOTE|cut -d '/' -f 1`
+  REMOTEUSER=`echo $REMOTE|cut -d '/' -f 2`
+  REMOTEPROJECT=`echo $REMOTE|cut -d '/' -f 3`
+  test ! -z "$REMOTE" && echo "Remote system is $CASE with project \"$REMOTEPROJECT\" and user $REMOTEUSER"
+fi
 
 # ls command to list potential issues in the collection for a certain release
 if [ "$CMD" = "ls" ] ; then
@@ -234,7 +246,7 @@ if [ "$CMD" = "use" ] ; then
 
     REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
-    test ! -z "$REMOTE" && echo "Remote system is $REMOTE."
+    test ! -z "$REMOTE" && echo "Remote system is $CASE."
     if [ "$CASE" = "github.com" ] ; then
       echo "Discovered github remote"
       echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
@@ -272,7 +284,7 @@ if [ "$CMD" = "use" ] ; then
 
     REMOTE=`hg paths|grep "default ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
-    echo "Remote system is $REMOTE."
+    echo "Remote system is $CASE."
     if [ "$CASE" = "bitbucket.org" ] ; then
       echo "Discovered bitbucket.org remote"
       echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
@@ -732,24 +744,6 @@ if [ "$CMD" = "remote" ] ; then
   PARAM=$4
   bailOnZero "No parameter for the remote operation given as the forth parameter" $PARAM
   # echo "Parameter: $PARAM"
-  if [ "$TYPE" = "redmine" ] ; then
-    URL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $URL
-    KEY=`grep redmine.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No redmine api key configured. Did you setup redmine mirroring?" $KEY
-    if [ "$REMOTE" = "comment" ] ; then
-      echo "Adding comment \"$PARAM\" to $ISSUE"
-      curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
-           -d "{\"issue\":{\"notes\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
-      exit
-    fi
-    if [ "$REMOTE" = "assign" ] ; then
-      echo "Assigning $ISSUE to user $PARAM"
-      curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
-           -d "{\"issue\":{\"assigned_to_id\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
-      exit
-    fi
-  fi
   if [ "$TYPE" = "gitlab" ] ; then
     URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab source url configured. Did you setup gitlab mirroring?" $URL
@@ -782,6 +776,24 @@ if [ "$CMD" = "remote" ] ; then
       exit
     fi
   fi
+  if [ "$TYPE" = "redmine" ] ; then
+    URL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $URL
+    KEY=`grep redmine.key= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No redmine api key configured. Did you setup redmine mirroring?" $KEY
+    if [ "$REMOTE" = "comment" ] ; then
+      echo "Adding comment \"$PARAM\" to $ISSUE"
+      curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
+           -d "{\"issue\":{\"notes\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
+      exit
+    fi
+    if [ "$REMOTE" = "assign" ] ; then
+      echo "Assigning $ISSUE to user $PARAM"
+      curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
+           -d "{\"issue\":{\"assigned_to_id\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
+      exit
+    fi
+  fi
   echo "Unknown remote command \"$REMOTE\" for mirror source of type \"$TYPE\""
 
 fi
@@ -809,16 +821,19 @@ fi
 if [ "$CMD" = "github" ] ; then
 
   checkJq
-  bailOnZero "No api token given as the first parameter" $2
-  bailOnZero "No project name given as the second parameter" $3
-  bailOnZero "No username given as the third parameter" $4
+  P=${2:-$REMOTEPROJECT}
+  bailOnZero "No project name given as the first parameter" $P
+  U=${3:-$REMOTEUSER}
+  bailOnZero "No username given as the second parameter" $U
+  TOKEN=${4:-$GITHUB_COM_TOKEN}
+  bailOnZero "No api token given as the third parameter" $TOKEN
   preventRepeatedMirrorInit
-  echo "Setting up TrackDown to mirror $3 owned by $4 from github.com"
+  echo "Setting up TrackDown to mirror $P owned by $U from github.com"
   setupCollectionReference github
-  echo "prefix=https://github.com/$4/$3/commit/" >> $TDCONFIG
-  echo "github.owner=$4" >> $TDCONFIG
-  echo "github.project=$3" >> $TDCONFIG
-  echo "github.key=$2" >> $TDCONFIG
+  echo "prefix=https://github.com/$U/$P/commit/" >> $TDCONFIG
+  echo "github.owner=$U" >> $TDCONFIG
+  echo "github.project=$P" >> $TDCONFIG
+  echo "github.key=$TOKEN" >> $TDCONFIG
 
 fi
 
@@ -827,14 +842,16 @@ fi
 if [ "$CMD" = "bitbucket" ] ; then
 
   checkJq
-  bailOnZero "No project name given as the first parameter" $2
-  bailOnZero "No username given as the second parameter" $3
+  P=${2:-$REMOTEPROJECT}
+  bailOnZero "No project name given as the first parameter" $P
+  U=${3:-$REMOTEUSER}
+  bailOnZero "No username given as the second parameter" $U
   preventRepeatedMirrorInit
-  echo "Setting up TrackDown to mirror $2 as $3 from bitbucket.org"
+  echo "Setting up TrackDown to mirror $P as $U from bitbucket.org"
   setupCollectionReference bitbucket
-  echo "prefix=https://bitbucket.org/$3/$2/commits/" >> $TDCONFIG
-  echo "bitbucket.user=$3" >> $TDCONFIG
-  echo "bitbucket.project=$2" >> $TDCONFIG
+  echo "prefix=https://bitbucket.org/$U/$P/commits/" >> $TDCONFIG
+  echo "bitbucket.user=$U" >> $TDCONFIG
+  echo "bitbucket.project=$P" >> $TDCONFIG
 
 fi
 

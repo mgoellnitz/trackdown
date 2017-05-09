@@ -653,7 +653,7 @@ Instead of `trackdown.sh use` issue `trackdown.sh github` to setup the mirror
 connection.
 
 ```
-trackdown.sh github <apitoken> <projectname> <owner>
+trackdown.sh github <projectname> <owner> <apitoken>
 ```
 
 Afterwards anytime you can connect to the [GitHub][github] system, collect the 
