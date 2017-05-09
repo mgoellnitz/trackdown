@@ -98,6 +98,10 @@ Martin Goellnitz / Tue, 9 May 2017 22:33:40 [98a34fe224418e7b04a9057e98fdfccff62
 
     refs #GITHUB,BITBUCKET mirror setup clean up and reasonable defaults
 
+Martin Goellnitz / Tue, 9 May 2017 22:52:21 [baa4e26e95d1058bb85133d78f5f495b11352f0c](https://github.com/mgoellnitz/trackdown/commit/baa4e26e95d1058bb85133d78f5f495b11352f0c)
+
+    refs #GITHUB remote command started
+
 ## REDMINE offline mirror (resolved)
 
 *mirror*
