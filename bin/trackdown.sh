@@ -328,7 +328,7 @@ if [ "$CMD" = "update" ] ; then
 fi
 
 
-#  git remote sync command
+#  generic status command even for not initialized situations
 if [ "$CMD" = "status" ] ; then
 
   discoverIssues
@@ -346,7 +346,7 @@ if [ "$CMD" = "status" ] ; then
 fi
 
 
-#  git remote sync command
+#  remote vcs sync command
 if [ "$CMD" = "sync" ] ; then
 
   discoverIssues
@@ -757,10 +757,28 @@ if [ "$CMD" = "remote" ] ; then
     bailOnZero "No gitlab api token configured. Did you setup gitlab mirroring?" $TOKEN
     PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
+    if [ "$REMOTE" = "comment" ] ; then
+      echo "Adding comment \"$PARAM\" to $ISSUE"
+      curl -X POST -H "PRIVATE-TOKEN: $TOKEN" --data "body=${PARAM}" \
+           ${URL}/api/v3/projects/${PROJECT}/issues/${ISSUE}/notes > /dev/null
+      exit
+    fi
     if [ "$REMOTE" = "assign" ] ; then
       echo "Assigning $ISSUE to user $PARAM"
       curl -X PUT -H "PRIVATE-TOKEN: $TOKEN" \
            ${URL}/api/v3/projects/${PROJECT}/issues/${ISSUE}?assignee_id=${PARAM} > /dev/null
+      exit
+    fi
+    if [ "$REMOTE" = "milestone" ] ; then
+      echo "Creating milestone $ISSUE ($PARAM)"
+      curl -H "PRIVATE-TOKEN: $TOKEN" --data "title=${ISSUE}&description=${PARAM}" \
+           ${URL}/api/v3/projects/${PROJECT}/milestones | jq .
+      exit
+    fi
+    if [ "$REMOTE" = "issue" ] ; then
+      echo "Creating issue $ISSUE with label $PARAM"
+      curl -H "PRIVATE-TOKEN: $TOKEN" --data "title=${ISSUE}&description=${ISSUE}&labels=${PARAM}" \
+           "${URL}/api/v3/projects/${PROJECT}/issues?title=${ISSUE}&labels=${PARAM}" | jq .
       exit
     fi
   fi
