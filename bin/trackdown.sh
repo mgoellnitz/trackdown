@@ -794,6 +794,27 @@ if [ "$CMD" = "remote" ] ; then
       exit
     fi
   fi
+  if [ "$TYPE" = "gogs" ] ; then
+    URL=`grep gogs.url= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No gogs/gitea source url configured. Did you setup mirroring?" $URL
+    TOKEN=`grep gogs.key= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No gogs/gitea api token configured. Did you setup mirroring?" $TOKEN
+    PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No gogs/gitea project. Did you setup mirroring?" $PROJECT
+    if [ "$REMOTE" = "comment" ] ; then
+      echo "Adding comment \"$PARAM\" to $ISSUE"
+      curl -X POST -H "Authorization: token $TOKEN" --data "body=${PARAM}" \
+           ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE}/comments
+      exit
+    fi
+    # Doesn't seem to work for some reason
+    if [ "$REMOTE" = "assign" ] ; then
+      echo "Assigning $ISSUE to user $PARAM"
+      curl -X PATCH -H "Authorization: token $TOKEN" --data "assignee=${PARAM}"  \
+           ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE} | jq .
+      exit
+    fi
+  fi
   echo "Unknown remote command \"$REMOTE\" for mirror source of type \"$TYPE\""
 
 fi
