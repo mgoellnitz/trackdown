@@ -786,10 +786,8 @@ if [ "$CMD" = "remote" ] ; then
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}"
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
-      curl -H "Authorization: token $TOKEN"\
-           ${URL}/issues/${ISSUE}/comments
-      curl -X POST -H "Authorization: token $TOKEN" --data "body=${PARAM}"\
-           ${URL}/issues/${ISSUE}/comments
+      curl -X POST -H "Authorization: token $TOKEN" --data "{\"body\":\"${PARAM}\"}"\
+           ${URL}/issues/${ISSUE}/comments > /dev/null
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
@@ -797,7 +795,7 @@ if [ "$CMD" = "remote" ] ; then
       DATA="{\"assignees\": [ \"${PARAM}\" ]}\""
       echo $DATA
       curl -X POST -H "Authorization: token $TOKEN" --data "$DATA"\
-           ${URL}/issues/${ISSUE}/comments
+           ${URL}/issues/${ISSUE}/assignees > /dev/null
       exit
     fi
   fi
