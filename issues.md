@@ -94,6 +94,10 @@ Martin Goellnitz / Tue Dec 6 18:19:54 2016 [8ec2c02ebfd241b9b8599ef0fd0b3ebf7639
 
     refs #GITHUB automatically discover single commit URLs for github and the others
 
+Martin Goellnitz / Tue, 9 May 2017 22:33:40 [98a34fe224418e7b04a9057e98fdfccff62656bd](https://github.com/mgoellnitz/trackdown/commit/98a34fe224418e7b04a9057e98fdfccff62656bd)
+
+    refs #GITHUB,BITBUCKET mirror setup clean up and reasonable defaults
+
 ## REDMINE offline mirror (resolved)
 
 *mirror*
@@ -163,6 +167,10 @@ offline use.
 Martin Goellnitz / Sat Dec 3 13:05:30 2016 [53f1165e8e009ca843909c6d67daaabc7a318f6c](https://github.com/mgoellnitz/trackdown/commit/53f1165e8e009ca843909c6d67daaabc7a318f6c)
 
     refs #BITBUCKET support started in a first basic version
+
+Martin Goellnitz / Tue, 9 May 2017 22:33:40 [98a34fe224418e7b04a9057e98fdfccff62656bd](https://github.com/mgoellnitz/trackdown/commit/98a34fe224418e7b04a9057e98fdfccff62656bd)
+
+    refs #GITHUB,BITBUCKET mirror setup clean up and reasonable defaults
 
 ## GOGS and gitea offline mirror (in progress)
 
