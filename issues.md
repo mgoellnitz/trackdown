@@ -102,6 +102,10 @@ Martin Goellnitz / Tue, 9 May 2017 22:52:21 [baa4e26e95d1058bb85133d78f5f495b113
 
     refs #GITHUB remote command started
 
+Martin Goellnitz / Wed, 10 May 2017 00:57:33 [6be3ca72e57e13529ab76e4d2b792dfc39d3be33](https://github.com/mgoellnitz/trackdown/commit/6be3ca72e57e13529ab76e4d2b792dfc39d3be33)
+
+    refs #GITHUB remote commands fixed
+
 ## REDMINE offline mirror (resolved)
 
 *mirror*
