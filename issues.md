@@ -189,6 +189,10 @@ Martin Goellnitz / Sat Dec 3 03:03:44 2016 [58a55bc60edc6b451722b6d96b7c598ff8a3
 
     refs #GOGS related commands missed their documentation
 
+Martin Goellnitz / Tue, 9 May 2017 22:35:08 [bad2ffc8bc29acfafb9a044da43df062ade2dfb5](https://github.com/mgoellnitz/trackdown/commit/bad2ffc8bc29acfafb9a044da43df062ade2dfb5)
+
+    refs #GOGS remote command added
+
 ## ASSIGNMENT of issues should be part of the format and tooling (in progress)
 
 *1.0*
