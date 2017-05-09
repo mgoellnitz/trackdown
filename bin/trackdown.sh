@@ -776,6 +776,31 @@ if [ "$CMD" = "remote" ] ; then
       exit
     fi
   fi
+  if [ "$TYPE" = "github" ] ; then
+    OWNER=`grep github.owner= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No github owner configured. Did you setup github mirroring?" $OWNER
+    TOKEN=`grep github.key= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No github api token configured. Did you setup github mirroring?" $TOKEN
+    PROJECT=`grep github.project= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No github project. Did you setup github mirroring?" $PROJECT
+    URL="https://api.github.com/repos/${OWNER}/${PROJECT}"
+    if [ "$REMOTE" = "comment" ] ; then
+      echo "Adding comment \"$PARAM\" to $ISSUE"
+      curl -H "Authorization: token $TOKEN"\
+           ${URL}/issues/${ISSUE}/comments
+      curl -X POST -H "Authorization: token $TOKEN" --data "body=${PARAM}"\
+           ${URL}/issues/${ISSUE}/comments
+      exit
+    fi
+    if [ "$REMOTE" = "assign" ] ; then
+      echo "Assigning $ISSUE to user $PARAM"
+      DATA="{\"assignees\": [ \"${PARAM}\" ]}\""
+      echo $DATA
+      curl -X POST -H "Authorization: token $TOKEN" --data "$DATA"\
+           ${URL}/issues/${ISSUE}/comments
+      exit
+    fi
+  fi
   if [ "$TYPE" = "redmine" ] ; then
     URL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $URL
