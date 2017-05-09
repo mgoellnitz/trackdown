@@ -75,6 +75,10 @@ Martin Goellnitz / Sun Nov 13 19:52:31 2016 [34e0dcec0c72fc0fafe0887a966e392163d
 
     refs #GITLAB issues exports should at least be usable up to 100 issues
 
+Martin Goellnitz / Tue, 9 May 2017 10:59:11 [8292cabc4822ea2ae76c8d918cda8b11de09624c](https://github.com/mgoellnitz/trackdown/commit/8292cabc4822ea2ae76c8d918cda8b11de09624c)
+
+    refs #GITLAB remote command extended with comments, labels, and milestones
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*

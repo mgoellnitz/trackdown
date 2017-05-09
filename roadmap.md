@@ -1,7 +1,5 @@
 # Roadmap
 
-[Issue Collection](issues)
-
 ## 1.0:
 
 [![81%](https://dummyimage.com/567x30/000000/FFFFFF.png&text=81%25)]()[![18%](https://dummyimage.com/126x30/606060/FFFFFF.png&text=18%25)]()[![1%](https://dummyimage.com/7x30/eeeeee/808080.png&text=1%25)]()
