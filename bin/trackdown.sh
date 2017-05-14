@@ -340,7 +340,7 @@ if [ "$CMD" = "update" ] ; then
 fi
 
 
-#  generic status command even for not initialized situations
+#  issue collection and roadmap status command
 if [ "$CMD" = "status" ] ; then
 
   discoverIssues
@@ -471,7 +471,7 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
     URL="${URL}/api/v3/projects/$PROJECT/issues?per_page=100"
-    curl -H "PRIVATE-TOKEN: $TOKEN" $URL >$EXPORT
+    curl -H "PRIVATE-TOKEN: $TOKEN" $URL 2> /dev/null >$EXPORT
     checkExport $EXPORT
     issueCollectionHeader "Issues"
     for id in `jq  -c '.[]|.id' $EXPORT` ; do
@@ -516,7 +516,7 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep github.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No github project. Did you setup github mirroring?" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues?state=all"
-    curl -H "Authorization: token $TOKEN" $URL >$EXPORT
+    curl -H "Authorization: token $TOKEN" $URL 2> /dev/null >$EXPORT
     checkExport $EXPORT
     RESULT=`jq '.message?' $EXPORT`
     if [ ! -z "$RESULT" ] ; then
@@ -574,14 +574,14 @@ if [ "$CMD" = "mirror" ] ; then
       PAGE=1
       until [ $OFFSET -gt $COUNT ] ; do
         URL="${BASEURL}/projects/$PROJECT/issues.json?page=$PAGE"'&limit=100&f\[\]=status_id&op\[status_id\]=*&set_filter=1'
-        curl -H "X-Redmine-API-Key: $KEY" "$URL" >$EXPORT
+        curl -H "X-Redmine-API-Key: $KEY" "$URL" 2> /dev/null >$EXPORT
         checkExport $EXPORT
         PAGE=$[ $PAGE + 1 ]
         COUNT=`jq  -c '.total_count' $EXPORT`
         OFFSET=`jq  -c '.offset' $EXPORT`
         test $OFFSET -lt $COUNT && echo "continue $OFFSET - $COUNT"
         for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
-           echo "" >>$ISSUES
+          echo "" >>$ISSUES
           echo "" >>$ISSUES
           SUBJECT=`jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g'`
           STATUS=`jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
@@ -636,7 +636,7 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No bitbucket.org project configured. Did you setup bitbucket.org mirroring?" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues"
-    curl --basic -u $USER $URL >$EXPORT
+    curl --basic -u $USER $URL 2> /dev/null >$EXPORT
     checkExport $EXPORT
     RESULT=`jq '.error?|.message?' $EXPORT`
     if [ ! "$RESULT" = "null" ] ; then
@@ -681,7 +681,7 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gogs/pikacode/gitea project. Did you setup gogs mirroring?" $PROJECT
     URL="${URL}/api/v1/repos/${PROJECT}/issues?state=all"
-    curl -H "Authorization: token $TOKEN" $URL >$EXPORT
+    curl -H "Authorization: token $TOKEN" $URL 2> /dev/null >$EXPORT
     checkExport $EXPORT
     RESULT=`jq '.message?' $EXPORT`
     if [ ! -z "$RESULT" ] ; then
@@ -754,25 +754,25 @@ if [ "$CMD" = "remote" ] ; then
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
       curl -X POST -H "PRIVATE-TOKEN: $TOKEN" --data "body=${PARAM}" \
-           ${URL}/api/v3/projects/${PROJECT}/issues/${ISSUE}/notes > /dev/null
+           ${URL}/api/v3/projects/${PROJECT}/issues/${ISSUE}/notes 2>&1 > /dev/null
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
       echo "Assigning $ISSUE to user $PARAM"
       curl -X PUT -H "PRIVATE-TOKEN: $TOKEN" \
-           ${URL}/api/v3/projects/${PROJECT}/issues/${ISSUE}?assignee_id=${PARAM} > /dev/null
+           ${URL}/api/v3/projects/${PROJECT}/issues/${ISSUE}?assignee_id=${PARAM} 2>&1 > /dev/null
       exit
     fi
     if [ "$REMOTE" = "milestone" ] ; then
       echo "Creating milestone $ISSUE ($PARAM)"
       curl -H "PRIVATE-TOKEN: $TOKEN" --data "title=${ISSUE}&description=${PARAM}" \
-           ${URL}/api/v3/projects/${PROJECT}/milestones | jq .
+           ${URL}/api/v3/projects/${PROJECT}/milestones 2> /dev/null | jq .
       exit
     fi
     if [ "$REMOTE" = "issue" ] ; then
       echo "Creating issue $ISSUE with label $PARAM"
       curl -H "PRIVATE-TOKEN: $TOKEN" --data "title=${ISSUE}&description=${ISSUE}&labels=${PARAM}" \
-           "${URL}/api/v3/projects/${PROJECT}/issues?title=${ISSUE}&labels=${PARAM}" | jq .
+           "${URL}/api/v3/projects/${PROJECT}/issues?title=${ISSUE}&labels=${PARAM}" 2> /dev/null | jq .
       exit
     fi
   fi
@@ -787,7 +787,7 @@ if [ "$CMD" = "remote" ] ; then
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
       curl -X POST -H "Authorization: token $TOKEN" --data "{\"body\":\"${PARAM}\"}"\
-           ${URL}/issues/${ISSUE}/comments > /dev/null
+           ${URL}/issues/${ISSUE}/comments 2>&1 > /dev/null
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
@@ -795,7 +795,7 @@ if [ "$CMD" = "remote" ] ; then
       DATA="{\"assignees\": [ \"${PARAM}\" ]}\""
       echo $DATA
       curl -X POST -H "Authorization: token $TOKEN" --data "$DATA"\
-           ${URL}/issues/${ISSUE}/assignees > /dev/null
+           ${URL}/issues/${ISSUE}/assignees 2>&1 > /dev/null
       exit
     fi
   fi
@@ -807,13 +807,13 @@ if [ "$CMD" = "remote" ] ; then
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
       curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
-           -d "{\"issue\":{\"notes\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
+           -d "{\"issue\":{\"notes\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json 2> /dev/null
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
       echo "Assigning $ISSUE to user $PARAM"
       curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
-           -d "{\"issue\":{\"assigned_to_id\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json
+           -d "{\"issue\":{\"assigned_to_id\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json 2> /dev/null
       exit
     fi
   fi
@@ -827,14 +827,14 @@ if [ "$CMD" = "remote" ] ; then
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
       curl -X POST -H "Authorization: token $TOKEN" --data "body=${PARAM}" \
-           ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE}/comments
+           ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE}/comments 2> /dev/null
       exit
     fi
     # Doesn't seem to work for some reason
     if [ "$REMOTE" = "assign" ] ; then
       echo "Assigning $ISSUE to user $PARAM"
       curl -X PATCH -H "Authorization: token $TOKEN" --data "assignee=${PARAM}"  \
-           ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE} | jq .
+           ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE} 2> /dev/null | jq .
       exit
     fi
   fi
