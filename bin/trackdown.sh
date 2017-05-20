@@ -26,9 +26,9 @@ CWD=`pwd`
 # usage command
 if [ -z "$CMD" ] ; then
 
-  # generated with "cat usage-template.txt |gzip -c|base64  > usage-template.gzip.base64.txt"
+  # see encodeMessage task in build script
   MYNAME=`basename $0`
-MSG=$(echo -e H4sIAM1PElkAA5WVPXPbMAyGd/8KbI3v3GTv2Oau1yFT0imXAaJgixFFsvyQz/31BUhKThrn2kw6 \
+MSG=$(echo -e H4sIAMSuIFkAA5WVPXPbMAyGd/8KbI3v3GTv2Oau1yFT0imXAaJgixFFsvyQz/31BUhKThrn2kw6 \
 E1/PCwL0z4gH+rLZfLu7heCwn9DDo3LGkEraWdhrQ08bAB+0TYtHdTcR5ou+RscEOsZMEfYuwEwh \
 in2uccr50zuRxZQGAutSC0ZjLuaC5ABLIFicCObrqa/5J20JHid6+ifccdBqAAwEE4aResnZUUlQ \
 UzW/d/MInGdUmzQumDUyR7oYFillD8o4ZhQ9JQZSQDVqe4Ar58Wd857gqNPAjbDQ0x6zSSXHtqX3 \

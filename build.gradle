@@ -61,3 +61,9 @@ check.doFirst {
     }
   }
 }
+
+task encodeMessage(type:Exec) {
+  workingDir "$projectDir"
+  commandLine 'bash', '-c', \
+    "cat usage-template.txt |gzip -c|base64|sed -e 's/\$/ \\\\/g' > usage-template.gzip.base64.txt"
+}
