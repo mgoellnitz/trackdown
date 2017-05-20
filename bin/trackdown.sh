@@ -813,7 +813,7 @@ if [ "$CMD" = "gitlab" ] ; then
   bailOnZero "No project name given as the second parameter" $3
   preventRepeatedMirrorInit
   URL=${4:-https://gitlab.com}
-  PID=`curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects|jq '.[]|select(.name=="'$3'")|.id'`
+  PID=`curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100|jq '.[]|select(.name=="'$3'")|.id'`
   echo "Setting up TrackDown to mirror from $3 ($PID) on $URL"
   setupCollectionReference gitlab
   echo "gitlab.url=$URL" >> $TDCONFIG
