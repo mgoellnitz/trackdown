@@ -26,59 +26,21 @@ CWD=`pwd`
 # usage command
 if [ -z "$CMD" ] ; then
 
+  # generated with "cat usage-template.txt |gzip -c|base64  > usage-template.gzip.base64.txt"
   MYNAME=`basename $0`
-  echo "Usage:"
-  echo ""
-  echo "$MYNAME roadmap [collection file]"
-  echo "  print roadmap"
-  echo ""
-  echo "$MYNAME ls v [collection file]"
-  echo "  list issues for version v"
-  echo ""
-  echo "$MYNAME copy v [collection file]"
-  echo "  copy the notes for all issues for version v to a file name v.md"
-  echo ""
-  echo "$MYNAME mine [me] [collection file]"
-  echo "  list issues which are marked to be mine"
-  echo ""
-  echo "$MYNAME issues [collection file]"
-  echo "  list all potential issues"
-  echo ""
-  echo "$MYNAME use [collection file]"
-  echo "  setup clone for issue tracking (optionally with non default file)"
-  echo ""
-  echo "$MYNAME update"
-  echo "  just update repository clone to the latest git commit hook"
-  echo ""
-  echo "$MYNAME init"
-  echo "  init issue tracking within GIT or Mercurial branch"
-  echo ""
-  echo "$MYNAME mirror"
-  echo "  sync with reviously setup tracking master (gitlab, redmine, github, gogs, gitea, pikacode - needs jq)"
-  echo ""
-  echo "$MYNAME remote c i p"
-  echo "  issue remote command c on issue i with parameter p on remote mirroring source system"
-  echo ""
-  echo "$MYNAME github p o k"
-  echo "  setup github mirroring project p of owner o with given apikey k (needs jq - values default to cloned project you're in)"
-  echo ""
-  echo "$MYNAME gitlab k p [u]"
-  echo "  setup gitlab mirroring project p with given apikey k and gitlab base url u (needs jq) - u defaults to gitlab.com"
-  echo ""
-  echo "$MYNAME bitbucket p u"
-  echo "  setup bitbucket mirroring project p with for user u (needs jq)"
-  echo ""
-  echo "$MYNAME gogs k p [u]"
-  echo "  setup gogs, gitea or pikacode mirroring project p with given apikey k and gogs/gitea/pikacode base url u (needs jq) - u defaults to pikacode"
-  echo ""
-  echo "$MYNAME redmine k p u"
-  echo "  setup redmine mirroring project p with given apikey k and redmine base url u (needs jq)"
-  echo ""
-  echo "$MYNAME status"
-  echo "  Show brief information about the GIT or Mercurial state of the issue collection Branch or Directory"
-  echo ""
-  echo "$MYNAME sync"
-  echo "  Synchronize the remote repository with the TrackDown issues and roadmap for Mercurial and GIT"
+MSG=$(echo -e H4sIAM1PElkAA5WVPXPbMAyGd/8KbI3v3GTv2Oau1yFT0imXAaJgixFFsvyQz/31BUhKThrn2kw6 \
+E1/PCwL0z4gH+rLZfLu7heCwn9DDo3LGkEraWdhrQ08bAB+0TYtHdTcR5ou+RscEOsZMEfYuwEwh \
+in2uccr50zuRxZQGAutSC0ZjLuaC5ABLIFicCObrqa/5J20JHid6+ifccdBqAAwEE4aResnZUUlQ \
+UzW/d/MInGdUmzQumDUyR7oYFillD8o4ZhQ9JQZSQDVqe4Ar58Wd857gqNPAjbDQ0x6zSSXHtqX3 \
+PSbifM+ZMeovCORd1MmFUyvAcqSZho3sddCJGzxN/BmcG5tCqxOnkc/fLFJfW/j+4wEY9I6CykFk \
+dgGtGpZeh+CC6DpZVYkDzdrlyAKq1jXfhDFRgCvmMNjt2LGXTu8EbMh8cHCHWH4R7sDrEZXrCT6D \
+JeojPP9q2gNN3HJQoMELeqFeDlkf2p6N3Ldq0RXLY+AxEQAvtuZf+YUuuhwUsQ6GnGqhyiX+MK5X \
+1w7PgT64Z75kcduDO1qu4GrJg57JArISOsEIV4sOljSjkcFabpYvqtxYv2Y7ufyJ51Lb7crCTeMs \
+vJ756SWNHF+iuYQgrWkhHfKE5mAgn8G2TJYXqChU1fma21oxOp26rEaSAnmlOJ++CyKzzjsRXpVr \
+0vja3wo7z4JM3zoNH1LKOW5Kips1/v9kL+7LwJVBLYxn0cvpR4iWmIsUtVhMmHLkKveDO/Kuadrz \
+FHD7JiwPCXYup7LWbxZTQkmmUKx1+F+8QF/L2krErQ58xs9Eq8irK/X4MwRn9W8qCdqGvHhUiiox \
+PchK3/KsLw9k0db+PfavmMTCoJs/qaoKmmgGAAA=)
+  echo $MSG|sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 
 fi
