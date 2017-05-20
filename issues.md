@@ -79,6 +79,10 @@ Martin Goellnitz / Tue, 9 May 2017 10:59:11 [8292cabc4822ea2ae76c8d918cda8b11de0
 
     refs #GITLAB remote command extended with comments, labels, and milestones
 
+Martin Goellnitz / Sat, 20 May 2017 22:39:00 [ec300a8adf5f0c0b85af49185cbfcce7ec2b2cc0](https://github.com/mgoellnitz/trackdown/commit/ec300a8adf5f0c0b85af49185cbfcce7ec2b2cc0)
+
+    refs #GITLAB uses paging for most listings
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*
