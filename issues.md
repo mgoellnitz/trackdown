@@ -56,7 +56,7 @@ Martin Goellnitz / Wed, 28 Dec 2016 01:14:37 [30444b0522236166b34660802f12938b04
 *mirror*
 
 TrackDown should be capable of translating [GitLab](https://gitlab.com/) JSON 
-exports of  tickets to the special markdown format given here as a mirror for 
+exports of tickets to the special markdown format given here as a mirror for 
 offline use.
 
 Martin Goellnitz / Sun Nov 13 19:10:27 2016 [29eb793d1caa2e42c1f120aa31e7ceb27929ca6b](https://github.com/mgoellnitz/trackdown/commit/29eb793d1caa2e42c1f120aa31e7ceb27929ca6b)
@@ -87,8 +87,9 @@ Martin Goellnitz / Sat, 20 May 2017 22:39:00 [ec300a8adf5f0c0b85af49185cbfcce7ec
 
 *mirror*
 
-TrackDown should be capable of translating GitHub JSON exports of 
-tickets to the special markdown format given here as a mirror for offline use.
+TrackDown should be capable of translating [GitHub](https://github.com) JSON 
+exports of tickets to the special markdown format given here as a mirror for 
+offline use.
 
 Martin Goellnitz / Sun Nov 13 21:19:35 2016 [35a52a9d751029ac5cbc3730ea28a3fc682663ce](https://github.com/mgoellnitz/trackdown/commit/35a52a9d751029ac5cbc3730ea28a3fc682663ce)
 
@@ -110,17 +111,21 @@ Martin Goellnitz / Wed, 10 May 2017 00:57:33 [6be3ca72e57e13529ab76e4d2b792dfc39
 
     refs #GITHUB remote commands fixed
 
+Martin Goellnitz / Tue, 13 Jun 2017 17:49:17 [bb8045feb16aaf7e837ba045cdfbd8c74e5bbfe8](https://github.com/mgoellnitz/trackdown/commit/bb8045feb16aaf7e837ba045cdfbd8c74e5bbfe8)
+
+    refs #GITHUB issue parsing for newlines and milestones fixed
+
 ## REDMINE offline mirror (resolved)
 
 *mirror*
 
 For how historical reasons I have projects with Redmine ticketing in 
-use and with still relevant tickets. Some of them might even be a candidate to 
+use and still with relevant tickets. Some of them might even be a candidate to 
 migrate to TrackDown for others it might be sufficient to get a current offline 
 mirror when the repository is not available.
 
-TrackDown should be capable of translating Redmine JSON exports of 
-tickets to the special markdown format given here. 
+TrackDown should be capable of translating Redmine JSON exports of tickets to 
+the special markdown format given here. 
 
 For the mirror scenario, certain limitations are acceptable, 
 
@@ -172,8 +177,8 @@ Martin Goellnitz / Wed, 28 Dec 2016 01:57:29 [01c5211aa1ff2a2056439a1ee1c73ddc7d
 
 *mirror*
 
-TrackDown should be capable of translating Bitbucket.org JSON 
-exports of tickets to the special markdown format given here as a mirror for 
+TrackDown should be capable of translating [Bitbucket.org](https://bitbucket.org/) 
+JSON exports of tickets to the special markdown format given here as a mirror for 
 offline use.
 
 Martin Goellnitz / Sat Dec 3 13:05:30 2016 [53f1165e8e009ca843909c6d67daaabc7a318f6c](https://github.com/mgoellnitz/trackdown/commit/53f1165e8e009ca843909c6d67daaabc7a318f6c)
@@ -188,10 +193,11 @@ Martin Goellnitz / Tue, 9 May 2017 22:33:40 [98a34fe224418e7b04a9057e98fdfccff62
 
 *mirror*
 
-TrackDown should be capable of translating [gogs](https://gogs.io/) JSON exports 
-of tickets to the special markdown format given here as a mirror for offline 
-use. This also adds [gitea](https://gitea.io/) and has a public instance at 
-[Pikacode](https://v2.pikacode.com/), which can be used as a default.
+TrackDown should be capable of translating [gogs](https://gogs.io/) JSON 
+exports of tickets to the special markdown format given here as a mirror for 
+offline  use. This also adds [gitea](https://gitea.io/) and has a public 
+instance at [Pikacode](https://v2.pikacode.com/), which can be used as a 
+default.
 
 Martin Goellnitz / Sat Dec 3 02:56:16 2016 [e438fa86d8f6d112565899dcbfec466001ea13b4](https://github.com/mgoellnitz/trackdown/commit/e438fa86d8f6d112565899dcbfec466001ea13b4)
 
@@ -205,7 +211,7 @@ Martin Goellnitz / Tue, 9 May 2017 22:35:08 [bad2ffc8bc29acfafb9a044da43df062ade
 
     refs #GOGS remote command added
 
-## ASSIGNMENT of issues should be part of the format and tooling (in progress)
+## ASSIGNMENT of issues should be part of the format and tooling (resolved)
 
 *1.0*
 
@@ -276,8 +282,8 @@ Martin Goellnitz / Wed Nov 9 01:42:57 2016 [674b85ec7bebbf36618b000098c9195893fc
 *1.0*
 
 The roadmap file should be updated on every commit since there might be
-changes in the issue collection file not produced by the commit hook script
-which might affect the roadmap.
+changes in the issue collection file not produced by the commit hook script - 
+e.g. by manual modification - which still might affect the roadmap.
 
 Martin Goellnitz / Wed Nov 9 01:26:57 2016 [b5187ae2af3e8718fc943ccc21bbe1fd91458174](https://github.com/mgoellnitz/trackdown/commit/b5187ae2af3e8718fc943ccc21bbe1fd91458174)
 
