@@ -83,6 +83,10 @@ Martin Goellnitz / Sat, 20 May 2017 22:39:00 [ec300a8adf5f0c0b85af49185cbfcce7ec
 
     refs #GITLAB uses paging for most listings
 
+Martin Goellnitz / Tue, 17 Oct 2017 20:19:34 [297f1fafc5d1af16ee20c1c7bc6e97cdd6e2ef34](https://github.com/mgoellnitz/trackdown/commit/297f1fafc5d1af16ee20c1c7bc6e97cdd6e2ef34)
+
+    refs #GITLAB - deal with newlines in a readable way
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*
