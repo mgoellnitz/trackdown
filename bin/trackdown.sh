@@ -444,7 +444,7 @@ if [ "$CMD" = "mirror" ] ; then
       STATE=`jq  -c '.[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
       s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g'`
       MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone' $EXPORT|sed -e 's/null/No Milestone/g'|sed -e 's/.*title...\([a-zA-Z0-9\ _]*\).*"./\1/g'`
-      ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g'`
+      ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*name...\(.*\)","username...\([a-zA-Z0-9\.]*\).*/\1 (\2)/g'`
       echo "## $IID $TITLE ($s)"  >>$ISSUES
       echo "" >>$ISSUES
       echo -n "*${MILESTONE}*"  >>$ISSUES
@@ -684,7 +684,7 @@ if [ "$CMD" = "mirror" ] ; then
       fi
     done
   fi
-  rm -f $EXPORT
+  # rm -f $EXPORT
 
   writeRoadmap
   
