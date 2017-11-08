@@ -87,6 +87,10 @@ Martin Goellnitz / Tue, 17 Oct 2017 20:19:34 [297f1fafc5d1af16ee20c1c7bc6e97cdd6
 
     refs #GITLAB - deal with newlines in a readable way
 
+Martin Goellnitz / Wed, 8 Nov 2017 19:09:41 [a3b7df331bee8635d1c3d28af94a7d37304a660b](https://github.com/mgoellnitz/trackdown/commit/a3b7df331bee8635d1c3d28af94a7d37304a660b)
+
+    refs #GITLAB assignee layout changed for mirror
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*
