@@ -91,6 +91,10 @@ Martin Goellnitz / Wed, 8 Nov 2017 19:09:41 [a3b7df331bee8635d1c3d28af94a7d37304
 
     refs #GITLAB assignee layout changed for mirror
 
+Martin Goellnitz / Mon, 22 Jan 2018 23:03:40 [5f3734ab936b76d30773e8d5baeee2ef7091e6bc](https://github.com/mgoellnitz/trackdown/commit/5f3734ab936b76d30773e8d5baeee2ef7091e6bc)
+
+    refs #GITLAB mirror setup streamlined
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*
