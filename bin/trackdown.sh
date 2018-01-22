@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2017 Martin Goellnitz
+# Copyright 2015-2018 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -415,7 +415,7 @@ if [ "$CMD" = "init" ] ; then
 fi
 
 
-# command for redmine to mirror the issue collection file from a json source to this tool
+# command to mirror the issue collection file from a remote system and calculate roadmap accordingly
 if [ "$CMD" = "mirror" ] ; then
  
   checkTrackdown
@@ -813,7 +813,10 @@ if [ "$CMD" = "gitlab" ] ; then
   bailOnZero "No project name given as the second parameter" $3
   preventRepeatedMirrorInit
   URL=${4:-https://gitlab.com}
-  PID=`curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100|jq '.[]|select(.name=="'$3'")|.id'`
+  PID=`curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100 2> /dev/null|jq '.[]|select(.name=="'$3'")|.id'`
+  if [ -z "$PID" ] ; then
+    PID=`curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100 2> /dev/null|jq '.[]|select(.path_with_namespace=="'$3'")|.id'`
+  fi
   echo "Setting up TrackDown to mirror from $3 ($PID) on $URL"
   setupCollectionReference gitlab
   echo "gitlab.url=$URL" >> $TDCONFIG
