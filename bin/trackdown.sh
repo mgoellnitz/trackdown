@@ -432,41 +432,48 @@ if [ "$CMD" = "mirror" ] ; then
     bailOnZero "No gitlab api token configured. Did you setup gitlab mirroring?" $TOKEN
     PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
-    URL="${URL}/api/v3/projects/$PROJECT/issues?per_page=100"
-    curl -H "PRIVATE-TOKEN: $TOKEN" $URL 2> /dev/null >$EXPORT
-    checkExport $EXPORT
+    URL="${URL}/api/v3/projects/$PROJECT/issues"
+    PAGES=`curl -D - -X HEAD -H "PRIVATE-TOKEN: $TOKEN" "$URL?per_page=100" 2> /dev/null|grep X-Total-Pages|sed -e 's/X.Total.Pages..\([0-9]*\).*/\1/g'`
+    echo "$PAGES chunks of issues"
     issueCollectionHeader "Issues"
-    for id in `jq  -c '.[]|.id' $EXPORT` ; do
-      echo "" >>$ISSUES
-      echo "" >>$ISSUES
-      TITLE=`jq  -c '.[]|select(.id == '$id')|.title' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-      IID=`jq  -c '.[]|select(.id == '$id')|.iid' $EXPORT|sed -e 's/"//g'`
-      STATE=`jq  -c '.[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
-      s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g'`
-      MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone' $EXPORT|sed -e 's/null/No Milestone/g'|sed -e 's/.*title...\([a-zA-Z0-9\ _]*\).*"./\1/g'`
-      ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*name...\(.*\)","username...\([a-zA-Z0-9\.]*\).*/\1 (\2)/g'`
-      echo "## $IID $TITLE ($s)"  >>$ISSUES
-      echo "" >>$ISSUES
-      echo -n "*${MILESTONE}*"  >>$ISSUES
-      LABELS=`jq  -c '.[]|select(.id == '$id')|.labels' $EXPORT`
-      if [ ! "$LABELS" = "[]" ] ; then
-        echo -n " $LABELS"|sed -e 's/"/\`/g'|sed -e 's/,/][/g' >>$ISSUES
-      fi
-      if [ "$ASSIGNEE" != "null" ] ; then
-        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
-      fi
-      echo "" >>$ISSUES
-      AUTHOR=`jq  -c '.[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)","username.*/\1/g'`
-      echo "" >>$ISSUES
-      if [ "$AUTHOR" != "null" ] ; then
-        echo -n "Author: \`$AUTHOR\` " >>$ISSUES
-      fi
-      echo "GitLab ID $id" >>$ISSUES
-      DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.description' $EXPORT`
-      if [ "$DESCRIPTION" != "null" ] ; then
+    PAGE="1"
+    while [ "$PAGE" -le "$PAGES" ] ; do
+      echo "Chunk $PAGE"
+      curl -H "PRIVATE-TOKEN: $TOKEN" "$URL?per_page=100&page=$PAGE" 2> /dev/null >$EXPORT
+      checkExport $EXPORT
+      for id in `jq  -c '.[]|.id' $EXPORT` ; do
         echo "" >>$ISSUES
-        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g' >>$ISSUES
-      fi
+        echo "" >>$ISSUES
+        TITLE=`jq  -c '.[]|select(.id == '$id')|.title' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        IID=`jq  -c '.[]|select(.id == '$id')|.iid' $EXPORT|sed -e 's/"//g'`
+        STATE=`jq  -c '.[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
+        s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g'`
+        MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone' $EXPORT|sed -e 's/null/No Milestone/g'|sed -e 's/.*title...\([a-zA-Z0-9\ _]*\).*"./\1/g'`
+        ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*name...\(.*\)","username...\([a-zA-Z0-9\.]*\).*/\1 (\2)/g'`
+        echo "## $IID $TITLE ($s)"  >>$ISSUES
+        echo "" >>$ISSUES
+        echo -n "*${MILESTONE}*"  >>$ISSUES
+        LABELS=`jq  -c '.[]|select(.id == '$id')|.labels' $EXPORT`
+        if [ ! "$LABELS" = "[]" ] ; then
+          echo -n " $LABELS"|sed -e 's/"/\`/g'|sed -e 's/,/][/g' >>$ISSUES
+        fi
+        if [ "$ASSIGNEE" != "null" ] ; then
+          echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+        fi
+        echo "" >>$ISSUES
+        AUTHOR=`jq  -c '.[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)","username.*/\1/g'`
+        echo "" >>$ISSUES
+        if [ "$AUTHOR" != "null" ] ; then
+          echo -n "Author: \`$AUTHOR\` " >>$ISSUES
+        fi
+        echo "GitLab ID $id" >>$ISSUES
+        DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.description' $EXPORT`
+        if [ "$DESCRIPTION" != "null" ] ; then
+          echo "" >>$ISSUES
+          echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g' >>$ISSUES
+        fi
+      done
+      PAGE=$[ $PAGE + 1 ]
     done
   fi
 
