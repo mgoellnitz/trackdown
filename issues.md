@@ -95,6 +95,10 @@ Martin Goellnitz / Mon, 22 Jan 2018 23:03:40 [5f3734ab936b76d30773e8d5baeee2ef70
 
     refs #GITLAB mirror setup streamlined
 
+Martin Goellnitz / Tue, 23 Jan 2018 01:02:12 [e39700997dd9fe8e1b12b68a369ada295c1a2b35](https://github.com/mgoellnitz/trackdown/commit/e39700997dd9fe8e1b12b68a369ada295c1a2b35)
+
+    refs #GITLAB now can mirror more than 100 issues per project
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*
