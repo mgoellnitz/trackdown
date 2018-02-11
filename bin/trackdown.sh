@@ -28,18 +28,18 @@ if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
   MYNAME=`basename $0`
-MSG=$(echo -e H4sIAMSuIFkAA5WVPXPbMAyGd/8KbI3v3GTv2Oau1yFT0imXAaJgixFFsvyQz/31BUhKThrn2kw6 \
-E1/PCwL0z4gH+rLZfLu7heCwn9DDo3LGkEraWdhrQ08bAB+0TYtHdTcR5ou+RscEOsZMEfYuwEwh \
-in2uccr50zuRxZQGAutSC0ZjLuaC5ABLIFicCObrqa/5J20JHid6+ifccdBqAAwEE4aResnZUUlQ \
-UzW/d/MInGdUmzQumDUyR7oYFillD8o4ZhQ9JQZSQDVqe4Ar58Wd857gqNPAjbDQ0x6zSSXHtqX3 \
-PSbifM+ZMeovCORd1MmFUyvAcqSZho3sddCJGzxN/BmcG5tCqxOnkc/fLFJfW/j+4wEY9I6CykFk \
-dgGtGpZeh+CC6DpZVYkDzdrlyAKq1jXfhDFRgCvmMNjt2LGXTu8EbMh8cHCHWH4R7sDrEZXrCT6D \
-JeojPP9q2gNN3HJQoMELeqFeDlkf2p6N3Ldq0RXLY+AxEQAvtuZf+YUuuhwUsQ6GnGqhyiX+MK5X \
-1w7PgT64Z75kcduDO1qu4GrJg57JArISOsEIV4sOljSjkcFabpYvqtxYv2Y7ufyJ51Lb7crCTeMs \
-vJ756SWNHF+iuYQgrWkhHfKE5mAgn8G2TJYXqChU1fma21oxOp26rEaSAnmlOJ++CyKzzjsRXpVr \
-0vja3wo7z4JM3zoNH1LKOW5Kips1/v9kL+7LwJVBLYxn0cvpR4iWmIsUtVhMmHLkKveDO/Kuadrz \
-FHD7JiwPCXYup7LWbxZTQkmmUKx1+F+8QF/L2krErQ58xs9Eq8irK/X4MwRn9W8qCdqGvHhUiiox \
-PchK3/KsLw9k0db+PfavmMTCoJs/qaoKmmgGAAA=)
+MSG=$(echo -e H4sICAMLaVoCA3VzYWdlLXRlbXBsYXRlLnR4dACVlT1z2zAMhnf/CmyN79xk79jmrtchU9IplwGi \
+YIsRRbL8kM/99QVISk4a59pMPhFfzwsC9M+IB/qy2Xy7u4XgsJ/Qw6NyxpBK2lnYa0NPGwAftE2L \
+R3U3EeaLvkbHBDrGTBH2LsBMIYp9rnHK+dM7kcWUBgLrUgtGYy7mguQASyBYnAjm66mv+SdtCR4n \
+evon3HHQagAMBBOGkXrJ2VFJUFM1v3fzCJxnVJs0Lpg1Mke6GBYpZQ/KOGYUPSUGUkA1anuAK+fF \
+nfOe4KjTwI2w0NMes0klx7al9z0m4nzPmTHqFwTyLurkwqkVYDnSTMNG9jroxA2eJv4ZnBubQqsT \
+p5Gfv1mkvrbw/ccDMOgdBZWDyOwCWjUsvQ7BBdF1sqoSB5q1y5EFVK1rvgljogBXzGGw27FjL53e \
+CdiQ+eDgDrF8Ee7A6xGV6wk+gyXqIzz/atoDTdxyUKDBC3qhXg5ZH9qejdy3atEVy2PgMREAL7bm \
+X/mFLrocFLEOhpxqocol/jCuV9cOz4E+uGe+ZHHbgztaruBqyYOeyQKyEjrBCFeLDpY0o5HBWm6W \
+L6rcWL9mO7n8iedS2+3Kwk3jLLye+ekljRxformEIK1pIR3yhOZgIJ/BtkyWF6goVNX5mttaMTqd \
+uqxGkgJ5pTifvgsis847EV6Va9L42t8KO8+CTN86DR9SyjluSoqbNf7/ZC/uy8CVQS2MZ9HL6UeI \
+lpiLFLVYTJhy5Cr3gzvyrmna8xRw+yYsDwl2Lqey1m8WU0JJplCsdfhfvEBfy9pKxK0OfMbPRKvI \
+qyv1+GcIzurfVBK0DXnxqBRVYnqQlb7lWV8eyKKt/XvsXzHxB3Nu/gDG2vvsZwYAAA==)
   echo $MSG|sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 

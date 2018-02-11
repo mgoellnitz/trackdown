@@ -49,4 +49,4 @@ CMD status
   Show brief information about the GIT or Mercurial state of the issue collection Branch or Directory
 
 CMD sync
-  Synchronize the remote repository with the TrackDown issues and roadmap for Mercurial and GIT
+  Synchronize the remote repository with the TrackDown issues and roadmap for Mercurial or GIT
