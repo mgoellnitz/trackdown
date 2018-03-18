@@ -99,6 +99,10 @@ Martin Goellnitz / Tue, 23 Jan 2018 01:02:12 [e39700997dd9fe8e1b12b68a369ada295c
 
     refs #GITLAB now can mirror more than 100 issues per project
 
+Martin Goellnitz / Sun, 18 Mar 2018 23:47:41 [4aa517b347ab90f70ec4ff7cc7316b184ca7c129](https://github.com/mgoellnitz/trackdown/commit/4aa517b347ab90f70ec4ff7cc7316b184ca7c129)
+
+    refs #GITLAB mirror milestone handling fixed
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*
