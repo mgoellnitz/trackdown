@@ -285,13 +285,17 @@ Martin Goellnitz / Wed Nov 9 00:55:22 2016 [0bd7768acc26577da36ae808e21d72deb704
 
 *1.0*
 
-The local tracking branch with its special checkout should be setup symmetrically
-to ther root repository checkout with simple push style and user and email
-set up locally.
+The local tracking branch with its special checkout should be set up 
+symmetrically to the root repository checkout with simple push style and user 
+and email taken from the root repository.
 
 Martin Goellnitz / Wed Nov 9 01:42:57 2016 [674b85ec7bebbf36618b000098c9195893fc3f90](https://github.com/mgoellnitz/trackdown/commit/674b85ec7bebbf36618b000098c9195893fc3f90)
 
     resolve #SETUP tracking repository symmetrically
+
+Martin Goellnitz / Mon, 19 Mar 2018 00:12:44 [3d0844eb3720d89be782937947adf6d4def8cad9](https://github.com/mgoellnitz/trackdown/commit/3d0844eb3720d89be782937947adf6d4def8cad9)
+
+    fixes #SETUP of tracking branch origin
 
 ## SYNCHRONIZE roadmap also on unhandled commits (resolved)
 
