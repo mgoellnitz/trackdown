@@ -162,14 +162,15 @@ the project instead of the source code repository, which is described later.
 In both cases the automatically maintained roadmap file resides next to the
 issue collection file.
 
+
 ## Initialize the Repository
 
 If you want to track the issues in a TrackDown branch of your source code 
 repository and not in any other location of your chosing, you need to modify the 
 [GIT][git] or [Mercurial][hg] repository accordingly. Your source code 
-repository must contain at  least one commit for this to work. 
+repository must contain at least one commit for this to work. 
 
-To initialize your source code repository that way, call the script
+To initialize your source code repository this way, call the script
 
 ```
 trackdown.sh init
@@ -184,18 +185,19 @@ git push origin trackdown
 ```
 
 TrackDown does not interfere with your remote workflow for any version control
-system, so also for [Mercurial][hg] the trackdown branch will onyl show up
-in the remote repositories if you push it.
+system: Also for [Mercurial][hg] the trackdown branch will only show up in the 
+remote repositories if you push it.
 
 ```
 hg push
 ```
 
-Initialization must only be executed once for a repository and all of its forks 
-and clones.
+Initialization must only be executed once for a repository including all of its 
+forks and clones.
 
-If you want to use the issue collection file from a different location, leave
-out this step.
+If you want to use the issue collection file from a different location than the
+special TrackDown branch, leave out this step.
+
 
 ## Repository Integration
 
@@ -224,18 +226,18 @@ trackdown.sh use ../wiki/issues.md
 when using TrackDown with the issue collection file at a different location.
 Automatic commit and push (see below) will be switched off in the latter case.
 
-This creates a (git or hg ignored) link issues.md in the root directory of your 
-project pointing to the issue collection file and it will configure a 
-post-commit hook for [GIT][git] or a commit hook for [Mercurial][hg] 
-respectively.
+This creates (git or hg ignored) links `issues.md` and `roadmap.md` in the root 
+directory of your project pointing to the issue collection file and the roadmap.
+Additionally it will configure a post-commit hook for [GIT][git] or a commit 
+hook for [Mercurial][hg] respectively.
 
 After this step you can edit the issue collection file following the format
-mentioned here.
+mentioned above.
 
 
 # Commands in the Commit Messages
 
-To support automatic reading of commit messages and modifying the issues
+To support automatic reading of commit messages and modifying the issue 
 collection alongside you work. 
 
 When using [GIT][git], TrackDown relies on an implementation, which is capable 
@@ -248,6 +250,7 @@ of JGit (Version 4.6 an up).
 
 Right now TrackDown understands only two commands in the commit messages. 
 
+
 ## refs #*id*[,*id*...]
 
 Reference the commit in the list of commits at the end of the issue text.
@@ -257,8 +260,8 @@ git commit -m "refs #MYID - comment" files...
 ```
 
 This command changes the state to "in progress" from anything like new, nothing,
-or even resolved. If the commit relates to more than one issue, the issues can be
-separated by commas.
+or even resolved. If the commit relates to more than one issue, the issues can 
+be separated by commas.
 
 ```
 git commit -m "fixes #ONEID,ANOTHERID - comment" files...
@@ -267,6 +270,7 @@ git commit -m "fixes #ONEID,ANOTHERID - comment" files...
 ```
 (Future work: lifts the issue up to the top of the list)
 ```
+
 
 ## resolves|resolve|fixes #*id*[,*id*...]
 
@@ -293,6 +297,7 @@ git commit -m "fixes #ONEID,ANOTHERID - comment" files...
 
 In addition to the init and integration tools, the following commands are 
 available:
+
 
 ## Roadmap
 
@@ -438,6 +443,7 @@ Example config file for TrackDown:
   me=My Name
 ```
 
+
 ## Auto Commit all Issue Collection Changes
 
 Automatically commits the new change to the trackdown branch. If you didn't
@@ -446,6 +452,7 @@ a trackdown branch, you will want to leave the unchanged with the default
 value `true`.
 
 In other scenarios you may switch it to `false`.
+
 
 ## Auto Push all Issue Collection Commits
 
@@ -458,6 +465,7 @@ In other scenarios you may switch it to false. E.g. if the issue collection is
 part of your project wiki then automatic pushing might lead to remote 
 operations, which is not desirable.
 
+
 ## Online commit summary prefix
 
 With some GIT backends it is possible to obtain summary with changes and 
@@ -467,6 +475,7 @@ link for that commit.
 
 It TrackDown discovers common GIT services it tries to automatically discover
 the correct prefix für URLs pointing to single commits.
+
 
 ## Username for assignments
 
@@ -489,12 +498,14 @@ Of course this way the remaining Windows users are locked out.
 A symbolic link `td` to the `trackdown.sh` script is recommended for easier
 use.
 
+
 ## Prerequisites
 
 TrackDown relies on a [GIT][git] or [Mercurial][hg] installation available on 
 the path when used with distributed version control as the backend. The 
 mirror feature in turn heavily relies in an installation of [jq][jq] available
 through your path.
+
 
 ## Compatibility
 
@@ -510,6 +521,7 @@ cygwin are in use.
 I only came accross relates projects which have certain limitations or are 
 unmaintained. In each case the limitations have an extent that kept me from
 using these systems except for very small or test projects.
+
 
 ## Fossil SCM
 
@@ -546,6 +558,7 @@ exception of Support for [Idea](https://plugins.jetbrains.com/plugin/7479)
 and my own small [plug-in for NetBeans](http://chiselapp.com/user/backendzeit/repository/netbeans-fossil-plugin/index)
 mirrored [here](https://github.com/mgoellnitz/netbeans-fossil-plugin).
 
+
 ## Bitbucket
 
 [Bitbucket.org][bitbucket] a brilliant tool for Open Source or small projects.  
@@ -558,6 +571,7 @@ So in this case it is possible to leave out the ticketing of [Bitbucket][bitbuck
 and use TrackDown with [Bitbucket][bitbucket] as the [GIT][git] or 
 [Mercurial][hg] based storage backend. And this is exactly what TrackDown was 
 designed for.
+
 
 ## GitHub
 
@@ -573,6 +587,7 @@ storage backend. And this is exactly what TrackDown was designed for.
 
 As an alternative you can at least mirror the issues from [GitHub][github] to
 have the notes with you and now the issue IDs for offline code commits.
+
 
 ## GitLab
 
@@ -590,6 +605,7 @@ storage backend. And this is exactly what TrackDown was designed for.
 As an alternative you can at least mirror the issues from [GitLab][gitlab] to
 have the notes with you and now the issue IDs for offline code commits.
 
+
 ## Trac
 
 A few years ago a colleague stated that he is running a local VM for each 
@@ -603,6 +619,7 @@ maintain the locally running instances and take backups of them in addition to
 the project VCS and source code repositories. This is not the case for the 
 [GIT][git] based solutions in this list, which have a remote repository as a 
 backup wiki and source code.
+
 
 ## MDWiki
 
@@ -622,6 +639,7 @@ When you also use GitLab, GitHub, or Bitbucket Wikis, [MDWiki][mdwiki] has
 a different understanding, how links should be interpreted. To get a fully
 compatible local and remote viewing setup for these cases, a patched
 version of [MDWiki][mdwiki] [exists on GitHub](https://github.com/mgoellnitz/mdwiki/).
+
 
 ## Unmaintained related Projects
 
