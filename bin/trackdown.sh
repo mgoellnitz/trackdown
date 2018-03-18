@@ -167,6 +167,7 @@ if [ "$CMD" = "use" ] ; then
   if [ -d $TDBASE/.git ] ; then
     rm -f $TDBASE/.git/hooks/post-commit
     ln -s $DIR/trackdown-hook.sh $TDBASE/.git/hooks/post-commit
+    rm -f $TDBASE/.git/hooks/trackdown-lib.sh
     ln -s $DIR/trackdown-lib.sh $TDBASE/.git/hooks/
     test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
     if [ -z "$ISSUES" ] ; then
@@ -175,32 +176,26 @@ if [ "$CMD" = "use" ] ; then
         exit
       fi
       ISSUES=".git/trackdown/issues.md"
+      cd $TDBASE
+      git fetch
       NAME=`git config -l|grep user.name|cut -d '=' -f 2`
       MAIL=`git config -l|grep user.email|cut -d '=' -f 2`
-      cd $TDBASE
       echo "prepare local"
       test -z `git branch |grep trackdown|sed -e 's/\ /_/g'` && git branch trackdown
       git branch --set-upstream-to=origin/trackdown trackdown
-      REMOTE=`git remote get-url origin`
-      if [ -z "$REMOTE" ] ; then
-        REMOTE=".."
-      fi
+      # REMOTE=`git remote get-url origin`
+      #if [ -z "$REMOTE" ] ; then
+      REMOTE=".."
+      # fi
       cd .git
-      # git clone --single-branch --branch trackdown .. trackdown
-      # git clone --branch trackdown .. trackdown
       git clone --branch trackdown $REMOTE trackdown
       cd trackdown
       git config --local push.default simple
       git config --local user.email "$MAIL"
       git config --local user.name "$NAME"
-      # git remote remove origin
-      # git remote add origin $REMOTE
-      # git fetch
-      # git branch --set-upstream-to=origin/trackdown trackdown
-      # git rebase
-      cd ../..
+      cd $TDBASE
       echo "autocommit=true" > $TDCONFIG
-      echo "autopush=false" >> $TDCONFIG
+      echo "autopush=true" >> $TDCONFIG
     else
       echo "autocommit=false" > $TDCONFIG
       echo "autopush=false" >> $TDCONFIG
@@ -208,7 +203,11 @@ if [ "$CMD" = "use" ] ; then
 
     REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
     CASE=`echo $REMOTE|cut -d '/' -f 1`
-    test ! -z "$REMOTE" && echo "Remote system is $CASE."
+    test ! -z "$REMOTE" && echo "Remote system host is $CASE."
+    if [ "$CASE" = "gitlab.com" ] ; then
+      echo "Discovered gitlab remote"
+      echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
+    fi
     if [ "$CASE" = "github.com" ] ; then
       echo "Discovered github remote"
       echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
