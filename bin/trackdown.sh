@@ -212,13 +212,13 @@ if [ "$CMD" = "use" ] ; then
       echo "Discovered github remote"
       echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
     fi
-    if [ "$CASE" = "v2.pikacode.com" ] ; then
-      echo "Discovered pikacode gogs remote"
-      echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
-    fi
     if [ "$CASE" = "bitbucket.org" ] ; then
       echo "Discovered bitbucket.org remote"
       echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
+    fi
+    if [ "$CASE" = "v2.pikacode.com" ] ; then
+      echo "Discovered pikacode gogs remote"
+      echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
     fi
   fi
   if [ -d $TDBASE/.hg ] ; then
@@ -526,6 +526,53 @@ if [ "$CMD" = "mirror" ] ; then
     done
   fi
 
+  if [ $TYPE = "bitbucket" ] ; then
+    USER=`grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No bitbucket.org user configured. Did you setup bitbucket.org mirroring?" $USER
+    DISPLAY=`echo $USER|cut -d ':' -f 1`
+    PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No bitbucket.org project configured. Did you setup bitbucket.org mirroring?" $PROJECT
+    URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues"
+    if [ "$DISPLAY" == "$USER" ] ; then
+      echo -n "Password for $DISPLAY on bitbucket.org: "
+    fi
+    curl --basic -u $USER $URL 2> /dev/null >$EXPORT
+    checkExport $EXPORT
+    RESULT=`jq '.error?|.message?' $EXPORT`
+    if [ ! "$RESULT" = "null" ] ; then
+      echo "Cannot mirror issues for bitbucket.org project ${PROJECT} as ${DISPLAY}: ${RESULT}"
+      cd $CWD
+      exit
+    fi
+    issueCollectionHeader "Issues"
+    for id in `jq  -c '.values[].id' $EXPORT` ; do
+      echo "" >>$ISSUES
+      echo "" >>$ISSUES
+      TITLE=`jq  -c '.values[]|select(.id == '$id')|.title' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+      STATE=`jq  -c '.values[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
+      s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
+      MILESTONE=`jq  -c '.values[]|select(.id == '$id')|.milestone|.title' $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
+      ASSIGNEE=`jq  -c '.values[]|select(.id == '$id')|.assignee|.display_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      echo "## $id $TITLE ($s)"  >>$ISSUES
+      echo "" >>$ISSUES
+      echo -n "*${MILESTONE}*"  >>$ISSUES
+      if [ "$ASSIGNEE" != "null" ] ; then
+        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+      fi
+      echo "" >>$ISSUES
+      AUTHOR=`jq  -c '.values[]|select(.id == '$id')|.reporter|.display_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      echo "" >>$ISSUES
+      if [ "$AUTHOR" != "null" ] ; then
+        echo "Author: \`$AUTHOR\` " >>$ISSUES
+      fi
+      DESCRIPTION=`jq  -c '.values[]|select(.id == '$id')|.content.raw' $EXPORT`
+      if [ "$DESCRIPTION" != "null" ] ; then
+        echo "" >>$ISSUES
+        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g' >>$ISSUES
+      fi
+    done
+  fi
+
   if [ $TYPE = "redmine" ] ; then
     BASEURL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $BASEURL
@@ -594,53 +641,6 @@ if [ "$CMD" = "mirror" ] ; then
             |sed -e 's/<br \/>//g' |sed -e 's/\\"/\`/g' >>$ISSUES
         done
       done
-    done
-  fi
-
-  if [ $TYPE = "bitbucket" ] ; then
-    USER=`grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No bitbucket.org user configured. Did you setup bitbucket.org mirroring?" $USER
-    DISPLAY=`echo $USER|cut -d ':' -f 1`
-    PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No bitbucket.org project configured. Did you setup bitbucket.org mirroring?" $PROJECT
-    URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues"
-    if [ "$DISPLAY" == "$USER" ] ; then
-      echo -n "Password for $DISPLAY on bitbucket.org: "
-    fi
-    curl --basic -u $USER $URL 2> /dev/null >$EXPORT
-    checkExport $EXPORT
-    RESULT=`jq '.error?|.message?' $EXPORT`
-    if [ ! "$RESULT" = "null" ] ; then
-      echo "Cannot mirror issues for bitbucket.org project ${PROJECT} as ${DISPLAY}: ${RESULT}"
-      cd $CWD
-      exit
-    fi
-    issueCollectionHeader "Issues"
-    for id in `jq  -c '.values[].id' $EXPORT` ; do
-      echo "" >>$ISSUES
-      echo "" >>$ISSUES
-      TITLE=`jq  -c '.values[]|select(.id == '$id')|.title' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-      STATE=`jq  -c '.values[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
-      s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
-      MILESTONE=`jq  -c '.values[]|select(.id == '$id')|.milestone|.title' $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
-      ASSIGNEE=`jq  -c '.values[]|select(.id == '$id')|.assignee|.display_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
-      echo "## $id $TITLE ($s)"  >>$ISSUES
-      echo "" >>$ISSUES
-      echo -n "*${MILESTONE}*"  >>$ISSUES
-      if [ "$ASSIGNEE" != "null" ] ; then
-        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
-      fi
-      echo "" >>$ISSUES
-      AUTHOR=`jq  -c '.values[]|select(.id == '$id')|.reporter|.display_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
-      echo "" >>$ISSUES
-      if [ "$AUTHOR" != "null" ] ; then
-        echo "Author: \`$AUTHOR\` " >>$ISSUES
-      fi
-      DESCRIPTION=`jq  -c '.values[]|select(.id == '$id')|.content.raw' $EXPORT`
-      if [ "$DESCRIPTION" != "null" ] ; then
-        echo "" >>$ISSUES
-        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g' >>$ISSUES
-      fi
     done
   fi
 
