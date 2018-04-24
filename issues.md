@@ -209,6 +209,10 @@ Martin Goellnitz / Tue, 9 May 2017 22:33:40 [98a34fe224418e7b04a9057e98fdfccff62
 
     refs #GITHUB,BITBUCKET mirror setup clean up and reasonable defaults
 
+Martin Goellnitz / Wed, 25 Apr 2018 00:41:24 [2d5495a939c1d81f4b6e55c22cf015c3062092c1](https://github.com/mgoellnitz/trackdown/commit/2d5495a939c1d81f4b6e55c22cf015c3062092c1)
+
+    refs #BITBUCKET remote command addd
+
 ## GOGS and gitea offline mirror (in progress)
 
 *mirror*
