@@ -681,6 +681,20 @@ current mirror state to you local issue collection file and the roadmap.
 trackdown.sh mirror
 ```
 
+Additionally - since you now are on your command line and perhaps don't want
+to switch windows every second - there is a `remote` command to issue commands
+on the remote mirroring source system.
+
+```
+trackdown.sh remote assign 68 XYZ
+Assigning XYZ to user 68 
+```
+
+You have to provide the issue id and the id of the user, which is also always 
+exported to the issue collection file to facilitate this.
+
+Right now there is only the `assign` remote command available.
+
 
 ## GitLab Offline Mirror
 
@@ -711,7 +725,7 @@ trackdown.sh mirror
 ```
 
 Additionally - since you now are on your command line and perhaps don't want
-to switch windows evey second - there is a `remote` command to issue commands
+to switch windows every second - there is a `remote` command to issue commands
 on the remote mirroring source system.
 
 ```
@@ -721,7 +735,14 @@ Assigning XYZ to user 68
 
 You have to provide the issues *real* id - not the short one - and the id of
 the user, which is also always exported to the issue collection file to 
-facility this.
+facilitate this.
+
+The commands available are 
+
+* `assign` to assign issues to users
+* `milestone` to put issues into milestones
+* `comment` to comment issues
+* `issue` to create new issues
 
 
 ## Gogs Offline Mirror
@@ -753,6 +774,23 @@ current mirror state to you local issue collection file and the roadmap.
 ```
 trackdown.sh mirror
 ```
+
+Additionally - since you now are on your command line and perhaps don't want
+to switch windows every second - there is a `remote` command to issue commands
+on the remote mirroring source system.
+
+```
+trackdown.sh remote assign 68 XYZ
+Assigning XYZ to user 68 
+```
+
+You have to provide the issue id and the id of the user, which is also always 
+exported to the issue collection file to facilitate this.
+
+The commands available are 
+
+* `assign` to assign issues to users
+* `comment` to comment issues
 
 
 ## Bitbucket.org Offline Mirror
@@ -789,6 +827,9 @@ trackdown.sh mirror
 In the case of [Bitbucket.org][bitbucket], the mirror script has to ask for
 you password on bitbucket, since the are no secure API tokens available as far
 as I know.
+
+There are no remote commands implements for the [Bitbucket.org][bitbucket]
+mirroring source.
 
 
 ## Redmine
