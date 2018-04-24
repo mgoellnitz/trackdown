@@ -135,6 +135,10 @@ Martin Goellnitz / Tue, 13 Jun 2017 17:49:17 [bb8045feb16aaf7e837ba045cdfbd8c74e
 
     refs #GITHUB issue parsing for newlines and milestones fixed
 
+Martin Goellnitz / Wed, 25 Apr 2018 00:51:54 [4461150447b3766f76d985279a2c58ae47e13a9b](https://github.com/mgoellnitz/trackdown/commit/4461150447b3766f76d985279a2c58ae47e13a9b)
+
+    refs #GITHUB remote command refactored
+
 ## REDMINE offline mirror (resolved)
 
 *mirror*
