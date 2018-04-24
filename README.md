@@ -687,7 +687,7 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68 
+Assigning XYZ to user 68
 ```
 
 You have to provide the issue id and the id of the user, which is also always 
@@ -730,7 +730,7 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68 
+Assigning XYZ to user 68
 ```
 
 You have to provide the issues *real* id - not the short one - and the id of
@@ -781,7 +781,7 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68 
+Assigning XYZ to user 68
 ```
 
 You have to provide the issue id and the id of the user, which is also always 
@@ -813,7 +813,7 @@ Instead of `trackdown.sh use` issue `trackdown.sh github` to setup the mirror
 connection.
 
 ```
-trackdown.sh bitbucket <projectname> <owner>
+trackdown.sh bitbucket <projectname> <owner> <app-password>
 ```
 
 Afterwards anytime you can connect to the [Bitbucket.org][bitbucket] system, 
@@ -825,11 +825,18 @@ trackdown.sh mirror
 ```
 
 In the case of [Bitbucket.org][bitbucket], the mirror script has to ask for
-you password on bitbucket, since the are no secure API tokens available as far
-as I know.
+you password on [Bitbucket.org][bitbucket], if you leave out the app password.
+App passwords can be generated in the personal [Bitbucket.org][bitbucket]
+settings.
 
-There are no remote commands implements for the [Bitbucket.org][bitbucket]
-mirroring source.
+Additionally - since you now are on your command line and perhaps don't want
+to switch windows every second - there is a `remote` command to issue commands
+on the remote mirroring source system.
+
+```
+trackdown.sh remote assign 68 XYZ
+Assigning XYZ to user 68
+```
 
 
 ## Redmine

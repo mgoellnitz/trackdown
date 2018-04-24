@@ -604,6 +604,9 @@ if [ "$CMD" = "mirror" ] ; then
     PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No bitbucket.org project configured. Did you setup bitbucket.org mirroring?" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues"
+    if [ "$DISPLAY" == "$USER" ] ; then
+      echo -n "Password for $DISPLAY on bitbucket.org: "
+    fi
     curl --basic -u $USER $URL 2> /dev/null >$EXPORT
     checkExport $EXPORT
     RESULT=`jq '.error?|.message?' $EXPORT`
@@ -767,6 +770,24 @@ if [ "$CMD" = "remote" ] ; then
       exit
     fi
   fi
+  if [ "$TYPE" = "bitbucket" ] ; then
+    USER=`grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No bitbucket.org user configured. Did you setup bitbucket.org mirroring?" $USER
+    PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No bitbucket.org project configured. Did you setup bitbucket.org mirroring?" $PROJECT
+    URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues/${ISSUE}"
+    DISPLAY=`echo $USER|cut -d ':' -f 1`
+    if [ "$DISPLAY" == "$USER" ] ; then
+      echo -n "Password for $DISPLAY on bitbucket.org: "
+    fi
+    if [ "$REMOTE" = "assign" ] ; then
+      echo "Assigning $ISSUE to user $PARAM"
+      DATA="{\"assignee\": { \"username\": \"${PARAM}\" } }"
+      curl -X PUT -u $USER -H 'Content-Type: application/json' -d "$DATA" \
+           ${URL}
+      exit
+    fi
+  fi
   if [ "$TYPE" = "redmine" ] ; then
     URL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $URL
@@ -861,11 +882,16 @@ if [ "$CMD" = "bitbucket" ] ; then
   bailOnZero "No project name given as the first parameter" $P
   U=${3:-$REMOTEUSER}
   bailOnZero "No username given as the second parameter" $U
+  C=${3:-$BITBUCKET_APP_PASSWORD}
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror $P as $U from bitbucket.org"
   setupCollectionReference bitbucket
   echo "prefix=https://bitbucket.org/$U/$P/commits/" >> $TDCONFIG
-  echo "bitbucket.user=$U" >> $TDCONFIG
+  if [ -z "$C" ] ; then
+    echo "bitbucket.user=$U" >> $TDCONFIG
+  else
+    echo "bitbucket.user=$U:$C" >> $TDCONFIG
+  fi
   echo "bitbucket.project=$P" >> $TDCONFIG
 
 fi
