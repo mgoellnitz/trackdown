@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2016 Martin Goellnitz
+# Copyright 2015-2018 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -123,7 +123,7 @@ if [ ! -z "$STATUS" ] ; then
     # echo "AUTOPUSH: $AUTOPUSH"
     if [ ! -z "$AUTOPUSH" ] ; then
       echo "TrackDown: pushing"
-      ( cd $TRACKDOWN ; ${VCS} push > /dev/null )
+      ( cd $TRACKDOWN ; ${VCS} pull ; ${VCS} push > /dev/null )
     fi
   fi
 else 
