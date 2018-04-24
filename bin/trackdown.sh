@@ -754,19 +754,19 @@ if [ "$CMD" = "remote" ] ; then
     bailOnZero "No github api token configured. Did you setup github mirroring?" $TOKEN
     PROJECT=`grep github.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No github project. Did you setup github mirroring?" $PROJECT
-    URL="https://api.github.com/repos/${OWNER}/${PROJECT}"
+    URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues/${ISSUE}"
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
-      curl -X POST -H "Authorization: token $TOKEN" --data "{\"body\":\"${PARAM}\"}"\
-           ${URL}/issues/${ISSUE}/comments 2>&1 > /dev/null
+      curl -X POST -H "Authorization: token $TOKEN" -d "{\"body\":\"${PARAM}\"}"\
+           ${URL}/comments 2>&1 > /dev/null
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
       echo "Assigning $ISSUE to user $PARAM"
       DATA="{\"assignees\": [ \"${PARAM}\" ]}\""
-      echo $DATA
-      curl -X POST -H "Authorization: token $TOKEN" --data "$DATA"\
-           ${URL}/issues/${ISSUE}/assignees 2>&1 > /dev/null
+      # echo $DATA
+      curl -X POST -H "Authorization: token $TOKEN" -d "$DATA"\
+           ${URL}/assignees 2>&1 > /dev/null
       exit
     fi
   fi
