@@ -139,6 +139,10 @@ Martin Goellnitz / Wed, 25 Apr 2018 00:51:54 [4461150447b3766f76d985279a2c58ae47
 
     refs #GITHUB remote command refactored
 
+Martin Goellnitz / Mon, 30 Apr 2018 19:18:38 [1b4b0f0e5d5a773e520f4d979059ffb98db7234b](https://github.com/mgoellnitz/trackdown/commit/1b4b0f0e5d5a773e520f4d979059ffb98db7234b)
+
+    refs #GITHUB comments get exported
+
 ## REDMINE offline mirror (resolved)
 
 *mirror*
