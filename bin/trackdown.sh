@@ -527,7 +527,6 @@ if [ "$CMD" = "mirror" ] ; then
       COMMENTSNO=`jq  -c '.[]|select(.id == '$id')|.comments' $EXPORT`
       if [ "$COMMENTSNO" != "0" ] ; then
         COMMENTS_URL=`jq  -c '.[]|select(.id == '$id')|.comments_url' $EXPORT|sed -e 's/"//g'`
-        echo ${TITLE}: $COMMENTS_URL
         curl -H "Authorization: token $TOKEN" $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
         echo "" >>$ISSUES
         echo "### Comments" >>$ISSUES
@@ -669,8 +668,8 @@ if [ "$CMD" = "mirror" ] ; then
     bailOnZero "No gogs api token configured. Did you setup gogs mirroring?" $TOKEN
     PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gogs/pikacode/gitea project. Did you setup gogs mirroring?" $PROJECT
-    URL="${URL}/api/v1/repos/${PROJECT}/issues?state=all"
-    curl -H "Authorization: token $TOKEN" $URL 2> /dev/null >$EXPORT
+    URL="${URL}/api/v1/repos/${PROJECT}/issues"
+    curl -H "Authorization: token $TOKEN" "${URL}?state=all" 2> /dev/null >$EXPORT
     checkExport $EXPORT
     RESULT=`jq '.message?' $EXPORT`
     if [ ! -z "$RESULT" ] ; then
@@ -686,7 +685,8 @@ if [ "$CMD" = "mirror" ] ; then
       STATE=`jq  -c '.[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
       s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
       MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone|.title' $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
-      ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee|.full_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee|.login' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      ASSIGNEE_NAME=`jq  -c '.[]|select(.id == '$id')|.assignee|.full_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
       LABELS=`jq  -c '.[]|select(.id == '$id')|.labels' $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g'`
       echo "## $IID $TITLE ($s)"  >>$ISSUES
       echo "" >>$ISSUES
@@ -695,19 +695,37 @@ if [ "$CMD" = "mirror" ] ; then
         echo -n " $LABELS" >>$ISSUES
       fi
       if [ "$ASSIGNEE" != "null" ] ; then
-        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+        echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
       fi
       echo "" >>$ISSUES
-      AUTHOR=`jq  -c '.[]|select(.id == '$id')|.user|.full_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      AUTHOR=`jq  -c '.[]|select(.id == '$id')|.user|.login' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      AUTHOR_NAME=`jq  -c '.[]|select(.id == '$id')|.user|.full_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
       echo "" >>$ISSUES
       if [ "$AUTHOR" != "null" ] ; then
-        echo -n "Author: \`$AUTHOR\` " >>$ISSUES
+        echo -n "Author: \`$AUTHOR\` $AUTHOR_NAME  " >>$ISSUES
       fi
       echo "Remote ID $id" >>$ISSUES
       DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.body' $EXPORT`
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
-        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g' >>$ISSUES
+        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g'|sed -e 's/\\r//g' >>$ISSUES
+      fi
+      COMMENTSNO=`jq  -c '.[]|select(.id == '$id')|.comments' $EXPORT`
+      if [ "$COMMENTSNO" != "0" ] ; then
+        COMMENTS_URL=$(echo ${URL}/${IID}/comments)
+        curl -H "Authorization: token $TOKEN" $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
+        echo "" >>$ISSUES
+        echo "### Comments" >>$ISSUES
+        for cid in `jq  -c '.[]|.id' $COMMENTS_EXPORT` ; do
+          echo "" >>$ISSUES
+          BODY=$(jq  -c '.[]|select(.id == '$cid')|.body' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
+          COMMENT_DATE=`jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g'`
+          COMMENTER=`jq  -c '.[]|select(.id == '$cid')|.user.login' $COMMENTS_EXPORT|sed -e 's/"//g'`
+          COMMENTER_NAME=`jq  -c '.[]|select(.id == '$cid')|.user.full_name' $COMMENTS_EXPORT|sed -e 's/"//g'`
+          echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE" >>$ISSUES
+          echo "" >>$ISSUES
+          echo "$BODY" >>$ISSUES
+        done
       fi
     done
   fi
@@ -774,9 +792,9 @@ if [ "$CMD" = "remote" ] ; then
     bailOnZero "No github project. Did you setup github mirroring?" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues/${ISSUE}"
     if [ "$REMOTE" = "comment" ] ; then
-      echo "Adding comment \"$PARAM\" to $ISSUE"
-      curl -X POST -H "Authorization: token $TOKEN" -d "{\"body\":\"${PARAM}\"}"\
-           ${URL}/comments 2> /dev/null > /dev/null
+      RESULT=$(curl -X POST -H "Authorization: token $TOKEN" -d "{\"body\":\"${PARAM}\"}"\
+           ${URL}/comments 2> /dev/null | jq .message)
+      echo "Adding comment \"$PARAM\" to $ISSUE: $RESULT"
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
@@ -784,11 +802,11 @@ if [ "$CMD" = "remote" ] ; then
       if [ "$NU" = "null" ] ; then
         echo "Unknown user $PARAM"
       else 
-        echo "Assigning $ISSUE to user $PARAM ($NU)"
         DATA="{\"assignees\": [ \"${PARAM}\" ]}\""
         # echo $DATA
-        curl -X POST -H "Authorization: token $TOKEN" -d "$DATA"\
-             ${URL}/assignees
+        RESULT=$(curl -X POST -H "Authorization: token $TOKEN" -d "$DATA"\
+             ${URL}/assignees 2> /dev/null | jq .message)
+        echo "Assigning $ISSUE to user $PARAM: $RESULT"
       fi
       exit
     fi
@@ -837,15 +855,19 @@ if [ "$CMD" = "remote" ] ; then
     PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gogs/gitea project. Did you setup mirroring?" $PROJECT
     if [ "$REMOTE" = "comment" ] ; then
-      echo "Adding comment \"$PARAM\" to $ISSUE"
-      curl -X POST -H "Authorization: token $TOKEN" --data "body=${PARAM}" \
-           ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE}/comments 2> /dev/null
+      RESULT=$(curl -X POST -H "Authorization: token $TOKEN" --data "body=${PARAM}" \
+           ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE}/comments 2> /dev/null | jq .id)
+      if [ "$RESULT" = "null" ] ; then
+        echo "Error"
+      else 
+        echo "Added comment \"$PARAM\" to issue $ISSUE"
+      fi
       exit
     fi
-    # Doesn't seem to work for some reason
+    # Not working right now - cannot find documentation
     if [ "$REMOTE" = "assign" ] ; then
       echo "Assigning $ISSUE to user $PARAM"
-      curl -X PATCH -H "Authorization: token $TOKEN" --data "assignee=${PARAM}"  \
+      curl -X PATCH -H "Authorization: token $TOKEN" -F "assignee=${PARAM}"  \
            ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE} 2> /dev/null | jq .
       exit
     fi
