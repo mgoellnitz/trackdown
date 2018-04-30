@@ -567,25 +567,51 @@ if [ "$CMD" = "mirror" ] ; then
       echo "" >>$ISSUES
       TITLE=`jq  -c '.values[]|select(.id == '$id')|.title' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
       STATE=`jq  -c '.values[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
+      PRIORITY=`jq  -c '.values[]|select(.id == '$id')|.priority' $EXPORT|sed -e 's/"//g'`
+      TYPE=`jq  -c '.values[]|select(.id == '$id')|.type' $EXPORT|sed -e 's/"//g'`
       s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
-      MILESTONE=`jq  -c '.values[]|select(.id == '$id')|.milestone|.title' $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
-      ASSIGNEE=`jq  -c '.values[]|select(.id == '$id')|.assignee|.display_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      ASSIGNEE=`jq  -c '.values[]|select(.id == '$id')|.assignee|.username' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      ASSIGNEE_NAME=`jq  -c '.values[]|select(.id == '$id')|.assignee|.display_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
       echo "## $id $TITLE ($s)"  >>$ISSUES
       echo "" >>$ISSUES
-      echo -n "*${MILESTONE}*"  >>$ISSUES
+      # Priority used as milestone
+      echo -n "*${PRIORITY}* ${TYPE}"  >>$ISSUES
       if [ "$ASSIGNEE" != "null" ] ; then
-        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+        echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
       fi
       echo "" >>$ISSUES
-      AUTHOR=`jq  -c '.values[]|select(.id == '$id')|.reporter|.display_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      AUTHOR=`jq  -c '.values[]|select(.id == '$id')|.reporter|.username' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      AUTHOR_NAME=`jq  -c '.values[]|select(.id == '$id')|.reporter|.display_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
       echo "" >>$ISSUES
       if [ "$AUTHOR" != "null" ] ; then
-        echo "Author: \`$AUTHOR\` " >>$ISSUES
+        echo "Author: \`$AUTHOR\` $AUTHOR_NAME" >>$ISSUES
       fi
       DESCRIPTION=`jq  -c '.values[]|select(.id == '$id')|.content.raw' $EXPORT`
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
-        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g' >>$ISSUES
+        echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g'|sed -e 's/\\r//g' >>$ISSUES
+      fi
+      COMMENTS_URL=`jq  -c '.values[]|select(.id == '$id')|.links.comments.href' $EXPORT|sed -e 's/"//g'`
+      if [ "$DISPLAY" == "$USER" ] ; then
+        echo -n "Password for $DISPLAY on bitbucket.org: "
+      fi
+      curl --basic -u $USER $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
+      COMMENTSNO=$(jq  -c '.values|length' $COMMENTS_EXPORT)
+      if [ "$COMMENTSNO" != "0" ] ; then
+        echo "" >>$ISSUES
+        echo "### Comments" >>$ISSUES
+        for cid in `jq  -c '.values[]|.id' $COMMENTS_EXPORT` ; do
+          BODY=$(jq  -c '.values[]|select(.id == '$cid')|.content.raw' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
+          if [ "$BODY" != "null" ] ; then
+            COMMENT_DATE=`jq  -c '.values[]|select(.id == '$cid')|.created_on' $COMMENTS_EXPORT|sed -e 's/"//g'`
+            COMMENTER=`jq  -c '.values[]|select(.id == '$cid')|.user.username' $COMMENTS_EXPORT|sed -e 's/"//g'`
+            COMMENTER_NAME=`jq  -c '.values[]|select(.id == '$cid')|.user.display_name' $COMMENTS_EXPORT|sed -e 's/"//g'`
+            echo "" >>$ISSUES
+            echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE" >>$ISSUES
+            echo "" >>$ISSUES
+            echo "$BODY" >>$ISSUES
+          fi
+        done
       fi
     done
   fi
@@ -824,8 +850,10 @@ if [ "$CMD" = "remote" ] ; then
     if [ "$REMOTE" = "assign" ] ; then
       echo "Assigning $ISSUE to user $PARAM"
       DATA="{\"assignee\": { \"username\": \"${PARAM}\" } }"
-      curl -X PUT -u $USER -H 'Content-Type: application/json' -d "$DATA" \
-           ${URL}
+      RESULT=$(curl -X PUT -u $USER -H 'Content-Type: application/json' -d "$DATA" ${URL} 2> /dev/null | jq .type)
+      if [ "$RESULT" = "\"error\"" ] ; then
+        echo "Error"
+      fi
       exit
     fi
   fi
@@ -937,7 +965,11 @@ if [ "$CMD" = "bitbucket" ] ; then
   else
     echo "bitbucket.user=$U:$C" >> $TDCONFIG
   fi
+  if [ -z $(echo $P|grep /) ] ; then
+    P=${U}/$P
+  fi
   echo "bitbucket.project=$P" >> $TDCONFIG
+  echo "me=$REMOTEUSER" >> $TDCONFIG
 
 fi
 
