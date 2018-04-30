@@ -243,6 +243,10 @@ Martin Goellnitz / Tue, 9 May 2017 22:35:08 [bad2ffc8bc29acfafb9a044da43df062ade
 
     refs #GOGS remote command added
 
+Martin Goellnitz / Mon, 30 Apr 2018 21:55:51 [8484d90272c85bbd56dbf55a101776a649cb2fff](https://github.com/mgoellnitz/trackdown/commit/8484d90272c85bbd56dbf55a101776a649cb2fff)
+
+    refs #GOGS mirror exports comments
+
 ## ASSIGNMENT of issues should be part of the format and tooling (resolved)
 
 *1.0*
