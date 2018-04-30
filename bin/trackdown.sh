@@ -424,6 +424,7 @@ if [ "$CMD" = "mirror" ] ; then
   discoverIssues
   checkJq
   EXPORT=${2:-"/tmp/issues.json"}
+  COMMENTS_EXPORT=${3:-"/tmp/issue-comments.json"}
   if [ $TYPE = "gitlab" ] ; then
     URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab source url configured. Did you setup gitlab mirroring?" $URL
@@ -512,16 +513,33 @@ if [ "$CMD" = "mirror" ] ; then
         echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
       fi
       echo "" >>$ISSUES
-      AUTHOR=`jq  -c '.[]|select(.id == '$id')|.user' $EXPORT|sed -e 's/.*login...\(.*\)","id.*/\1/g'`
-      echo "" >>$ISSUES
+      AUTHOR=`jq  -c '.[]|select(.id == '$id')|.user.login' $EXPORT|sed -e 's/"//g'`
+      AUTHOR_URL=`jq  -c '.[]|select(.id == '$id')|.user.html_url' $EXPORT|sed -e 's/"//g'`
       if [ "$AUTHOR" != "null" ] ; then
-        echo -n "Author: \`$AUTHOR\` " >>$ISSUES
+        echo "" >>$ISSUES
+        echo "Author: \`$AUTHOR\`" >>$ISSUES
       fi
-      echo "GitHub ID $id" >>$ISSUES
       DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.body' $EXPORT`
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g'|sed -e 's/\\r//g' >>$ISSUES
+      fi
+      COMMENTSNO=`jq  -c '.[]|select(.id == '$id')|.comments' $EXPORT`
+      if [ "$COMMENTSNO" != "0" ] ; then
+        COMMENTS_URL=`jq  -c '.[]|select(.id == '$id')|.comments_url' $EXPORT|sed -e 's/"//g'`
+        echo ${TITLE}: $COMMENTS_URL
+        curl -H "Authorization: token $TOKEN" $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
+        echo "" >>$ISSUES
+        echo "### Comments" >>$ISSUES
+        for cid in `jq  -c '.[]|.id' $COMMENTS_EXPORT` ; do
+          echo "" >>$ISSUES
+          BODY=$(jq  -c '.[]|select(.id == '$cid')|.body' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
+          COMMENT_DATE=`jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g'`
+          COMMENTER=`jq  -c '.[]|select(.id == '$cid')|.user.login' $COMMENTS_EXPORT|sed -e 's/"//g'`
+          echo "$COMMENTER ($COMMENT_DATE)" >>$ISSUES
+          echo "" >>$ISSUES
+          echo "$BODY" >>$ISSUES
+        done
       fi
     done
   fi
@@ -693,7 +711,7 @@ if [ "$CMD" = "mirror" ] ; then
       fi
     done
   fi
-  rm -f $EXPORT
+  # rm -f $EXPORT
 
   writeRoadmap
   
@@ -758,15 +776,20 @@ if [ "$CMD" = "remote" ] ; then
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
       curl -X POST -H "Authorization: token $TOKEN" -d "{\"body\":\"${PARAM}\"}"\
-           ${URL}/comments 2>&1 > /dev/null
+           ${URL}/comments 2> /dev/null > /dev/null
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
-      echo "Assigning $ISSUE to user $PARAM"
-      DATA="{\"assignees\": [ \"${PARAM}\" ]}\""
-      # echo $DATA
-      curl -X POST -H "Authorization: token $TOKEN" -d "$DATA"\
-           ${URL}/assignees 2>&1 > /dev/null
+      NU=$(curl https://api.github.com/users/$PARAM 2> /dev/null | jq -c .id | sed -e s/\"$//g)
+      if [ "$NU" = "null" ] ; then
+        echo "Unknown user $PARAM"
+      else 
+        echo "Assigning $ISSUE to user $PARAM ($NU)"
+        DATA="{\"assignees\": [ \"${PARAM}\" ]}\""
+        # echo $DATA
+        curl -X POST -H "Authorization: token $TOKEN" -d "$DATA"\
+             ${URL}/assignees
+      fi
       exit
     fi
   fi
