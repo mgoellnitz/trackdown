@@ -103,6 +103,10 @@ Martin Goellnitz / Sun, 18 Mar 2018 23:47:41 [4aa517b347ab90f70ec4ff7cc7316b184c
 
     refs #GITLAB mirror milestone handling fixed
 
+Martin Goellnitz / Tue, 1 May 2018 01:36:39 [7686f336ec8e8dfe9d239d743bf379aa343547f0](https://github.com/mgoellnitz/trackdown/commit/7686f336ec8e8dfe9d239d743bf379aa343547f0)
+
+    refs #GITLAB mirror exports comments
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*
