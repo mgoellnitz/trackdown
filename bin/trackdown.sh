@@ -449,7 +449,8 @@ if [ "$CMD" = "mirror" ] ; then
         STATE=`jq  -c '.[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
         s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g'`
         MILESTONE=`jq  -c '.[]|select(.id == '$id')|.milestone|.title' $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
-        ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee' $EXPORT|sed -e 's/.*name...\(.*\)","username...\([a-zA-Z0-9\.]*\).*/\1 (\2)/g'`
+        ASSIGNEE=`jq  -c '.[]|select(.id == '$id')|.assignee.username' $EXPORT|sed -e 's/"//g'`
+        ASSIGNEE_NAME=`jq  -c '.[]|select(.id == '$id')|.assignee.name' $EXPORT|sed -e 's/"//g'`
         echo "## $IID $TITLE ($s)"  >>$ISSUES
         echo "" >>$ISSUES
         echo -n "*${MILESTONE}*"  >>$ISSUES
@@ -458,19 +459,38 @@ if [ "$CMD" = "mirror" ] ; then
           echo -n " $LABELS"|sed -e 's/"/\`/g'|sed -e 's/,/][/g' >>$ISSUES
         fi
         if [ "$ASSIGNEE" != "null" ] ; then
-          echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+          echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
         fi
         echo "" >>$ISSUES
-        AUTHOR=`jq  -c '.[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)","username.*/\1/g'`
+        AUTHOR=`jq  -c '.[]|select(.id == '$id')|.author.username' $EXPORT|sed -e 's/"//g'`
+        AUTHOR_NAME=`jq  -c '.[]|select(.id == '$id')|.author.name' $EXPORT|sed -e 's/"//g'`
         echo "" >>$ISSUES
         if [ "$AUTHOR" != "null" ] ; then
-          echo -n "Author: \`$AUTHOR\` " >>$ISSUES
+          echo -n "Author: \`$AUTHOR\` $AUTHOR_NAME " >>$ISSUES
         fi
         echo "GitLab ID $id" >>$ISSUES
         DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.description' $EXPORT`
         if [ "$DESCRIPTION" != "null" ] ; then
           echo "" >>$ISSUES
           echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g' >>$ISSUES
+        fi
+        COMMENTS_URL=$(echo ${URL}/${id}/notes)
+        curl -H "PRIVATE-TOKEN: $TOKEN" "$COMMENTS_URL" 2> /dev/null >$COMMENTS_EXPORT
+        COMMENTSNO=$(jq  -c '.|length' $COMMENTS_EXPORT)
+        # echo $COMMENTS_URL: $COMMENTSNO
+        if [ "$COMMENTSNO" != "0" ] ; then
+          echo "" >>$ISSUES
+          echo "### Comments" >>$ISSUES
+          for cid in `jq  -c '.[]|.id' $COMMENTS_EXPORT` ; do
+            echo "" >>$ISSUES
+            BODY=$(jq  -c '.[]|select(.id == '$cid')|.body' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
+            COMMENT_DATE=`jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g'`
+            COMMENTER=`jq  -c '.[]|select(.id == '$cid')|.author.username' $COMMENTS_EXPORT|sed -e 's/"//g'`
+            COMMENTER_NAME=`jq  -c '.[]|select(.id == '$cid')|.author.name' $COMMENTS_EXPORT|sed -e 's/"//g'`
+            echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE" >>$ISSUES
+            echo "" >>$ISSUES
+            echo "$BODY" >>$ISSUES
+          done
         fi
       done
       PAGE=$[ $PAGE + 1 ]
@@ -922,6 +942,10 @@ if [ "$CMD" = "gitlab" ] ; then
   echo "gitlab.url=$URL" >> $TDCONFIG
   echo "gitlab.project=$PID" >> $TDCONFIG
   echo "gitlab.key=$2" >> $TDCONFIG
+  ME=$(curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/user 2> /dev/null|jq .username)
+  if [ "$ME" != "\"null\"" ] ; then
+    echo "me=$ME" >> $TDCONFIG
+  fi
 
 fi
 
