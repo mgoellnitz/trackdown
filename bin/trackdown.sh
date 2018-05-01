@@ -157,7 +157,9 @@ if [ "$CMD" = "copy" ] ; then
     # echo "Starting at line $CSTART with $SIZE lines."
     CUT=`date +%s%N`.md
     head -$[ $CSTART - 1 ] $COPY >$CUT
-    tail -$[ $REST - $SIZE + 1 ] $COPY >>$CUT
+    if [ $SIZE != 1 ] ; then
+      tail -$[ $REST - $SIZE + 1 ] $COPY >>$CUT  
+    fi
     mv $CUT $COPY
     TOTALSIZE=$[ $TOTALSIZE + $SIZE - 1 ]
   done

@@ -52,6 +52,9 @@ echo "" >> issues.md
 echo "*1.0*" >> issues.md
 echo "" >> issues.md
 
+OUTPUT=`cat issues.md|wc -l`
+assertEquals "Unexpected issue collection size" "$OUTPUT" "10"
+
 git add trackdown.sh
 
 OUTPUT=`git commit -m "refs #FIRST" trackdown.sh|tail -3|head -1`
@@ -62,6 +65,15 @@ assertEquals "Unexpected issue collection content" "$OUTPUT" "## FIRST issue (in
 
 OUTPUT=`cat issues.md|wc -l`
 assertEquals "Unexpected issue collection size" "$OUTPUT" "14"
+
+OUTPUT=`$CWD/bin/trackdown.sh copy 1.0|wc -l`
+assertEquals "Unexpected output" "$OUTPUT" "1"
+assertExists "Generated milestone file missing" .git/trackdown/1.0.md
+assertExists "Generated remainder file missing" .git/trackdown/1.0-issues.md
+OUTPUT=`cat .git/trackdown/1.0.md|wc -l`
+assertEquals "Unexpected milestone file size" "$OUTPUT" "14"
+OUTPUT=`cat .git/trackdown/1.0-issues.md|wc -l`
+assertEquals "Unexpected remainder file size" "$OUTPUT" "2"
 
 # cleanup test
 after
