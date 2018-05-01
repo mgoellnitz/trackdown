@@ -425,21 +425,23 @@ if [ "$CMD" = "mirror" ] ; then
   checkJq
   EXPORT=${2:-"/tmp/issues.json"}
   COMMENTS_EXPORT=${3:-"/tmp/issue-comments.json"}
+  Q="Did you setup $TYPE mirroring?";
   if [ $TYPE = "gitlab" ] ; then
     URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gitlab source url configured. Did you setup gitlab mirroring?" $URL
+    bailOnZero "No gitlab source url configured. $Q" $URL
     TOKEN=`grep gitlab.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gitlab api token configured. Did you setup gitlab mirroring?" $TOKEN
+    bailOnZero "No gitlab api token configured. $Q" $TOKEN
+    TOKEN="PRIVATE-TOKEN: $TOKEN"
     PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
+    bailOnZero "No gitlab project. $Q" $PROJECT
     URL="${URL}/api/v3/projects/$PROJECT/issues"
-    PAGES=`curl -D - -X HEAD -H "PRIVATE-TOKEN: $TOKEN" "$URL?per_page=100" 2> /dev/null|grep X-Total-Pages|sed -e 's/X.Total.Pages..\([0-9]*\).*/\1/g'`
+    PAGES=`curl -D - -X HEAD -H "$TOKEN" "$URL?per_page=100" 2> /dev/null|grep X-Total-Pages|sed -e 's/X.Total.Pages..\([0-9]*\).*/\1/g'`
     echo "$PAGES chunks of issues"
     issueCollectionHeader "Issues"
     PAGE="1"
     while [ "$PAGE" -le "$PAGES" ] ; do
       echo "Chunk $PAGE"
-      curl -H "PRIVATE-TOKEN: $TOKEN" "$URL?per_page=100&page=$PAGE" 2> /dev/null >$EXPORT
+      curl -H "$TOKEN" "$URL?per_page=100&page=$PAGE" 2> /dev/null >$EXPORT
       checkExport $EXPORT
       for id in `jq  -c '.[]|.id' $EXPORT` ; do
         echo "" >>$ISSUES
@@ -475,9 +477,8 @@ if [ "$CMD" = "mirror" ] ; then
           echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g' >>$ISSUES
         fi
         COMMENTS_URL=$(echo ${URL}/${id}/notes)
-        curl -H "PRIVATE-TOKEN: $TOKEN" "$COMMENTS_URL" 2> /dev/null >$COMMENTS_EXPORT
+        curl -H "$TOKEN" "$COMMENTS_URL" 2> /dev/null >$COMMENTS_EXPORT
         COMMENTSNO=$(jq  -c '.|length' $COMMENTS_EXPORT)
-        # echo $COMMENTS_URL: $COMMENTSNO
         if [ "$COMMENTSNO" != "0" ] ; then
           echo "" >>$ISSUES
           echo "### Comments" >>$ISSUES
@@ -499,11 +500,11 @@ if [ "$CMD" = "mirror" ] ; then
 
   if [ $TYPE = "github" ] ; then
     OWNER=`grep github.owner= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No github repository owner configured. Did you setup github mirroring?" $OWNER
+    bailOnZero "No github repository owner configured. $Q" $OWNER
     TOKEN=`grep github.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No github api token configured. Did you setup github mirroring?" $TOKEN
+    bailOnZero "No github api token configured. $Q" $TOKEN
     PROJECT=`grep github.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No github project. Did you setup github mirroring?" $PROJECT
+    bailOnZero "No github project. $Q" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues?state=all"
     curl -H "Authorization: token $TOKEN" $URL 2> /dev/null >$EXPORT
     checkExport $EXPORT
@@ -565,10 +566,10 @@ if [ "$CMD" = "mirror" ] ; then
 
   if [ $TYPE = "bitbucket" ] ; then
     USER=`grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No bitbucket.org user configured. Did you setup bitbucket.org mirroring?" $USER
+    bailOnZero "No bitbucket.org user configured. $Q" $USER
     DISPLAY=`echo $USER|cut -d ':' -f 1`
     PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No bitbucket.org project configured. Did you setup bitbucket.org mirroring?" $PROJECT
+    bailOnZero "No bitbucket.org project configured. $Q" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues"
     if [ "$DISPLAY" == "$USER" ] ; then
       echo -n "Password for $DISPLAY on bitbucket.org: "
@@ -585,13 +586,14 @@ if [ "$CMD" = "mirror" ] ; then
     for id in `jq  -c '.values[].id' $EXPORT` ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
-      TITLE=`jq  -c '.values[]|select(.id == '$id')|.title' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-      STATE=`jq  -c '.values[]|select(.id == '$id')|.state' $EXPORT|sed -e 's/"//g'`
-      PRIORITY=`jq  -c '.values[]|select(.id == '$id')|.priority' $EXPORT|sed -e 's/"//g'`
-      TYPE=`jq  -c '.values[]|select(.id == '$id')|.type' $EXPORT|sed -e 's/"//g'`
+      JQPATH='.values[]|select(.id == '$id')|'
+      TITLE=`jq  -c "${JQPATH}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+      STATE=`jq  -c "${JQPATH}.state" $EXPORT|sed -e 's/"//g'`
+      PRIORITY=`jq  -c "${JQPATH}.priority" $EXPORT|sed -e 's/"//g'`
+      TYPE=`jq  -c "${JQPATH}.type" $EXPORT|sed -e 's/"//g'`
       s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
-      ASSIGNEE=`jq  -c '.values[]|select(.id == '$id')|.assignee|.username' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
-      ASSIGNEE_NAME=`jq  -c '.values[]|select(.id == '$id')|.assignee|.display_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      ASSIGNEE=`jq  -c "${JQPATH}.assignee|.username" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      ASSIGNEE_NAME=`jq  -c "${JQPATH}.assignee|.display_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
       echo "## $id $TITLE ($s)"  >>$ISSUES
       echo "" >>$ISSUES
       # Priority used as milestone
@@ -600,18 +602,18 @@ if [ "$CMD" = "mirror" ] ; then
         echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
       fi
       echo "" >>$ISSUES
-      AUTHOR=`jq  -c '.values[]|select(.id == '$id')|.reporter|.username' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
-      AUTHOR_NAME=`jq  -c '.values[]|select(.id == '$id')|.reporter|.display_name' $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      AUTHOR=`jq  -c "${JQPATH}.reporter|.username" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      AUTHOR_NAME=`jq  -c "${JQPATH}.reporter|.display_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
       echo "" >>$ISSUES
       if [ "$AUTHOR" != "null" ] ; then
         echo "Author: \`$AUTHOR\` $AUTHOR_NAME" >>$ISSUES
       fi
-      DESCRIPTION=`jq  -c '.values[]|select(.id == '$id')|.content.raw' $EXPORT`
+      DESCRIPTION=`jq  -c "${JQPATH}.content.raw" $EXPORT`
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g'|sed -e 's/\\r//g' >>$ISSUES
       fi
-      COMMENTS_URL=`jq  -c '.values[]|select(.id == '$id')|.links.comments.href' $EXPORT|sed -e 's/"//g'`
+      COMMENTS_URL=`jq  -c "${JQPATH}.links.comments.href" $EXPORT|sed -e 's/"//g'`
       if [ "$DISPLAY" == "$USER" ] ; then
         echo -n "Password for $DISPLAY on bitbucket.org: "
       fi
@@ -638,11 +640,11 @@ if [ "$CMD" = "mirror" ] ; then
 
   if [ $TYPE = "redmine" ] ; then
     BASEURL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $BASEURL
+    bailOnZero "No redmine source url configured. $Q" $BASEURL
     KEY=`grep redmine.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No redmine api key configured. Did you setup redmine mirroring?" $KEY
+    bailOnZero "No redmine api key configured. $Q" $KEY
     PROJECTS=`grep redmine.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No redmine project. Did you setup redmine mirroring?" $PROJECTS
+    bailOnZero "No redmine project. $Q" $PROJECTS
     rm $ISSUES
     for PROJECT in `echo "$PROJECTS"|sed -e 's/,/\ /g'`; do
       echo "Project: $PROJECT"
@@ -709,11 +711,11 @@ if [ "$CMD" = "mirror" ] ; then
 
   if [ $TYPE = "gogs" ] ; then
     URL=`grep gogs.url= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs source url configured. Did you setup gogs mirroring?" $URL
+    bailOnZero "No gogs source url configured. $Q" $URL
     TOKEN=`grep gogs.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs api token configured. Did you setup gogs mirroring?" $TOKEN
+    bailOnZero "No gogs api token configured. $Q" $TOKEN
     PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs/pikacode/gitea project. Did you setup gogs mirroring?" $PROJECT
+    bailOnZero "No gogs/pikacode/gitea project. $Q" $PROJECT
     URL="${URL}/api/v1/repos/${PROJECT}/issues"
     curl -H "Authorization: token $TOKEN" "${URL}?state=all" 2> /dev/null >$EXPORT
     checkExport $EXPORT
@@ -790,52 +792,64 @@ if [ "$CMD" = "remote" ] ; then
   bailOnZero "No mirror setup done for this repository." $TYPE
   REMOTE=$2
   bailOnZero "No remote command given as the second parameter" $REMOTE
-  # echo "Remote command: $REMOTE"
   ISSUE=$3
   bailOnZero "No target issue to operate on given as the third parameter" $ISSUE
-  # echo "Target issue: $ISSUE"
   PARAM=$4
   bailOnZero "No parameter for the remote operation given as the forth parameter" $PARAM
-  # echo "Parameter: $PARAM"
+  # echo "Remote command: $REMOTE Target issue: $ISSUE Parameter: $PARAM"
+  Q="Did you setup $TYPE mirroring?";
   if [ "$TYPE" = "gitlab" ] ; then
     URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gitlab source url configured. Did you setup gitlab mirroring?" $URL
+    bailOnZero "No gitlab source url configured. $Q" $URL
+    URL=$URL/api/v3/
     TOKEN=`grep gitlab.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gitlab api token configured. Did you setup gitlab mirroring?" $TOKEN
+    bailOnZero "No gitlab api token configured. $Q" $TOKEN
+    TOKEN="PRIVATE-TOKEN:  $TOKEN"
     PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gitlab project. Did you setup gitlab mirroring?" $PROJECT
+    bailOnZero "No gitlab project. $Q" $PROJECT
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
-      curl -X POST -H "PRIVATE-TOKEN: $TOKEN" --data "body=${PARAM}" \
-           ${URL}/api/v3/projects/${PROJECT}/issues/${ISSUE}/notes 2>&1 > /dev/null
+      curl -X POST -H "$TOKEN" --data "body=${PARAM}" \
+           ${URL}projects/${PROJECT}/issues/${ISSUE}/notes 2>&1 > /dev/null
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
       echo "Assigning $ISSUE to user $PARAM"
-      curl -X PUT -H "PRIVATE-TOKEN: $TOKEN" \
-           ${URL}/api/v3/projects/${PROJECT}/issues/${ISSUE}?assignee_id=${PARAM} 2>&1 > /dev/null
+      USERID=$(curl -H "$TOKEN" ${URL}users?username=${PARAM} 2> /dev/null|jq .[0].id)
+      IID=$(curl -X PUT -H "$TOKEN" \
+            ${URL}projects/${PROJECT}/issues/${ISSUE}?assignee_id=${USERID} 2> /dev/null|jq .message)
+      echo $PARAM: $USERID
+      if [ "$USERID" != "null" ] ; then
+        RESULT=$(curl -X PUT -H "$TOKEN" \
+                 ${URL}projects/${PROJECT}/issues/${ISSUE}?assignee_id=${USERID} 2> /dev/null|jq .message)
+        if [ "$RESULT" != "null" ] ; then
+          echo "Could not assign issue $ISSUE to $PARAM"
+        fi
+      else
+        echo "No user $PARAM known."
+      fi
       exit
     fi
     if [ "$REMOTE" = "milestone" ] ; then
       echo "Creating milestone $ISSUE ($PARAM)"
-      curl -H "PRIVATE-TOKEN: $TOKEN" --data "title=${ISSUE}&description=${PARAM}" \
-           ${URL}/api/v3/projects/${PROJECT}/milestones 2> /dev/null | jq .
+      curl -H "$TOKEN" -d "title=${ISSUE}&description=${PARAM}" \
+           ${URL}projects/${PROJECT}/milestones 2> /dev/null | jq .
       exit
     fi
     if [ "$REMOTE" = "issue" ] ; then
       echo "Creating issue $ISSUE with label $PARAM"
-      curl -H "PRIVATE-TOKEN: $TOKEN" --data "title=${ISSUE}&description=${ISSUE}&labels=${PARAM}" \
-           "${URL}/api/v3/projects/${PROJECT}/issues?title=${ISSUE}&labels=${PARAM}" 2> /dev/null | jq .
+      curl -H "$TOKEN" -d "title=${ISSUE}&description=${ISSUE}&labels=${PARAM}" \
+           "${URL}projects/${PROJECT}/issues?title=${ISSUE}&labels=${PARAM}" 2> /dev/null | jq .
       exit
     fi
   fi
   if [ "$TYPE" = "github" ] ; then
     OWNER=`grep github.owner= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No github owner configured. Did you setup github mirroring?" $OWNER
+    bailOnZero "No github owner configured. $Q" $OWNER
     TOKEN=`grep github.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No github api token configured. Did you setup github mirroring?" $TOKEN
+    bailOnZero "No github api token configured. $Q" $TOKEN
     PROJECT=`grep github.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No github project. Did you setup github mirroring?" $PROJECT
+    bailOnZero "No github project. $Q" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues/${ISSUE}"
     if [ "$REMOTE" = "comment" ] ; then
       RESULT=$(curl -X POST -H "Authorization: token $TOKEN" -d "{\"body\":\"${PARAM}\"}"\
@@ -859,9 +873,9 @@ if [ "$CMD" = "remote" ] ; then
   fi
   if [ "$TYPE" = "bitbucket" ] ; then
     USER=`grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No bitbucket.org user configured. Did you setup bitbucket.org mirroring?" $USER
+    bailOnZero "No bitbucket.org user configured. $Q" $USER
     PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No bitbucket.org project configured. Did you setup bitbucket.org mirroring?" $PROJECT
+    bailOnZero "No bitbucket.org project configured. $Q" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues/${ISSUE}"
     DISPLAY=`echo $USER|cut -d ':' -f 1`
     if [ "$DISPLAY" == "$USER" ] ; then
@@ -879,9 +893,9 @@ if [ "$CMD" = "remote" ] ; then
   fi
   if [ "$TYPE" = "redmine" ] ; then
     URL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No redmine source url configured. Did you setup redmine mirroring?" $URL
+    bailOnZero "No redmine source url configured. $Q" $URL
     KEY=`grep redmine.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No redmine api key configured. Did you setup redmine mirroring?" $KEY
+    bailOnZero "No redmine api key configured. $Q" $KEY
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
       curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
@@ -897,11 +911,11 @@ if [ "$CMD" = "remote" ] ; then
   fi
   if [ "$TYPE" = "gogs" ] ; then
     URL=`grep gogs.url= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs/gitea source url configured. Did you setup mirroring?" $URL
+    bailOnZero "No gogs/gitea source url configured. $Q" $URL
     TOKEN=`grep gogs.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs/gitea api token configured. Did you setup mirroring?" $TOKEN
+    bailOnZero "No gogs/gitea api token configured. $Q" $TOKEN
     PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs/gitea project. Did you setup mirroring?" $PROJECT
+    bailOnZero "No gogs/gitea project. $Q" $PROJECT
     if [ "$REMOTE" = "comment" ] ; then
       RESULT=$(curl -X POST -H "Authorization: token $TOKEN" --data "body=${PARAM}" \
            ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE}/comments 2> /dev/null | jq .id)
