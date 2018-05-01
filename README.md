@@ -237,11 +237,13 @@ mentioned above.
 
 # Commands in the Commit Messages
 
-To support automatic reading of commit messages and modifying the issue 
-collection alongside you work. 
+TrackDown is supposed to read the commit messages when not used as a plain 
+mirror and interpret the contents as potential commands for the modification of
+alongside you work. 
 
 When using [GIT][git], TrackDown relies on an implementation, which is capable 
-of executing the script hooks. 
+of executing the script hooks, which is - as opposed to [Mercurial][hg] - not
+the case for all implementations.
 
 [JGit ][jgit] is lacking this (for the post commit hooks used here), and as a 
 result NetBeans and Eclipse cannot use this mimik! With Eclipse you might be 
