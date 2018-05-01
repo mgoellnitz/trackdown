@@ -3,11 +3,12 @@
 [![Latest Release](https://img.shields.io/github/release/mgoellnitz/trackdown.svg)](https://github.com/mgoellnitz/trackdown/releases/latest)
 [![License](https://img.shields.io/github/license/mgoellnitz/trackdown.svg)](https://github.com/mgoellnitz/trackdown/blob/master/LICENSE)
 
-Issue Tracking with plain [Markdown][markdown].
+Issue Tracking with plain [Markdown][markdown] for [GIT][git] and 
+[Mercurial][hg].
 
-In short: You are missing the "git clone" for your tickets from [GitLab][gitlab], 
-[GitHub][github], or [Bitbucket][bitbucket], where we already have this for 
-code and wiki?
+In short: You are missing the `git clone` or `hg clone` respectively for your 
+tickets from [GitLab][gitlab], [GitHub][github], [Bitbucket][bitbucket], or some
+other services (see below) where we already have this for code and wiki?
 
 You need issue tracking which works for distributed and potentially disconnected
 situations together with your distributed version control [GIT][git] or
@@ -565,21 +566,26 @@ mirrored [here](https://github.com/mgoellnitz/netbeans-fossil-plugin).
 
 [Bitbucket.org][bitbucket] a brilliant tool for Open Source or small projects.  
 It has decent VCS solutions, a WIKI which can be used distributed through 
-[GIT][git].
+[GIT][git] or [Mercurial][hg], since this backend together with TrackDown can
+be used in any scenario with both VCS solutions.
 
 The only thing I'm missing is the distributed offline work for ticketing.
 
 So in this case it is possible to leave out the ticketing of [Bitbucket][bitbucket] 
 and use TrackDown with [Bitbucket][bitbucket] as the [GIT][git] or 
 [Mercurial][hg] based storage backend. And this is exactly what TrackDown was 
-designed for.
+designed for. For migration purposes or if the limited issue tracking within
+bitbucket.org is sufficient, the mirroring feature might come in handy.
+
+Atlassian themselves recommends using Jira.
 
 
 ## GitHub
 
-[GitHub][github] is the most used solution for [GIT][git] powered projects
-together with a [GIT][git] based wiki (as opposed to Bitbucket and GitLab
-the Wiki is a flat folder) and many other usefull details.
+[GitHub][github] is the obvious solution used in so many [GIT][git] powered 
+projects together with a [GIT][git] based wiki (as opposed to [Bitbucket][bitbucket] 
+and  [GitLab][gitlab] the Wiki is a flat folder - be warned) and many other 
+usefull details.
 
 The only thing I'm missing is the distributed offline work for ticketing.
 
@@ -588,13 +594,14 @@ and use TrackDown with [GitHub][github] as the [GIT][git] based
 storage backend. And this is exactly what TrackDown was designed for.
 
 As an alternative you can at least mirror the issues from [GitHub][github] to
-have the notes with you and now the issue IDs for offline code commits.
+have the notes with you and now the issue IDs for offline code commits. Or you
+can use the mirroring steps for migration purposes.
 
 
 ## GitLab
 
 [GitLab][gitlab] not only is a good online solution but also is a piece of
-installable software (like Bitbucket as the renamed Stash is also...). It's
+on premises software (like Bitbucket for the renamed git-Part - not hg.). It's
 wiki is also [GIT][git] based wiki and it comes with a wealth of other
 integration and usefull tools and details.
 
@@ -606,6 +613,14 @@ storage backend. And this is exactly what TrackDown was designed for.
 
 As an alternative you can at least mirror the issues from [GitLab][gitlab] to
 have the notes with you and now the issue IDs for offline code commits.
+
+
+## Gogs and Gitea
+
+Intended for on premises use as a [GIT][git] based solution for Code and Wiki
+together with an issue tracking section, the still available instance at
+[Pikacode](pikacode), also this go based service can be used as a TrackDown
+storage backend or mirroring source.
 
 
 ## Trac
@@ -621,6 +636,15 @@ maintain the locally running instances and take backups of them in addition to
 the project VCS and source code repositories. This is not the case for the 
 [GIT][git] based solutions in this list, which have a remote repository as a 
 backup wiki and source code.
+
+
+## Other VCS Services
+
+A small list of tested backends for TrackDown which don't support any kind of
+issue tracking but Code and Wiki with the VCS:
+
+* [Helix Team Hub][hth]
+* [Visual Studio Services][vss]
 
 
 ## MDWiki
@@ -651,7 +675,7 @@ These seem to address similar issues, but are not under active development
  - https://github.com/keredson/distributed-issue-tracker
 
 
-# Migration
+# Migration and Offline Mirroring
 
 To facilitate the use of TrackDown, the option of migrating an existing base
 of tickets is of course helpful. The choice, which systems are taken as a
@@ -970,3 +994,5 @@ mv ../wiki/Milestone1-issues.md ../wiki/issues.md
 [mdwiki]: http://mdwiki.info
 [jq]: https://stedolan.github.io/jq/
 [hg]: https://www.mercurial-scm.org/
+[hth]: https://www.perforce.com/products/helix-teamhub
+[vss]: https://www.visualstudio.com/team-services/
