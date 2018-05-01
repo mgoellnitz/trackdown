@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2016 Martin Goellnitz
+# Copyright 2016-2018 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,12 +23,13 @@ source $MYDIR/shelltest.sh
 # setup test
 before
 
-mkdir -p .git
+mkdir -p .hg
 
 OUTPUT=`$CWD/bin/trackdown.sh mirror|tail -1`
 assertEquals "Unexpected uninitialized mirror output" "$OUTPUT" "Project not initialized for trackdown use."
 
 # test setup variants
+export GITHUB_COM_TOKEN=
 OUTPUT=`$CWD/bin/trackdown.sh github|tail -1`
 # echo "$OUTPUT"
 assertEquals "Unexpected github setup output" "$OUTPUT" "No api token given as the first parameter"
@@ -44,12 +45,12 @@ assertEquals "Unexpected github setup output" "$OUTPUT" "Setting up TrackDown to
 
 assertExists "Config file missing" .trackdown/config
 assertExists "Issue collection file missing" github-issues.md
-assertExists "VCS ignore file missing" .gitignore
+assertExists "VCS ignore file missing" .hgignore
 
 DIFF=`diff -u $MYDIR/githubmirror.config .trackdown/config`
 assertEquals "Unexpected github mirror configuration" "$DIFF" ""
 
-DIFF=`diff -u $MYDIR/githubmirror.ignore .gitignore`
+DIFF=`diff -u $MYDIR/githubmirror.ignore .hgignore`
 assertEquals "Unexpected github ignore file" "$DIFF" ""
 
 OUTPUT=`$CWD/bin/trackdown.sh github k markdown-demo mgoellnitz|tail -1`

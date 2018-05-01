@@ -1,3 +1,3 @@
-/.trackdown
-/gogs-issues.md
-/roadmap.md
+^.trackdown$
+^gogs-issues.md$
+^roadmap.md$

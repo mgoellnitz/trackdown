@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2015-2017 Martin Goellnitz
+ * Copyright 2015-2018 Martin Goellnitz
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,5 +65,5 @@ check.doFirst {
 task encodeMessage(type:Exec) {
   workingDir "$projectDir"
   commandLine 'bash', '-c', \
-    "cat usage-template.txt |gzip -c|base64|sed -e 's/\$/ \\\\/g' > usage-template.gzip.base64.txt"
+    "cat usage-template.txt |gzip -9c|base64|sed -e 's/\$/ \\\\/g' > usage-template.gzip.base64.txt"
 }

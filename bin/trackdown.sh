@@ -28,7 +28,7 @@ if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
   MYNAME=`basename $0`
-MSG=$(echo -e H4sIAOrJ51oAA6WVTU/cMBCG7/sr5tZFguXOFaQKqUiVCr2s9uA4sxuTxOP6Y1fpr++M7QRoF1WI \
+MSG=$(echo -e H4sIAJ4h6FoAA6WVTU/cMBCG7/sr5tZFguXOFaQKqUiVCr2s9uA4sxuTxOP6Y1fpr++M7QRoF1WI \
 CwGP5/UznzwFdcCb1er24Q48qXZUDraahgF1NGRhbwbcrQC+e2PjfKNcHwIcz979ZkIEE0LCAHvy \
 cEQfxH4sfprc9I7nrZhih2ApVmc1DGe1IBKo7AhWjQjHzdgW/dFYhO2Iu//CnTqjO1AeYVS+x1Y0 \
 G8wCRaree1dH4Byj2mjUjFk8U8Czbj8wJgd6IGaUeLIPRK90b+wB1uTkOutOcDKx40TYqxb3Kg0x \
@@ -36,11 +36,11 @@ a1xUedeqiKz3lH8Bj46CieSnqs2RSB4HNjLnwURO+zjypyPqa3DWRFa458/fGPK0sfD1/hGY8QG9 \
 Tl4ibLyyupvT7D15CWmyusB6PBpKgdlDDnPRG1WI6IEvrxllUM2lIHWJv42JTdI9xg35wyVLtJJ+ \
 ttMh5FuoLsGZXmlqEa7AIrYBnn/VRHgcOf+gwYCTYHIc8yFHrGzLRi5AidAUUKc894wgObHV+yUi \
 4Q2UvEYIE2OP5aHCCz1seUBo91LLanhxdp6eueoivQc6WX6FyrMHc0QLiqPBCfqNpGMJh0P7qQbp \
-trncXMJcy3ZRnCh94WY1drMwcS6ZiZHSGyI5Pkd0BgMkRdWlUdy2yQ+QNvBpuqWysN3GnSBub/Tu \
-VebelP4s7pqbkBtghHhR0GVkeLT4R8ZeK+e4mCGcyHOdLz4PLW1Xi5wyaunkfMxv5378WGbZ8zq7 \
-XS9d/JLmzwPXgclNkBbe+fQjpLPPu01QHgxRxRSkiB2deCMY3DMNF2ZUedOphlLMy+ef9SGuKFMh \
-1jKQr1ZkWS7i0RrPZ7zM6ou8YOqe6TxZ8xuzQJ3aV6svRyamR1k8dzx78wbP8dV/b/s3TPwHc67+ \
-ANFRS2YIBwAA)
+trncXMJcy3ZRnCh94WY1drMwcS6ZiZHSGyI5Pkd0BgMkRdWlUdy2yQ+QNvBpuqWysN3G650wbm/0 \
+7lXq3tT+LO+au5A7YIR4UdhlZni2+EfmXivnuJohnMhzoS8+Ty19V6ucMmpp5XzMb+eG/Fhq2fM6 \
+u10vbfyS588D14nJXZAW3vn0I6Szz7tdUB4MUcUUpIgdnXglGNwzDRdmVHnVqYZSzNvnn/0hrihj \
+IdYyka92ZNku4tEaz2e8zeqLvGHqouk8WfMbs0Ad21e7L0cmpkfZPHc8fPMKz/HV/2/7N0z8B3Ou \
+/gDp5xrVCQcAAA==)
   echo $MSG|sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 
@@ -62,15 +62,19 @@ TDBASE=`pwd`
 if [ "$TDBASE" = "/" ] ; then
   TDBASE=$CWD
 fi
-VCS=`test -d .hg && echo hg || test -d .git && echo git || echo plain`
+VCS=`test -d .hg && echo hg || ( test -d .git && echo git || echo plain )`
 TDCONFIG=$TDBASE/.trackdown/config
 echo "TrackDown-$VCS: base directory $TDBASE"
 cd $CWD
 if [ "$VCS" == "git" ] ; then
-  REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
+  if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
+    REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
+  fi
 fi
 if [ "$VCS" == "hg" ] ; then
-  REMOTE=`hg paths default|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
+  if [ $(hg paths | grep defaut | wc -l) -eq 1 ] ; then
+    REMOTE=`hg paths default|cut -d '@' -f 2`
+  fi
 fi
 if [ ! -z "$REMOTE" ] ; then
   CASE=`echo $REMOTE|cut -d '/' -f 1`
@@ -181,16 +185,20 @@ if [ "$CMD" = "use" ] ; then
       fi
       ISSUES=".git/trackdown/issues.md"
       cd $TDBASE
-      git fetch
+      if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
+        git fetch
+      fi
       NAME=`git config -l|grep user.name|cut -d '=' -f 2`
       MAIL=`git config -l|grep user.email|cut -d '=' -f 2`
       echo "prepare local"
       test -z `git branch |grep trackdown|sed -e 's/\ /_/g'` && git branch trackdown
-      git branch --set-upstream-to=origin/trackdown trackdown
-      # REMOTE=`git remote get-url origin`
-      #if [ -z "$REMOTE" ] ; then
+      AUTOPUSH=true
+      if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
+        git branch --set-upstream-to=origin/trackdown trackdown
+      else
+        AUTOPUSH=false
+      fi
       REMOTE=".."
-      # fi
       cd .git
       git clone --branch trackdown $REMOTE trackdown
       cd trackdown
@@ -199,30 +207,32 @@ if [ "$CMD" = "use" ] ; then
       git config --local user.name "$NAME"
       cd $TDBASE
       echo "autocommit=true" > $TDCONFIG
-      echo "autopush=true" >> $TDCONFIG
+      echo "autopush=$AUTOPUSH" >> $TDCONFIG
     else
       echo "autocommit=false" > $TDCONFIG
       echo "autopush=false" >> $TDCONFIG
     fi
 
-    REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
-    CASE=`echo $REMOTE|cut -d '/' -f 1`
-    test ! -z "$REMOTE" && echo "Remote system host is $CASE."
-    if [ "$CASE" = "gitlab.com" ] ; then
-      echo "Discovered gitlab remote"
-      echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
-    fi
-    if [ "$CASE" = "github.com" ] ; then
-      echo "Discovered github remote"
-      echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
-    fi
-    if [ "$CASE" = "bitbucket.org" ] ; then
-      echo "Discovered bitbucket.org remote"
-      echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
-    fi
-    if [ "$CASE" = "v2.pikacode.com" ] ; then
-      echo "Discovered pikacode gogs remote"
-      echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
+    if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
+      REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
+      CASE=`echo $REMOTE|cut -d '/' -f 1`
+      test ! -z "$REMOTE" && echo "Remote system host is $CASE."
+      if [ "$CASE" = "gitlab.com" ] ; then
+        echo "Discovered gitlab remote"
+        echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
+      fi
+      if [ "$CASE" = "github.com" ] ; then
+        echo "Discovered github remote"
+        echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
+      fi
+      if [ "$CASE" = "bitbucket.org" ] ; then
+        echo "Discovered bitbucket.org remote"
+        echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
+      fi
+      if [ "$CASE" = "v2.pikacode.com" ] ; then
+        echo "Discovered pikacode gogs remote"
+        echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
+      fi
     fi
   fi
   if [ -d $TDBASE/.hg ] ; then
@@ -247,12 +257,14 @@ if [ "$CMD" = "use" ] ; then
     echo "commit=$DIR/trackdown-hook.sh" >> .hg/hgrc
     cd $CWD
 
-    REMOTE=`hg paths|grep "default ="|cut -d '=' -f 2|cut -d ' ' -f 2-100|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'`
-    CASE=`echo $REMOTE|cut -d '/' -f 1`
-    echo "Remote system is $CASE."
-    if [ "$CASE" = "bitbucket.org" ] ; then
-      echo "Discovered bitbucket.org remote"
-      echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
+    if [ $(hg paths | grep defaut | wc -l) -eq 1 ] ; then
+      REMOTE=`hg paths default|cut -d '@' -f 2`
+      CASE=`echo $REMOTE|cut -d '/' -f 1`
+      echo "Remote system is $CASE."
+      if [ "$CASE" = "bitbucket.org" ] ; then
+        echo "Discovered bitbucket.org remote"
+        echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
+      fi
     fi
 
   fi
@@ -957,12 +969,19 @@ if [ "$CMD" = "gitlab" ] ; then
   preventRepeatedMirrorInit
   HOST=${CASE:-gitlab.com}
   URL=${4:-https://$HOST}
-  PID=`curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100 2> /dev/null|jq '.[]|select(.name=="'$P'")|.id'`
-  if [ -z "$PID" ] ; then
-    PID=`curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100 2> /dev/null|jq '.[]|select(.path_with_namespace=="'$P'")|.id'`
-  fi
-  if [ -z "$PID" ] ; then
-    echo "No project $2 on $URL"
+  PL=$(curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100 2> /dev/null)
+  CHECK=`echo $PL|jq '.message'`
+  if [ -z "$CHECK" ] ; then
+    PID=`echo $PL|jq '.[]|select(.name=="'$P'")|.id'`
+    if [ -z "$PID" ] ; then
+      PID=`echo $PL|jq '.[]|select(.path_with_namespace=="'$P'")|.id'`
+    fi
+    if [ -z "$PID" ] ; then
+      echo "No project $P on $URL"
+      exit
+    fi
+  else
+    echo "Cannot fetch project ID for $P on $URL"
     exit
   fi
   echo "Setting up TrackDown to mirror from $P ($PID) on $URL"
@@ -1007,7 +1026,7 @@ if [ "$CMD" = "bitbucket" ] ; then
   bailOnZero "No project name given as the first parameter" $P
   U=${3:-$REMOTEUSER}
   bailOnZero "No username given as the second parameter" $U
-  C=${3:-$BITBUCKET_APP_PASSWORD}
+  C=${4:-$BITBUCKET_APP_PASSWORD}
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror $P as $U from bitbucket.org"
   setupCollectionReference bitbucket
@@ -1048,9 +1067,14 @@ if [ "$CMD" = "gogs" ] ; then
 
   checkJq
   bailOnZero "No api token given as the first parameter" $2
-  P=${3:-$REMOTEUSER/$REMOTEPROJECT}
+  if [ -z $REMOTEUSER ] ; then
+    P=$3
+  else
+    P=${3:-$REMOTEUSER/$REMOTEPROJECT}
+  fi
   bailOnZero "No project name given as the second parameter" $P
-  URL=${4:-https://$CASE}
+  HOST=${CASE:-v2.pikacode.com}
+  URL=${4:-https://$HOST}
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror from $P on $URL"
   setupCollectionReference gogs
@@ -1059,7 +1083,7 @@ if [ "$CMD" = "gogs" ] ; then
   echo "gogs.project=$P" >> $TDCONFIG
   echo "gogs.key=$2" >> $TDCONFIG
   ME=$(curl -H "Authorization: token $2" ${URL}/api/v1/user 2> /dev/null|jq .login|sed -e 's/"//g')
-  if [ "$ME" != "null" ] ; then
+  if [ ! -z "$ME" ] ; then
     echo "me=$ME" >> $TDCONFIG
   fi
 

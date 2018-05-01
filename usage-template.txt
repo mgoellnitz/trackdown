@@ -39,7 +39,7 @@ CMD gitlab k p [u]
   Setup gitlab mirroring project p with given apikey k and gitlab base url u. 
   (needs jq) - Values default to cloned project you're in.
 
-CMD bitbucket [[t]p [u[:c]]]
+CMD bitbucket [[t/]p [u[:c]]]
   Setup bitbucket.org mirroring project p (in team t) with for user u and (app password c) 
   (needs jq) - Values default to cloned project you're in.
 

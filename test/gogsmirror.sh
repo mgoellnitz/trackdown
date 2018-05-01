@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2016 Martin Goellnitz
+# Copyright 2016-2018 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@ source $MYDIR/shelltest.sh
 # setup test
 before
 
-mkdir -p .git
+# Must be done with Mercurial as the DVCS to avoid trouble with surrounding trackdown git
+mkdir -p .hg
 
 # test setup variants
 OUTPUT=`$CWD/bin/trackdown.sh gogs|tail -1`
@@ -38,12 +39,12 @@ assertEquals "Unexpected gogs setup output" "$OUTPUT" "Setting up TrackDown to m
 
 assertExists "Config file missing" .trackdown/config
 assertExists "Issue collection file missing" gogs-issues.md
-assertExists "VCS ignore file missing" .gitignore
+assertExists "VCS ignore file missing" .hgignore
 
 DIFF=`diff -u $MYDIR/gogsmirror.config .trackdown/config`
 assertEquals "Unexpected gogs mirror configuration" "$DIFF" ""
 
-DIFF=`diff -u $MYDIR/gogsmirror.ignore .gitignore`
+DIFF=`diff -u $MYDIR/gogsmirror.ignore .hgignore`
 assertEquals "Unexpected gogs ignore file" "$DIFF" ""
 
 OUTPUT=`$CWD/bin/trackdown.sh gogs markdown-demo mgoellnitz|tail -1`
