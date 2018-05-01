@@ -2,13 +2,13 @@
 
 ## 1.0:
 
-[![90%](https://dummyimage.com/630x30/000000/FFFFFF.png&text=90%25)]()[![9%](https://dummyimage.com/63x30/606060/FFFFFF.png&text=9%25)]()[![1%](https://dummyimage.com/7x30/eeeeee/808080.png&text=1%25)]()
+[![100%](https://dummyimage.com/700x30/000000/FFFFFF.png&text=100%25)]()
 
-90% (10 / 11) completed 
-9% (1 / 11) in progress
+100% (11 / 11) completed 
+0% (0 / 11) in progress
 
-* COPY release notes. (in progress)
 * ASSIGNMENT of issues should be part of the format and tooling (resolved)
+* COPY release notes. (resolved)
 * HASH of the commit should be part of the listing (resolved)
 * MERCURIAL support should be added with the same functionality as GIT (resolved)
 * MULTIISSUE There can be only one issue per commit. (resolved)

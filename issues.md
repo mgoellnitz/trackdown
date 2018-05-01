@@ -270,7 +270,7 @@ Martin Goellnitz / Sun Nov 13 14:47:12 2016 [0aaf357d1474a3877db9da977b9aadba7d9
 
     refs #ASSIGNMENT of issues to me now listable
 
-## COPY release notes. (in progress)
+## COPY release notes. (resolved)
 
 *1.0*
 
@@ -293,6 +293,10 @@ Martin Goellnitz / Sun Dec 18 19:47:41 2016 [3afd354f7313dbe442aad2eda95b6352d1d
 Martin Goellnitz / Fri Dec 23 01:30:25 2016 [b88c3678c4daff263afba4a6a672bba904f37103](https://github.com/mgoellnitz/trackdown/commit/b88c3678c4daff263afba4a6a672bba904f37103)
 
     refs #COPY issues fixed after file discovery change
+
+Martin Goellnitz / Tue, 1 May 2018 15:19:40 [64d410709c4e38c6a627cdf58a6fffbedecdaf4f](https://github.com/mgoellnitz/trackdown/commit/64d410709c4e38c6a627cdf58a6fffbedecdaf4f)
+
+    resolves #COPY release notes with correct last issue in list
 
 ## ROADMAP should show percentage for issues already started (resolved)
 
