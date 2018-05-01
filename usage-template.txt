@@ -1,52 +1,58 @@
 Usage:
 
 CMD roadmap [collection file]
-  print roadmap
+  Print roadmap
 
 CMD ls v [collection file]
-  list issues for version v
+  List issues for version v
 
 CMD copy v [collection file]
-  copy the notes for all issues for version v to a file name v.md
+  Copy the notes for all issues for version v to a file name v.md
 
 CMD mine [me] [collection file]
-  list issues which are marked to be mine
+  List issues which are marked to be mine
 
 CMD issues [collection file]
-  list all potential issues
+  List all potential issues
 
 CMD use [collection file]
-  setup clone for issue tracking (optionally with non default file)
+  Setup clone for issue tracking (optionally with non-default file)
 
 CMD update
-  just update repository clone to the latest git commit hook
+  Update repository clone to the latest git commit hook
 
 CMD init
-  init issue tracking within GIT or Mercurial branch
+  Init issue tracking within GIT or Mercurial branch
 
 CMD mirror
-  sync with reviously setup tracking master (gitlab, redmine, github, gogs, gitea, pikacode - needs jq)
+  Sync with reviously setup tracking master 
+  (gitlab, github, bitbucket.org, redmine, gogs, gitea, pikacode - needs jq)
 
 CMD remote c i p
-  issue remote command c on issue i with parameter p on remote mirroring source system
+  Issue remote command c on issue i with parameter p on remote mirroring source system
 
-CMD github p o k
-  setup github mirroring project p of owner o with given apikey k (needs jq - values default to cloned project you're in)
+CMD github k [p [o]]
+  Setup github mirroring project p of owner o with given apikey k.
+  (needs jq) - Values default to cloned project you're in.
 
 CMD gitlab k p [u]
-  setup gitlab mirroring project p with given apikey k and gitlab base url u (needs jq) - u defaults to gitlab.com
+  Setup gitlab mirroring project p with given apikey k and gitlab base url u. 
+  (needs jq) - Values default to cloned project you're in.
 
-CMD bitbucket p u
-  setup bitbucket mirroring project p with for user u (needs jq)
+CMD bitbucket [[t]p [u[:c]]]
+  Setup bitbucket.org mirroring project p (in team t) with for user u and (app password c) 
+  (needs jq) - Values default to cloned project you're in.
 
-CMD gogs k p [u]
-  setup gogs, gitea or pikacode mirroring project p with given apikey k and gogs/gitea/pikacode base url u (needs jq) - u defaults to pikacode
+CMD gogs k [p [u]]
+  setup gogs or gitea mirroring project p with given apikey k and gogs/gitea/pikacode base url u 
+  (needs jq) - Values default to cloned project you're in.
 
 CMD redmine k p u
-  setup redmine mirroring project p with given apikey k and redmine base url u (needs jq)
+  setup redmine mirroring project p with given apikey k and redmine base url u. 
+  (needs jq)
 
 CMD status
-  Show brief information about the GIT or Mercurial state of the issue collection Branch or Directory
+  Show brief information about the GIT or Mercurial state of the issue collection branch or directory
 
 CMD sync
   Synchronize the remote repository with the TrackDown issues and roadmap for Mercurial or GIT

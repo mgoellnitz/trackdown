@@ -28,18 +28,19 @@ if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
   MYNAME=`basename $0`
-MSG=$(echo -e H4sICAMLaVoCA3VzYWdlLXRlbXBsYXRlLnR4dACVlT1z2zAMhnf/CmyN79xk79jmrtchU9IplwGi \
-YIsRRbL8kM/99QVISk4a59pMPhFfzwsC9M+IB/qy2Xy7u4XgsJ/Qw6NyxpBK2lnYa0NPGwAftE2L \
-R3U3EeaLvkbHBDrGTBH2LsBMIYp9rnHK+dM7kcWUBgLrUgtGYy7mguQASyBYnAjm66mv+SdtCR4n \
-evon3HHQagAMBBOGkXrJ2VFJUFM1v3fzCJxnVJs0Lpg1Mke6GBYpZQ/KOGYUPSUGUkA1anuAK+fF \
-nfOe4KjTwI2w0NMes0klx7al9z0m4nzPmTHqFwTyLurkwqkVYDnSTMNG9jroxA2eJv4ZnBubQqsT \
-p5Gfv1mkvrbw/ccDMOgdBZWDyOwCWjUsvQ7BBdF1sqoSB5q1y5EFVK1rvgljogBXzGGw27FjL53e \
-CdiQ+eDgDrF8Ee7A6xGV6wk+gyXqIzz/atoDTdxyUKDBC3qhXg5ZH9qejdy3atEVy2PgMREAL7bm \
-X/mFLrocFLEOhpxqocol/jCuV9cOz4E+uGe+ZHHbgztaruBqyYOeyQKyEjrBCFeLDpY0o5HBWm6W \
-L6rcWL9mO7n8iedS2+3Kwk3jLLye+ekljRxformEIK1pIR3yhOZgIJ/BtkyWF6goVNX5mttaMTqd \
-uqxGkgJ5pTifvgsis847EV6Va9L42t8KO8+CTN86DR9SyjluSoqbNf7/ZC/uy8CVQS2MZ9HL6UeI \
-lpiLFLVYTJhy5Cr3gzvyrmna8xRw+yYsDwl2Lqey1m8WU0JJplCsdfhfvEBfy9pKxK0OfMbPRKvI \
-qyv1+GcIzurfVBK0DXnxqBRVYnqQlb7lWV8eyKKt/XvsXzHxB3Nu/gDG2vvsZwYAAA==)
+MSG=$(echo -e H4sIAOrJ51oAA6WVTU/cMBCG7/sr5tZFguXOFaQKqUiVCr2s9uA4sxuTxOP6Y1fpr++M7QRoF1WI \
+CwGP5/UznzwFdcCb1er24Q48qXZUDraahgF1NGRhbwbcrQC+e2PjfKNcHwIcz979ZkIEE0LCAHvy \
+cEQfxH4sfprc9I7nrZhih2ApVmc1DGe1IBKo7AhWjQjHzdgW/dFYhO2Iu//CnTqjO1AeYVS+x1Y0 \
+G8wCRaree1dH4Byj2mjUjFk8U8Czbj8wJgd6IGaUeLIPRK90b+wB1uTkOutOcDKx40TYqxb3Kg0x \
+a1xUedeqiKz3lH8Bj46CieSnqs2RSB4HNjLnwURO+zjypyPqa3DWRFa458/fGPK0sfD1/hGY8QG9 \
+Tl4ibLyyupvT7D15CWmyusB6PBpKgdlDDnPRG1WI6IEvrxllUM2lIHWJv42JTdI9xg35wyVLtJJ+ \
+ttMh5FuoLsGZXmlqEa7AIrYBnn/VRHgcOf+gwYCTYHIc8yFHrGzLRi5AidAUUKc894wgObHV+yUi \
+4Q2UvEYIE2OP5aHCCz1seUBo91LLanhxdp6eueoivQc6WX6FyrMHc0QLiqPBCfqNpGMJh0P7qQbp \
+trncXMJcy3ZRnCh94WY1drMwcS6ZiZHSGyI5Pkd0BgMkRdWlUdy2yQ+QNvBpuqWysN3GnSBub/Tu \
+VebelP4s7pqbkBtghHhR0GVkeLT4R8ZeK+e4mCGcyHOdLz4PLW1Xi5wyaunkfMxv5378WGbZ8zq7 \
+XS9d/JLmzwPXgclNkBbe+fQjpLPPu01QHgxRxRSkiB2deCMY3DMNF2ZUedOphlLMy+ef9SGuKFMh \
+1jKQr1ZkWS7i0RrPZ7zM6ou8YOqe6TxZ8xuzQJ3aV6svRyamR1k8dzx78wbP8dV/b/s3TPwHc67+ \
+ANFRS2YIBwAA)
   echo $MSG|sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 
@@ -58,7 +59,10 @@ if [ ! -f .trackdown/config ] ; then
   fi
 fi
 TDBASE=`pwd`
-VCS=`test -d .hg && echo hg || echo git`
+if [ "$TDBASE" = "/" ] ; then
+  TDBASE=$CWD
+fi
+VCS=`test -d .hg && echo hg || test -d .git && echo git || echo plain`
 TDCONFIG=$TDBASE/.trackdown/config
 echo "TrackDown-$VCS: base directory $TDBASE"
 cd $CWD
@@ -944,20 +948,30 @@ if [ "$CMD" = "gitlab" ] ; then
 
   checkJq
   bailOnZero "No api token given as the first parameter" $2
-  bailOnZero "No project name given as the second parameter" $3
-  preventRepeatedMirrorInit
-  URL=${4:-https://gitlab.com}
-  PID=`curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100 2> /dev/null|jq '.[]|select(.name=="'$3'")|.id'`
-  if [ -z "$PID" ] ; then
-    PID=`curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100 2> /dev/null|jq '.[]|select(.path_with_namespace=="'$3'")|.id'`
+  if [ -z $REMOTEUSER ] ; then
+    P=$3
+  else
+    P=${3:-$REMOTEUSER/$REMOTEPROJECT}
   fi
-  echo "Setting up TrackDown to mirror from $3 ($PID) on $URL"
+  bailOnZero "No project name given as the second parameter" $P
+  preventRepeatedMirrorInit
+  HOST=${CASE:-gitlab.com}
+  URL=${4:-https://$HOST}
+  PID=`curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100 2> /dev/null|jq '.[]|select(.name=="'$P'")|.id'`
+  if [ -z "$PID" ] ; then
+    PID=`curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100 2> /dev/null|jq '.[]|select(.path_with_namespace=="'$P'")|.id'`
+  fi
+  if [ -z "$PID" ] ; then
+    echo "No project $2 on $URL"
+    exit
+  fi
+  echo "Setting up TrackDown to mirror from $P ($PID) on $URL"
   setupCollectionReference gitlab
   echo "gitlab.url=$URL" >> $TDCONFIG
   echo "gitlab.project=$PID" >> $TDCONFIG
   echo "gitlab.key=$2" >> $TDCONFIG
-  ME=$(curl --header "PRIVATE-TOKEN: $2" ${URL}/api/v3/user 2> /dev/null|jq .username)
-  if [ "$ME" != "\"null\"" ] ; then
+  ME=$(curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v3/user 2> /dev/null|jq .username|sed -e 's/"//g')
+  if [ "$ME" != "null" ] ; then
     echo "me=$ME" >> $TDCONFIG
   fi
 
@@ -968,12 +982,12 @@ fi
 if [ "$CMD" = "github" ] ; then
 
   checkJq
-  P=${2:-$REMOTEPROJECT}
-  bailOnZero "No project name given as the first parameter" $P
-  U=${3:-$REMOTEUSER}
-  bailOnZero "No username given as the second parameter" $U
-  TOKEN=${4:-$GITHUB_COM_TOKEN}
-  bailOnZero "No api token given as the third parameter" $TOKEN
+  TOKEN=${2:-$GITHUB_COM_TOKEN}
+  bailOnZero "No api token given as the first parameter" $TOKEN
+  P=${3:-$REMOTEPROJECT}
+  bailOnZero "No project name given as the second parameter" $P
+  U=${4:-$REMOTEUSER}
+  bailOnZero "No username given as the third parameter" $U
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror $P owned by $U from github.com"
   setupCollectionReference github
@@ -1034,14 +1048,19 @@ if [ "$CMD" = "gogs" ] ; then
 
   checkJq
   bailOnZero "No api token given as the first parameter" $2
-  bailOnZero "No project name given as the second parameter" $3
-  URL=${4:-https://v2.pikacode.com}
+  P=${3:-$REMOTEUSER/$REMOTEPROJECT}
+  bailOnZero "No project name given as the second parameter" $P
+  URL=${4:-https://$CASE}
   preventRepeatedMirrorInit
-  echo "Setting up TrackDown to mirror from $3 on $URL"
+  echo "Setting up TrackDown to mirror from $P on $URL"
   setupCollectionReference gogs
-  echo "prefix=$URL/$3/commit/" >> $TDCONFIG
+  echo "prefix=$URL/$P/commit/" >> $TDCONFIG
   echo "gogs.url=$URL" >> $TDCONFIG
-  echo "gogs.project=$3" >> $TDCONFIG
+  echo "gogs.project=$P" >> $TDCONFIG
   echo "gogs.key=$2" >> $TDCONFIG
+  ME=$(curl -H "Authorization: token $2" ${URL}/api/v1/user 2> /dev/null|jq .login|sed -e 's/"//g')
+  if [ "$ME" != "null" ] ; then
+    echo "me=$ME" >> $TDCONFIG
+  fi
 
 fi
