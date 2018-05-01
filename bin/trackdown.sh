@@ -488,7 +488,7 @@ if [ "$CMD" = "mirror" ] ; then
         if [ "$AUTHOR" != "null" ] ; then
           echo -n "Author: \`$AUTHOR\` $AUTHOR_NAME " >>$ISSUES
         fi
-        echo "GitLab ID $id" >>$ISSUES
+        echo "" >>$ISSUES
         DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.description' $EXPORT`
         if [ "$DESCRIPTION" != "null" ] ; then
           echo "" >>$ISSUES
@@ -832,16 +832,21 @@ if [ "$CMD" = "remote" ] ; then
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
-      echo "Assigning $ISSUE to user $PARAM"
-      USERID=$(curl -H "$TOKEN" ${URL}users?username=${PARAM} 2> /dev/null|jq .[0].id)
-      IID=$(curl -X PUT -H "$TOKEN" \
-            ${URL}projects/${PROJECT}/issues/${ISSUE}?assignee_id=${USERID} 2> /dev/null|jq .message)
-      echo $PARAM: $USERID
+      USERID=0
+      if [ "$PARAM" != "none" ] ; then
+        USERID=$(curl -H "$TOKEN" ${URL}users?username=${PARAM} 2> /dev/null|jq .[0].id)
+      fi
+      ISSUEID=$(curl -H "$TOKEN" ${URL}projects/${PROJECT}/issues?iid=${ISSUE} 2> /dev/null|jq .[0].id)
       if [ "$USERID" != "null" ] ; then
-        RESULT=$(curl -X PUT -H "$TOKEN" \
-                 ${URL}projects/${PROJECT}/issues/${ISSUE}?assignee_id=${USERID} 2> /dev/null|jq .message)
-        if [ "$RESULT" != "null" ] ; then
-          echo "Could not assign issue $ISSUE to $PARAM"
+        if [ "$ISSUEID" != "null" ] ; then
+          echo "Assigning $ISSUE to user $PARAM"
+          RESULT=$(curl -X PUT -H "$TOKEN" \
+                   ${URL}projects/${PROJECT}/issues/${ISSUEID}?assignee_id=${USERID} 2> /dev/null|jq .message)
+          if [ "$RESULT" != "null" ] ; then
+            echo "Could not assign issue $ISSUE to $PARAM"
+          fi
+        else
+          echo "No issue $ISSUE known."
         fi
       else
         echo "No user $PARAM known."
