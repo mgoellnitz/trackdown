@@ -107,6 +107,10 @@ Martin Goellnitz / Tue, 1 May 2018 01:36:39 [7686f336ec8e8dfe9d239d743bf379aa343
 
     refs #GITLAB mirror exports comments
 
+Martin Goellnitz / Tue, 1 May 2018 19:27:56 [c3bd366e8802bf1951f208267450c46877d92403](https://github.com/mgoellnitz/trackdown/commit/c3bd366e8802bf1951f208267450c46877d92403)
+
+    refs #GITLAB mirror doesn't use internal IDs on the surface anymore
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*
