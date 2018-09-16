@@ -37,7 +37,7 @@ assertEquals "Unexpected gitlab setup output" "$OUTPUT" "No project name given a
 OUTPUT=`$CWD/bin/trackdown.sh gitlab k backendzeit/markdown-demo|tail -1`
 assertEquals "Unexpected gitlab setup output" "$OUTPUT" "Cannot fetch project ID for backendzeit/markdown-demo on https://gitlab.com"
 
-## TODO: Cannot test al this without TOKEN
+## TODO: Cannot test all this without TOKEN
 
 # assertEquals "Unexpected gitlab setup output" "$OUTPUT" "Setting up TrackDown to mirror from backendzeit/markdown-demo () on https://gitlab.com"
 
