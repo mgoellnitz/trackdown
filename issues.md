@@ -111,6 +111,10 @@ Martin Goellnitz / Tue, 1 May 2018 19:27:56 [c3bd366e8802bf1951f208267450c46877d
 
     refs #GITLAB mirror doesn't use internal IDs on the surface anymore
 
+Martin Goellnitz / Sat, 29 Dec 2018 00:27:52 [885d8aa30c3fd3e652c660f748ffdba5a020f0d4](https://github.com/mgoellnitz/trackdown/commit/885d8aa30c3fd3e652c660f748ffdba5a020f0d4)
+
+    refs #GITLAB migrate to API v4
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*
