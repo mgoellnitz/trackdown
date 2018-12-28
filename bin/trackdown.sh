@@ -452,7 +452,7 @@ if [ "$CMD" = "mirror" ] ; then
     TOKEN="PRIVATE-TOKEN: $TOKEN"
     PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab project. $Q" $PROJECT
-    URL="${URL}/api/v3/projects/$PROJECT/issues"
+    URL="${URL}/api/v4/projects/$PROJECT/issues"
     PAGES=`curl -D - -X HEAD -H "$TOKEN" "$URL?per_page=100" 2> /dev/null|grep X-Total-Pages|sed -e 's/X.Total.Pages..\([0-9]*\).*/\1/g'`
     echo "$PAGES chunks of issues"
     issueCollectionHeader "Issues"
@@ -490,13 +490,15 @@ if [ "$CMD" = "mirror" ] ; then
         fi
         echo "" >>$ISSUES
         DESCRIPTION=`jq  -c '.[]|select(.id == '$id')|.description' $EXPORT`
+        USERCOMMENTSNO=`jq  -c '.[]|select(.id == '$id')|.user_notes_count' $EXPORT`
         if [ "$DESCRIPTION" != "null" ] ; then
           echo "" >>$ISSUES
           echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g' >>$ISSUES
         fi
-        COMMENTS_URL=$(echo ${URL}/${id}/notes)
+        COMMENTS_URL=$(echo ${URL}/${IID}/notes)
         curl -H "$TOKEN" "$COMMENTS_URL" 2> /dev/null >$COMMENTS_EXPORT
         COMMENTSNO=$(jq  -c '.|length' $COMMENTS_EXPORT)
+        # echo "${USERCOMMENTSNO}/${COMMENTSNO}: $COMMENTS_URL"
         if [ "$COMMENTSNO" != "0" ] ; then
           echo "" >>$ISSUES
           echo "### Comments" >>$ISSUES
@@ -819,7 +821,7 @@ if [ "$CMD" = "remote" ] ; then
   if [ "$TYPE" = "gitlab" ] ; then
     URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab source url configured. $Q" $URL
-    URL=$URL/api/v3/
+    URL=$URL/api/v4/
     TOKEN=`grep gitlab.key= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab api token configured. $Q" $TOKEN
     TOKEN="PRIVATE-TOKEN:  $TOKEN"
@@ -976,7 +978,7 @@ if [ "$CMD" = "gitlab" ] ; then
   preventRepeatedMirrorInit
   HOST=${CASE:-gitlab.com}
   URL=${4:-https://$HOST}
-  PL=$(curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v3/projects?per_page=100 2> /dev/null)
+  PL=$(curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v4/projects?per_page=100 2> /dev/null)
   CHECK=`echo $PL|jq '.message'`
   if [ -z "$CHECK" ] ; then
     PID=`echo $PL|jq '.[]|select(.name=="'$P'")|.id'`
@@ -996,7 +998,7 @@ if [ "$CMD" = "gitlab" ] ; then
   echo "gitlab.url=$URL" >> $TDCONFIG
   echo "gitlab.project=$PID" >> $TDCONFIG
   echo "gitlab.key=$2" >> $TDCONFIG
-  ME=$(curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v3/user 2> /dev/null|jq .username|sed -e 's/"//g')
+  ME=$(curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v4/user 2> /dev/null|jq .username|sed -e 's/"//g')
   if [ "$ME" != "null" ] ; then
     echo "me=$ME" >> $TDCONFIG
   fi
