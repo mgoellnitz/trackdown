@@ -27,10 +27,12 @@ hg init
 cp -r $CWD/README.md .
 cp -r $CWD/bin/t*sh .
 
+echo "INIT"
 # test trackdown init
 OUTPUT=`$CWD/bin/trackdown.sh init|tail -1`
 # echo "$OUTPUT"
 assertEquals "Unexpected init output" "$OUTPUT" "Mercurial repository missing commits. Exiting."
+echo "INIT"
 
 hg add README.md
 hg commit -m "First commit" README.md
