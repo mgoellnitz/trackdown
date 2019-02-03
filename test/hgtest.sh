@@ -53,7 +53,8 @@ echo "" >> issues.md
 hg add trackdown.sh
 
 echo "COMMIT"
-OUTPUT=`hg commit -m "refs #FIRST" trackdown.sh`
+hg commit -m "refs #FIRST" trackdown.sh|tail -3|head -1
+# OUTPUT=`hg commit -m "refs #FIRST" trackdown.sh|tail -3|head -1`
 # OUTPUT=$(echo $OUTPUT|tail -3|head -1)
 assertEquals "Unexpected commit hook output" "$OUTPUT" "adding file changes"
 echo "COMMIT"
