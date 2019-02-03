@@ -60,6 +60,9 @@ check.doFirst {
       commandLine "ls", "-la", "$file"
     }
     exec {
+      commandLine "ls", "-la", "/bin/bash"
+    }
+    exec {
       commandLine "$file"
     }
   }
