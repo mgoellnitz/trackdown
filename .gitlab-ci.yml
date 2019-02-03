@@ -24,7 +24,7 @@ stages:
 
 build:
   stage: trackdown
-  script: apk update ; apk add curl mercurial bash bash-doc bash-completion ; curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 2> /dev/null > /usr/bin/jq ; chmod 755  /usr/bin/jq ; echo $PATH ; /usr/bin/jq ; gradle build
+  script: apk update ; apk add file curl mercurial bash bash-doc bash-completion ; curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux32 2> /dev/null > /usr/bin/jq ; chmod 755 /usr/bin/jq ; echo $PATH ; file /bin/ls ; /usr/bin/jq ; gradle build
   artifacts:
     paths:
     - build/distributions/*
