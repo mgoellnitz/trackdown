@@ -24,7 +24,7 @@ stages:
 
 build:
   stage: trackdown
-  script: gradle build
+  script: apk update ; apk add bash bash-doc bash-completion ; gradle build
   artifacts:
     paths:
     - build/distributions/*
