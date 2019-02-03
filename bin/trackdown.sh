@@ -978,7 +978,8 @@ if [ "$CMD" = "gitlab" ] ; then
   preventRepeatedMirrorInit
   HOST=${CASE:-gitlab.com}
   URL=${4:-https://$HOST}
-  PL=$(curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v4/projects?per_page=100 2> /dev/null)
+  N=$(echo $P|sed -e 's/\(.*\)\/\(.*\)/\2/g')
+  PL=$(curl -L -H "PRIVATE-TOKEN: $2" ${URL}'/api/v4/projects?per_page=100&search='$N 2> /dev/null)
   CHECK=`echo $PL|jq '.message'`
   if [ -z "$CHECK" ] ; then
     PID=`echo $PL|jq '.[]|select(.name=="'$P'")|.id'`
