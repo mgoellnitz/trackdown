@@ -57,6 +57,9 @@ check.doFirst {
   tests.each { file ->
     // print "$file \n"
     exec {
+      commandLine "ls", "-la", "$file"
+    }
+    exec {
       commandLine "$file"
     }
   }
