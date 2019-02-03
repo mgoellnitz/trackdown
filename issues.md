@@ -115,6 +115,10 @@ Martin Goellnitz / Sat, 29 Dec 2018 00:27:52 [885d8aa30c3fd3e652c660f748ffdba5a0
 
     refs #GITLAB migrate to API v4
 
+Martin Goellnitz / Sun, 3 Feb 2019 23:11:04 [fce39b2ac3fb1df3ccfedc93ee99adf49cad4b2b](https://github.com/mgoellnitz/trackdown/commit/fce39b2ac3fb1df3ccfedc93ee99adf49cad4b2b)
+
+    refs #GITLAB - fix mirror init
+
 ## GITHUB offline mirror (in progress)
 
 *mirror*

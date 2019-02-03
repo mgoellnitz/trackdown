@@ -1,24 +1,5 @@
 # Roadmap
 
-## 1.0:
-
-[![100%](https://dummyimage.com/700x30/000000/FFFFFF.png&text=100%25)]()
-
-100% (11 / 11) completed 
-0% (0 / 11) in progress
-
-* ASSIGNMENT of issues should be part of the format and tooling (resolved)
-* COPY release notes. (resolved)
-* HASH of the commit should be part of the listing (resolved)
-* MERCURIAL support should be added with the same functionality as GIT (resolved)
-* MULTIISSUE There can be only one issue per commit. (resolved)
-* PREFIX hashes in commit notes to form a URL (resolved)
-* ROADMAP should show percentage for issues already started (resolved)
-* ROOT directory of the source code must be a valid roadmap and issue file location (resolved)
-* SETUP tracking repository symmetrically (resolved)
-* SYNCHRONIZE roadmap also on unhandled commits (resolved)
-* UPDATE command for the commit hook (resolved)
-
 ## mirror:
 
 [![20%](https://dummyimage.com/140x30/000000/FFFFFF.png&text=20%25)]()[![80%](https://dummyimage.com/560x30/606060/FFFFFF.png&text=80%25)]()
