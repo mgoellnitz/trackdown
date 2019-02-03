@@ -32,17 +32,13 @@ OUTPUT=`$CWD/bin/trackdown.sh init|tail -1`
 # echo "$OUTPUT"
 assertEquals "Unexpected init output" "$OUTPUT" "Mercurial repository missing commits. Exiting."
 
-echo "COMMIT"
 hg add README.md
 hg commit -m "First commit" README.md
 OUTPUT=`$CWD/bin/trackdown.sh init|tail -1`
 assertEquals "Unexpected init output" "$OUTPUT" "1 files updated, 0 files merged, 2 files removed, 0 files unresolved"
-echo "COMMIT"
 
-echo "USE"
 OUTPUT=`$CWD/bin/trackdown.sh use|tail -1`
 assertEquals "Unexpected use output" "$OUTPUT" "2 files updated, 0 files merged, 0 files removed, 0 files unresolved"
-echo "USE"
 
 echo "" >> issues.md
 echo "## FIRST issue" >> issues.md
@@ -57,7 +53,8 @@ echo "" >> issues.md
 hg add trackdown.sh
 
 echo "COMMIT"
-OUTPUT=`hg commit -m "refs #FIRST" trackdown.sh|tail -3|head -1`
+OUTPUT=`hg commit -m "refs #FIRST" trackdown.sh`
+# OUTPUT=$(echo $OUTPUT|tail -3|head -1)
 assertEquals "Unexpected commit hook output" "$OUTPUT" "adding file changes"
 echo "COMMIT"
 
