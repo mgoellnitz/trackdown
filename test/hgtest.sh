@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2016-2018 Martin Goellnitz
+# Copyright 2016-2019 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ echo "" >> issues.md
 hg add trackdown.sh
 
 echo "COMMIT"
-hg commit -m "refs #FIRST" trackdown.sh|tail -3|head -1
+hg commit -m "refs #FIRST" trackdown.sh
 # OUTPUT=`hg commit -m "refs #FIRST" trackdown.sh|tail -3|head -1`
 # OUTPUT=$(echo $OUTPUT|tail -3|head -1)
 assertEquals "Unexpected commit hook output" "$OUTPUT" "adding file changes"
