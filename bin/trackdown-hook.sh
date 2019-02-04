@@ -45,7 +45,9 @@ if [ $VCS = "git" ] ; then
 fi
 STATUS=""
 if [ ! -z "$LINE" ] ; then
+  echo "Line: $LINE"
   ID=`echo $LINE|sed -e 's/.*#\([0-9a-zA-Z,]*\).*/\1/g'`
+  echo "ID: $ID"
   MARKER=`echo $LINE|grep -i "refs \#$ID"`
   if [ ! -z "$MARKER" ] ; then
     STATUS="in progress"
