@@ -25,12 +25,12 @@ TDCONFIG=$TDBASE/.trackdown/config
 echo "TrackDown-$VCS: Base directory $TDBASE"
 cd $CWD
 checkTrackdown
-echo "CHECK ISSUES"
+echo "CHECKING ISSUES"
 discoverIssues
 echo "CHECKED: $ISSUES"
 # Prefix for links to online commit descriptions
 PREFIX=`grep prefix= $TDCONFIG|cut -d '=' -f 2`
-# echo "ISSUES $ISSUES"
+echo "ISSUES $ISSUES"
 if [ $VCS = "hg" ] ; then
   AUTHOR=`hg log -l 1 --template "{person(author)}\n"`
   DATE=`hg log -l 1 --template "{localdate(date)|date}\n"`
