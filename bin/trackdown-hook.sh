@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-echo "BEFORE $0"
 DIR=`dirname $0`
-echo "AFTER"
 . $DIR/trackdown-lib.sh
 CWD=`pwd`
 windUp trackdown
@@ -27,7 +25,9 @@ TDCONFIG=$TDBASE/.trackdown/config
 echo "TrackDown-$VCS: Base directory $TDBASE"
 cd $CWD
 checkTrackdown
+echo "CHECK ISSUES"
 discoverIssues
+echo "CHECKED: $ISSUES"
 # Prefix for links to online commit descriptions
 PREFIX=`grep prefix= $TDCONFIG|cut -d '=' -f 2`
 # echo "ISSUES $ISSUES"
@@ -37,7 +37,6 @@ if [ $VCS = "hg" ] ; then
   LINE=`hg log -l 1 --template "{desc}\n"|grep \#`
   HASH=`hg log -l 1 --template "{node}\n"`
 fi
-echo "VCS2"
 if [ $VCS = "git" ] ; then
   AUTHOR=`git log -n 1 --format=%an`
   DATE=`git log -n 1 --format=%aD|cut -d '+' -f 1|sed -e 's/\ $//g'`
@@ -119,7 +118,9 @@ if [ ! -z "$STATUS" ] ; then
   # echo "AUTOCOMMIT: $AUTOCOMMIT"
   if [ ! -z "$AUTOCOMMIT" ] ; then
     WD=`pwd`
+echo "BEFORE"
     TRACKDOWN=`dirname $ISSUES`
+echo "AFTER"
     VCS=`test -d $TRACKDOWN/.hg && echo hg || echo git`
     echo "TrackDown: committing with $VCS in $TRACKDOWN"
     ( cd $TRACKDOWN ; ${VCS} commit -m "Committed for issue(s) #$ID" issues.md roadmap.md > /dev/null)
