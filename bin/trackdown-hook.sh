@@ -37,6 +37,7 @@ if [ $VCS = "hg" ] ; then
   LINE=`hg log -l 1 --template "{desc}\n"|grep \#`
   HASH=`hg log -l 1 --template "{node}\n"`
 fi
+echo "VCS2"
 if [ $VCS = "git" ] ; then
   AUTHOR=`git log -n 1 --format=%an`
   DATE=`git log -n 1 --format=%aD|cut -d '+' -f 1|sed -e 's/\ $//g'`
