@@ -56,11 +56,11 @@ function discoverIssues {
       test -d $TDBASE/.git && ISSUES=".git/trackdown/issues.md"
       test -d $TDBASE/.hg && ISSUES=".hg/trackdown/issues.md"
     fi
-echo "LA"
+echo "LA $ISSUES"
     ESCAPEDBASE=`echo $TDBASE|sed -e 's/\//\\\xxxxxx\//g'|sed -e 's/\xxxxxx//g'`
-echo "LE"
+echo "LE $ESCAPEDBASE"
     ISSUES=`echo $ISSUES|sed -e "s/^\([a-zA-Z0-9\.]\)/$ESCAPEDBASE\/\1/g"`
-echo "LU"
+echo "LU $ISSUES"
   fi
   if [ ! -f $ISSUES ] ; then
     echo "No issue collection file found. Are we in a TrackDown context?"
