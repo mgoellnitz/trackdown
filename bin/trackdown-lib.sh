@@ -57,7 +57,7 @@ function discoverIssues {
       test -d $TDBASE/.hg && ISSUES=".hg/trackdown/issues.md"
     fi
 echo "LA $ISSUES $TDBASE"
-    ESCAPEDBASE=`echo $TDBASE|sed -e 's/\//\\\xxxxxx\//g'|sed -e 's/\xxxxxx//g'`
+    ESCAPEDBASE=`echo $TDBASE|sed -e 's/\//\\\_xxxxx_\//g'|sed -e 's/_xxxxx_//g'`
 echo "LE $ESCAPEDBASE"
     ISSUES=`echo $ISSUES|sed -e "s/^\([a-zA-Z0-9\.]\)/$ESCAPEDBASE\/\1/g"`
 echo "LU $ISSUES"
