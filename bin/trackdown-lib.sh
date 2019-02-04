@@ -56,7 +56,7 @@ function discoverIssues {
       test -d $TDBASE/.git && ISSUES=".git/trackdown/issues.md"
       test -d $TDBASE/.hg && ISSUES=".hg/trackdown/issues.md"
     fi
-echo "LA $ISSUES"
+echo "LA $ISSUES $TDBASE"
     ESCAPEDBASE=`echo $TDBASE|sed -e 's/\//\\\xxxxxx\//g'|sed -e 's/\xxxxxx//g'`
 echo "LE $ESCAPEDBASE"
     ISSUES=`echo $ISSUES|sed -e "s/^\([a-zA-Z0-9\.]\)/$ESCAPEDBASE\/\1/g"`
