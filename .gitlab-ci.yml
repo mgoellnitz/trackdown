@@ -24,7 +24,7 @@ stages:
 
 build:
   stage: trackdown
-  script: apk update ; apk add jq file curl mercurial bash bash-doc bash-completion ; gradle build
+  script: apk update ; apk add jq file curl mercurial git bash bash-completion ; gradle build
   artifacts:
     paths:
     - build/distributions/*
