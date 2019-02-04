@@ -118,9 +118,8 @@ if [ ! -z "$STATUS" ] ; then
   # echo "AUTOCOMMIT: $AUTOCOMMIT"
   if [ ! -z "$AUTOCOMMIT" ] ; then
     WD=`pwd`
-echo "BEFORE"
     TRACKDOWN=`dirname $ISSUES`
-echo "AFTER"
+    # TODO: WHy do we re-discover the VCS here?
     VCS=`test -d $TRACKDOWN/.hg && echo hg || echo git`
     echo "TrackDown: committing with $VCS in $TRACKDOWN"
     ( cd $TRACKDOWN ; ${VCS} commit -m "Committed for issue(s) #$ID" issues.md roadmap.md > /dev/null)
