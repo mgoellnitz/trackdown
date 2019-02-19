@@ -159,8 +159,7 @@ function roadmap {
     fi
     echo ""
     echo ""
-    echo "$RESPERC% ($RESOLVED / $TOTAL) completed "
-    echo "$PROPERC% ($PROGRESS / $TOTAL) in progress"
+    echo "$RESPERC% completed ($RESOLVED/$TOTAL) - $PROPERC% in progress ($PROGRESS/$TOTAL)"
     echo ""
     grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'|awk '{print $NF,$0}'| sort | cut -f2- -d' '
     echo ""
