@@ -149,13 +149,13 @@ function roadmap {
     echo "## ${r}:"
     echo ""
     if [ $RESPERC -gt 0 ] ; then
-      echo -n "[![$RESPERC%](https://dummyimage.com/$[ $RESPERC * 7 ]x30/000000/FFFFFF.png&text=$RESPERC%25)]()"
+      echo -n "![$RESPERC%](https://di.9f8.de/$[ $RESPERC * 7 ]x30/000000/FFFFFF.png&text=$RESPERC%25)"
     fi
     if [ $PROPERC -gt 0 ] ; then
-      echo -n "[![$PROPERC%](https://dummyimage.com/$[ $PROPERC * 7 ]x30/606060/FFFFFF.png&text=$PROPERC%25)]()"
+      echo -n "![$PROPERC%](https://di.9f8.de/$[ $PROPERC * 7 ]x30/606060/FFFFFF.png&text=$PROPERC%25)"
     fi
     if [ $RESTPERC -gt 0 ] ; then
-      echo -n "[![$RESTPERC%](https://dummyimage.com/$[ $RESTPERC * 7 ]x30/eeeeee/808080.png&text=$RESTPERC%25)]()"
+      echo -n "![$RESTPERC%](https://di.9f8.de/$[ $RESTPERC * 7 ]x30/eeeeee/808080.png&text=$RESTPERC%25)"
     fi
     echo ""
     echo ""
