@@ -266,3 +266,7 @@ Martin Goellnitz / Tue, 9 May 2017 22:35:08 [bad2ffc8bc29acfafb9a044da43df062ade
 Martin Goellnitz / Mon, 30 Apr 2018 21:55:51 [8484d90272c85bbd56dbf55a101776a649cb2fff](https://github.com/mgoellnitz/trackdown/commit/8484d90272c85bbd56dbf55a101776a649cb2fff)
 
     refs #GOGS mirror exports comments
+
+Martin Goellnitz / Tue, 30 Apr 2019 11:01:23 [ec496740ac1688533bb73c46a3500bad100297f3](https://github.com/mgoellnitz/trackdown/commit/ec496740ac1688533bb73c46a3500bad100297f3)
+
+    refs #GOGS - honor that gitea now is the primary choice over gogs

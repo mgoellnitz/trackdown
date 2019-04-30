@@ -4,8 +4,7 @@
 
 [![20%](https://dummyimage.com/140x30/000000/FFFFFF.png&text=20%25)]()[![80%](https://dummyimage.com/560x30/606060/FFFFFF.png&text=80%25)]()
 
-20% (1 / 5) completed 
-80% (4 / 5) in progress
+20% completed (1/5) - 80% in progress (4/5)
 
 * BITBUCKET issue tracker offline mirror (in progress)
 * GITHUB offline mirror (in progress)
@@ -17,8 +16,7 @@
 
 [![50%](https://dummyimage.com/350x30/000000/FFFFFF.png&text=50%25)]()[![50%](https://dummyimage.com/350x30/eeeeee/808080.png&text=50%25)]()
 
-50% (1 / 2) completed 
-0% (0 / 2) in progress
+50% completed (1/2) - 0% in progress (0/2)
 
 * MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
 * GRAPHICAL progress bar for iterations in roadmap (resolved)
@@ -27,8 +25,7 @@
 
 [![100%](https://dummyimage.com/700x30/606060/FFFFFF.png&text=100%25)]()
 
-0% (0 / 1) completed 
-100% (1 / 1) in progress
+0% completed (0/1) - 100% in progress (1/1)
 
 * NETBEANS interoperation not working due to missing hook implementation in JGit (in progress)
 
