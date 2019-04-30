@@ -619,10 +619,10 @@ have the notes with you and now the issue IDs for offline code commits.
 ## Gitea and Gogs
 
 Intended for on premises use as a [GIT][git] based solution for Code and Wiki
-together with an issue tracking section, it is also available in some public 
-online incarnations like [CodeBerg](codeberg) and [Pikacode](pikacode). 
+together with an issue tracking section, it is also available in some public
+online incarnations like [CodeBerg](codeberg) and [Pikacode](pikacode).
 
-Of course [Gitea](gitea) can be used as a TrackDownstorage backend or mirroring 
+Of course [Gitea](gitea) can be used as a TrackDownstorage backend or mirroring
 source.
 
 We also expect the related [Gogs](gogs) project to be still usable in the

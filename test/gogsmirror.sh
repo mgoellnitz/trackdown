@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2016-2018 Martin Goellnitz
+# Copyright 2016-2019 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,28 +27,28 @@ before
 mkdir -p .hg
 
 # test setup variants
-OUTPUT=`$CWD/bin/trackdown.sh gogs|tail -1`
+OUTPUT=`$CWD/bin/trackdown.sh gitea|tail -1`
 # echo "$OUTPUT"
-assertEquals "Unexpected gogs setup output" "$OUTPUT" "No api token given as the first parameter"
+assertEquals "Unexpected gitea setup output" "$OUTPUT" "No api token given as the first parameter"
 
-OUTPUT=`$CWD/bin/trackdown.sh gogs k|tail -1`
-assertEquals "Unexpected gogs setup output" "$OUTPUT" "No project name given as the second parameter"
+OUTPUT=`$CWD/bin/trackdown.sh gitea k|tail -1`
+assertEquals "Unexpected gitea setup output" "$OUTPUT" "No project name given as the second parameter"
 
-OUTPUT=`$CWD/bin/trackdown.sh gogs k backendzeit/markdown-demo|tail -1`
-assertEquals "Unexpected gogs setup output" "$OUTPUT" "Setting up TrackDown to mirror from backendzeit/markdown-demo on https://v2.pikacode.com"
+OUTPUT=`$CWD/bin/trackdown.sh gitea k backendzeit/markdown-demo|tail -1`
+assertEquals "Unexpected gitea setup output" "$OUTPUT" "Setting up TrackDown to mirror from backendzeit/markdown-demo on https://v2.pikacode.com"
 
 assertExists "Config file missing" .trackdown/config
-assertExists "Issue collection file missing" gogs-issues.md
+assertExists "Issue collection file missing" gitea-issues.md
 assertExists "VCS ignore file missing" .hgignore
 
-DIFF=`diff -u $MYDIR/gogsmirror.config .trackdown/config`
-assertEquals "Unexpected gogs mirror configuration" "$DIFF" ""
+DIFF=`diff -u $MYDIR/gitea.config .trackdown/config`
+assertEquals "Unexpected gitea mirror configuration" "$DIFF" ""
 
-DIFF=`diff -u $MYDIR/gogsmirror.ignore .hgignore`
-assertEquals "Unexpected gogs ignore file" "$DIFF" ""
+DIFF=`diff -u $MYDIR/giteamirror.ignore .hgignore`
+assertEquals "Unexpected gitea ignore file" "$DIFF" ""
 
-OUTPUT=`$CWD/bin/trackdown.sh gogs markdown-demo mgoellnitz|tail -1`
-assertEquals "Unexpected gogs setup output" "$OUTPUT" "Mirror setup already done in this repository with type gogs."
+OUTPUT=`$CWD/bin/trackdown.sh gitea markdown-demo mgoellnitz|tail -1`
+assertEquals "Unexpected gitea setup output" "$OUTPUT" "Mirror setup already done in this repository with type gitea."
 
 # cleanup test
 after
