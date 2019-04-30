@@ -41,7 +41,7 @@ assertExists "Config file missing" .trackdown/config
 assertExists "Issue collection file missing" gitea-issues.md
 assertExists "VCS ignore file missing" .hgignore
 
-DIFF=`diff -u $MYDIR/gitea.config .trackdown/config`
+DIFF=`diff -u $MYDIR/giteamirror.config .trackdown/config`
 assertEquals "Unexpected gitea mirror configuration" "$DIFF" ""
 
 DIFF=`diff -u $MYDIR/giteamirror.ignore .hgignore`
