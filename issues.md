@@ -289,3 +289,7 @@ Martin Goellnitz / Tue, 30 Apr 2019 11:17:02 [9b72d46bc405fae922dcf413fdc6a4a1a9
 Martin Goellnitz / Tue, 30 Apr 2019 11:21:36 [be4dfc8aa1b34415a3425259f6ada48f9f87d26e](https://github.com/mgoellnitz/trackdown/commit/be4dfc8aa1b34415a3425259f6ada48f9f87d26e)
 
     refs #GOGS - fix tests to reflect new priorities
+
+Martin Goellnitz / Tue, 30 Apr 2019 11:31:14 [dda2b840ad1a81475d02877d2118a1b580951363](https://github.com/mgoellnitz/trackdown/commit/dda2b840ad1a81475d02877d2118a1b580951363)
+
+    refs #GOGS - fix tests to reflect new priorities
