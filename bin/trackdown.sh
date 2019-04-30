@@ -232,7 +232,7 @@ if [ "$CMD" = "use" ] ; then
         echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
       fi
       if [ "$CASE" = "v2.pikacode.com" ] ; then
-        echo "Discovered pikacode gogs remote"
+        echo "Discovered pikacode gitea remote"
         echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
       fi
     fi
@@ -729,19 +729,19 @@ if [ "$CMD" = "mirror" ] ; then
     done
   fi
 
-  if [ $TYPE = "gogs" ] ; then
-    URL=`grep gogs.url= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs source url configured. $Q" $URL
-    TOKEN=`grep gogs.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs api token configured. $Q" $TOKEN
-    PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs/pikacode/gitea project. $Q" $PROJECT
+  if [ $TYPE = "gitea" ] ; then
+    URL=`grep gitea.url= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No gitea source url configured. $Q" $URL
+    TOKEN=`grep gitea.key= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No gitea api token configured. $Q" $TOKEN
+    PROJECT=`grep gitea.project= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No gitea (or gogs) project. $Q" $PROJECT
     URL="${URL}/api/v1/repos/${PROJECT}/issues"
     curl -H "Authorization: token $TOKEN" "${URL}?state=all" 2> /dev/null >$EXPORT
     checkExport $EXPORT
     RESULT=`jq '.message?' $EXPORT`
     if [ ! -z "$RESULT" ] ; then
-      echo "Cannot mirror issues for gogs project ${OWNER}/${PROJECT}: ${RESULT}"
+      echo "Cannot mirror issues for gitea (or gogs) project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
     issueCollectionHeader "Issues"
@@ -934,13 +934,13 @@ if [ "$CMD" = "remote" ] ; then
       exit
     fi
   fi
-  if [ "$TYPE" = "gogs" ] ; then
-    URL=`grep gogs.url= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs/gitea source url configured. $Q" $URL
-    TOKEN=`grep gogs.key= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs/gitea api token configured. $Q" $TOKEN
-    PROJECT=`grep gogs.project= $TDCONFIG|cut -d '=' -f 2`
-    bailOnZero "No gogs/gitea project. $Q" $PROJECT
+  if [ "$TYPE" = "gitea" ] ; then
+    URL=`grep gitea.url= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No gitea (or gogs) source url configured. $Q" $URL
+    TOKEN=`grep gitea.key= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No gitea (or gogs) api token configured. $Q" $TOKEN
+    PROJECT=`grep gitea.project= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No gitea (or gogs) project. $Q" $PROJECT
     if [ "$REMOTE" = "comment" ] ; then
       RESULT=$(curl -X POST -H "Authorization: token $TOKEN" --data "body=${PARAM}" \
            ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE}/comments 2> /dev/null | jq .id)
@@ -1072,8 +1072,8 @@ if [ "$CMD" = "redmine" ] ; then
 fi
 
 
-# gogs command to setup a gogs, gitea, or pikacode system as a remote mirror source
-if [ "$CMD" = "gogs" ] ; then
+# gitea command to setup a gitea like codeberg or pikacode system or a gogs backend as a remote mirror source
+if [ "$CMD" = "gitea" ] ; then
 
   checkJq
   bailOnZero "No api token given as the first parameter" $2
@@ -1087,11 +1087,11 @@ if [ "$CMD" = "gogs" ] ; then
   URL=${4:-https://$HOST}
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror from $P on $URL"
-  setupCollectionReference gogs
+  setupCollectionReference gitea
   echo "prefix=$URL/$P/commit/" >> $TDCONFIG
-  echo "gogs.url=$URL" >> $TDCONFIG
-  echo "gogs.project=$P" >> $TDCONFIG
-  echo "gogs.key=$2" >> $TDCONFIG
+  echo "gitea.url=$URL" >> $TDCONFIG
+  echo "gitea.project=$P" >> $TDCONFIG
+  echo "gitea.key=$2" >> $TDCONFIG
   ME=$(curl -H "Authorization: token $2" ${URL}/api/v1/user 2> /dev/null|jq .login|sed -e 's/"//g')
   if [ ! -z "$ME" ] ; then
     echo "me=$ME" >> $TDCONFIG
