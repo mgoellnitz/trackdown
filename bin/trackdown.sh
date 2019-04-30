@@ -235,6 +235,10 @@ if [ "$CMD" = "use" ] ; then
         echo "Discovered pikacode gitea remote"
         echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
       fi
+      if [ "$CASE" = "codeberg.org" ] ; then
+        echo "Discovered codeberg gitea remote"
+        echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
+      fi
     fi
   fi
   if [ -d $TDBASE/.hg ] ; then
@@ -1083,7 +1087,7 @@ if [ "$CMD" = "gitea" ] ; then
     P=${3:-$REMOTEUSER/$REMOTEPROJECT}
   fi
   bailOnZero "No project name given as the second parameter" $P
-  HOST=${CASE:-v2.pikacode.com}
+  HOST=${CASE:-codeberg.org}
   URL=${4:-https://$HOST}
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror from $P on $URL"

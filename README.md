@@ -799,7 +799,7 @@ trackdown.sh gitea <apitoken> <projectname> [https://<gitea.host>]
 ```
 
 If you ommit the url prefix and no values can be derived from your current
-working directory, `https://v2.pikacode.com` is used.
+working directory, `https://codeberg.org` is used.
 
 Afterwards anytime you can connect to the [Gitea][gitea] system, collect the 
 current mirror state to you local issue collection file and the roadmap.
@@ -1004,6 +1004,7 @@ used for trackdown itself like for release 1.0 in
 [redmine]: http://www.redmine.org/
 [gogs]: https://gogs.io/
 [gitea]: https://gitea.io/
+[codeberg]: https://codeberg.org/
 [pikacode]: https://v2.pikacode.com/
 [mdwiki]: http://mdwiki.info
 [jq]: https://stedolan.github.io/jq/
