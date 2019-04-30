@@ -616,12 +616,17 @@ As an alternative you can at least mirror the issues from [GitLab][gitlab] to
 have the notes with you and now the issue IDs for offline code commits.
 
 
-## Gogs and Gitea
+## Gitea and Gogs
 
 Intended for on premises use as a [GIT][git] based solution for Code and Wiki
-together with an issue tracking section, the still available instance at
-[Pikacode](pikacode), also this go based service can be used as a TrackDown
-storage backend or mirroring source.
+together with an issue tracking section, it is also available in some public 
+online incarnations like [CodeBerg](codeberg) and [Pikacode](pikacode). 
+
+Of course [Gitea](gitea) can be used as a TrackDownstorage backend or mirroring 
+source.
+
+We also expect the related [Gogs](gogs) project to be still usable in the
+same way.
 
 
 ## Trac
@@ -978,6 +983,11 @@ issues as a chages/changelog part to your documentation.
 mv ../wiki/Milestone1-issues.md ../wiki/issues.md
 (cd ../wiki ; git add Milestone1.md) # or hg
 ```
+
+Of course this cannot only be done for mirror issues collections and is e.g.
+used for trackdown itself like for release 1.0 in
+[this](https://github.com/mgoellnitz/trackdown/blob/trackdown/1.0.md) and
+[this](https://gitlab.com/mgoellnitz/trackdown/blob/trackdown/1.0.md) file.
 
 
 [markdown]: https://daringfireball.net/projects/markdown/
