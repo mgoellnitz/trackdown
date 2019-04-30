@@ -277,3 +277,7 @@ Martin Goellnitz / Tue, 30 Apr 2019 11:01:23 [ec496740ac1688533bb73c46a3500bad10
 Martin Goellnitz / Tue, 30 Apr 2019 11:10:01 [df6f4204e5f5b711ca1d1c864e6b146d0a52092f](https://github.com/mgoellnitz/trackdown/commit/df6f4204e5f5b711ca1d1c864e6b146d0a52092f)
 
     refs #GOGS - add codeberg as the default for gitea
+
+Martin Goellnitz / Tue, 30 Apr 2019 11:15:28 [1efd88ff04ba50baf002ee501e4433828b65fcef](https://github.com/mgoellnitz/trackdown/commit/1efd88ff04ba50baf002ee501e4433828b65fcef)
+
+    refs #GOGS - fix tests to reflect new priorities
