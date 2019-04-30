@@ -245,11 +245,14 @@ Martin Goellnitz / Mon, 30 Apr 2018 23:50:35 [cc285b530edc77f94b6e450e89bd9118ad
 
 *mirror*
 
-TrackDown should be capable of translating [gogs](https://gogs.io/) JSON 
+TrackDown should be capable of translating [gitea](https://gitea.io/) JSON 
 exports of tickets to the special markdown format given here as a mirror for 
-offline  use. This also adds [gitea](https://gitea.io/) and has a public 
-instance at [Pikacode](https://v2.pikacode.com/), which can be used as a 
-default.
+offline  use. Publicly available instances are [CodeBerg][https://codeberg.org/]
+and [Pikacode](https://v2.pikacode.com/), where we now should use 
+[CodeBerg][https://codeberg.org/] as the default public backend.
+
+This also should relate to the not that active project 
+[gogs](https://gogs.io/).
 
 Martin Goellnitz / Sat Dec 3 02:56:16 2016 [e438fa86d8f6d112565899dcbfec466001ea13b4](https://github.com/mgoellnitz/trackdown/commit/e438fa86d8f6d112565899dcbfec466001ea13b4)
 
@@ -270,3 +273,7 @@ Martin Goellnitz / Mon, 30 Apr 2018 21:55:51 [8484d90272c85bbd56dbf55a101776a649
 Martin Goellnitz / Tue, 30 Apr 2019 11:01:23 [ec496740ac1688533bb73c46a3500bad100297f3](https://github.com/mgoellnitz/trackdown/commit/ec496740ac1688533bb73c46a3500bad100297f3)
 
     refs #GOGS - honor that gitea now is the primary choice over gogs
+
+Martin Goellnitz / Tue, 30 Apr 2019 11:10:01 [df6f4204e5f5b711ca1d1c864e6b146d0a52092f](https://github.com/mgoellnitz/trackdown/commit/df6f4204e5f5b711ca1d1c864e6b146d0a52092f)
+
+    refs #GOGS - add codeberg as the default for gitea
