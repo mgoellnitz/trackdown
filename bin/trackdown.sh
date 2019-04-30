@@ -28,19 +28,19 @@ if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
   MYNAME=`basename $0`
-MSG=$(echo -e H4sIAJ4h6FoAA6WVTU/cMBCG7/sr5tZFguXOFaQKqUiVCr2s9uA4sxuTxOP6Y1fpr++M7QRoF1WI \
-CwGP5/UznzwFdcCb1er24Q48qXZUDraahgF1NGRhbwbcrQC+e2PjfKNcHwIcz979ZkIEE0LCAHvy \
-cEQfxH4sfprc9I7nrZhih2ApVmc1DGe1IBKo7AhWjQjHzdgW/dFYhO2Iu//CnTqjO1AeYVS+x1Y0 \
-G8wCRaree1dH4Byj2mjUjFk8U8Czbj8wJgd6IGaUeLIPRK90b+wB1uTkOutOcDKx40TYqxb3Kg0x \
-a1xUedeqiKz3lH8Bj46CieSnqs2RSB4HNjLnwURO+zjypyPqa3DWRFa458/fGPK0sfD1/hGY8QG9 \
-Tl4ibLyyupvT7D15CWmyusB6PBpKgdlDDnPRG1WI6IEvrxllUM2lIHWJv42JTdI9xg35wyVLtJJ+ \
-ttMh5FuoLsGZXmlqEa7AIrYBnn/VRHgcOf+gwYCTYHIc8yFHrGzLRi5AidAUUKc894wgObHV+yUi \
-4Q2UvEYIE2OP5aHCCz1seUBo91LLanhxdp6eueoivQc6WX6FyrMHc0QLiqPBCfqNpGMJh0P7qQbp \
-trncXMJcy3ZRnCh94WY1drMwcS6ZiZHSGyI5Pkd0BgMkRdWlUdy2yQ+QNvBpuqWysN3G650wbm/0 \
-7lXq3tT+LO+au5A7YIR4UdhlZni2+EfmXivnuJohnMhzoS8+Ty19V6ucMmpp5XzMb+eG/Fhq2fM6 \
-u10vbfyS588D14nJXZAW3vn0I6Szz7tdUB4MUcUUpIgdnXglGNwzDRdmVHnVqYZSzNvnn/0hrihj \
-IdYyka92ZNku4tEaz2e8zeqLvGHqouk8WfMbs0Ad21e7L0cmpkfZPHc8fPMKz/HV/2/7N0z8B3Ou \
-/gDp5xrVCQcAAA==)
+MSG=$(echo -e H4sIABEVyFwCA62VTU8bMRCG7/kVc2siQXLnClKFVKRKhV6iHLy7k12zux7XH4m2v74ztjeENggh \
+emHB43n9zCdPXrV4s1jcPtyBI9WMysK2pmHAOmgysNcD7hYA3502Yb6Rrw8eDhfvftM+gPY+ooc9 \
+OTig82I/ZL+a7PSG562YQodgKBRnNQwXtSAQqOQIRo0Ih/XYZP1RG4TtiLt34Y6drjtQDmFUrsdG \
+NCtMAlmq3HtTR+Aso5qg1YyZPaPHi24/MEQL9UDMKPEkHwhO1b02LSzJynXWneCoQ8eJMNcN7lUc \
+QtJYFXnbqICs95R+AYeWvA7kpqLNkUgeBzYyZ6sDp30c+dMR9SU4owMr3PPnbwx5Whv4ev8IzPiA \
+ro5OIqycMnU3p9k5chLSZOoM6/CgKXpm9ynMk96ofEAHfHnJKIOqrgSpi/ytdKhi3WNYk2uvWKKR \
+9LOdWp9uoboCq3tVU4NwDQax8fD8qyTC4cj5hxo0WAkmxTEfcsTKNGzkAuQIdQa1ynHPCJIVW7mf \
+IxJeT9HVCH5i7DE/lHmhhy0PCO1ealkML87W0TNXXaT3QEfDr1B+ttUHNKA4GpygX0s6TuFwaD/V \
+IN02l5tLmGrZnBQnil+4WbVZn5g4l8zESPEVkRxfIrqAAZKi4lIpbtvoBohr+DTdqbKw3YbNThi3 \
+N/XuLHWvan+Rd8ldyB0wQlhldpkZni3+kbiXylqupvdHclzoFfyPnKIqZY6J1c9J5fMlPy+dufpo \
+dlFtpIErdO1m7uaNKJ3l/PPwZXpSR8QT+nz6EeTZ582OyA/6oEL0UtCOjrweNO6Zhos0qrT2VEUx \
+pE30zy4RV5QREWuezrN9mTeNeDTa8RlvtvIib5uydDpHRv/GJFBG+GwPpsjE9Chb6I4HcV7nKb7y \
+v27/ion/YM7FHzis0u4VBwAA)
   echo $MSG|sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 

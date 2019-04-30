@@ -43,8 +43,8 @@ CMD bitbucket [[t/]p [u[:c]]]
   Setup bitbucket.org mirroring project p (in team t) with for user u and (app password c) 
   (needs jq) - Values default to cloned project you're in.
 
-CMD gogs k [p [u]]
-  setup gogs or gitea mirroring project p with given apikey k and gogs/gitea/pikacode base url u 
+CMD gitea k [p [u]]
+  setup gitea (or gogs) mirroring project p with given apikey k and gitea/codeberg/pikacode/gogs base url u 
   (needs jq) - Values default to cloned project you're in.
 
 CMD redmine k p u
