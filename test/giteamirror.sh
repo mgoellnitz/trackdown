@@ -35,7 +35,7 @@ OUTPUT=`$CWD/bin/trackdown.sh gitea k|tail -1`
 assertEquals "Unexpected gitea setup output" "$OUTPUT" "No project name given as the second parameter"
 
 OUTPUT=`$CWD/bin/trackdown.sh gitea k backendzeit/markdown-demo|tail -1`
-assertEquals "Unexpected gitea setup output" "$OUTPUT" "Setting up TrackDown to mirror from backendzeit/markdown-demo on https://v2.pikacode.com"
+assertEquals "Unexpected gitea setup output" "$OUTPUT" "Setting up TrackDown to mirror from backendzeit/markdown-demo on https://codeberg.org"
 
 assertExists "Config file missing" .trackdown/config
 assertExists "Issue collection file missing" gitea-issues.md
