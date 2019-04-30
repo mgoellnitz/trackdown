@@ -2,7 +2,7 @@
 
 ## mirror:
 
-[![20%](https://dummyimage.com/140x30/000000/FFFFFF.png&text=20%25)]()[![80%](https://dummyimage.com/560x30/606060/FFFFFF.png&text=80%25)]()
+![20%](https://di.9f8.de/140x30/000000/FFFFFF.png&text=20%25)![80%](https://di.9f8.de/560x30/606060/FFFFFF.png&text=80%25)
 
 20% completed (1/5) - 80% in progress (4/5)
 
@@ -14,7 +14,7 @@
 
 ## nth:
 
-[![50%](https://dummyimage.com/350x30/000000/FFFFFF.png&text=50%25)]()[![50%](https://dummyimage.com/350x30/eeeeee/808080.png&text=50%25)]()
+![50%](https://di.9f8.de/350x30/000000/FFFFFF.png&text=50%25)![50%](https://di.9f8.de/350x30/eeeeee/808080.png&text=50%25)
 
 50% completed (1/2) - 0% in progress (0/2)
 
@@ -23,7 +23,7 @@
 
 ## oos:
 
-[![100%](https://dummyimage.com/700x30/606060/FFFFFF.png&text=100%25)]()
+![100%](https://di.9f8.de/700x30/606060/FFFFFF.png&text=100%25)
 
 0% completed (0/1) - 100% in progress (1/1)
 
