@@ -717,15 +717,24 @@ Additionally - since you now are on your command line and perhaps don't want
 to switch windows every second - there is a `remote` command to issue commands
 on the remote mirroring source system.
 
+You have to provide the issue-id and the id of the user, which is also always 
+exported to the issue collection file to facilitate this.
+
+The commands available are 
+
+* `assign` to assign issues to users
+
 ```
 trackdown.sh remote assign 68 XYZ
 Assigning 68 to user XYZ
 ```
 
-You have to provide the issue id and the id of the user, which is also always 
-exported to the issue collection file to facilitate this.
+* `comment` to comment issues
 
-Right now there is only the `assign` remote command available.
+```
+trackdown.sh remote comment 68 "Just a comment"
+Adding comment "Just a comment" to issue 68
+```
 
 
 ## GitLab Offline Mirror
@@ -765,16 +774,28 @@ trackdown.sh remote assign 68 XYZ
 Assigning 68 to user XYZ
 ```
 
-You have to provide the issues *real* id - not the short one - and the id of
-the user, which is also always exported to the issue collection file to 
-facilitate this.
+You have to provide the issue-id and the id of the user, which is also always 
+exported to the issue collection file to facilitate this.
 
 The commands available are 
 
 * `assign` to assign issues to users
-* `milestone` to put issues into milestones
+
+```
+trackdown.sh remote assign 68 XYZ
+Assigning 68 to user XYZ
+```
+
 * `comment` to comment issues
-* `issue` to create new issues
+
+```
+trackdown.sh remote comment 68 "Just a comment"
+Adding comment "Just a comment" to issue 68
+```
+
+* `assign` to assign issues to users
+
+* `milestone` to put issues into milestones
 
 
 ## Gitea Offline Mirror
@@ -812,18 +833,24 @@ Additionally - since you now are on your command line and perhaps don't want
 to switch windows every second - there is a `remote` command to issue commands
 on the remote mirroring source system.
 
-```
-trackdown.sh remote assign 68 XYZ
-Assigning 68 to user XYZ
-```
-
 You have to provide the issue id and the id of the user, which is also always 
 exported to the issue collection file to facilitate this.
 
 The commands available are 
 
 * `assign` to assign issues to users
+
+```
+trackdown.sh remote assign 68 XYZ
+Assigning 68 to user XYZ
+```
+
 * `comment` to comment issues
+
+```
+trackdown.sh remote comment 68 "Just a comment"
+Adding comment "Just a comment" to issue 68
+```
 
 It is expected that this also works for [Gogs](gogs) backends as well.
 
@@ -868,9 +895,20 @@ Additionally - since you now are on your command line and perhaps don't want
 to switch windows every second - there is a `remote` command to issue commands
 on the remote mirroring source system.
 
+The commands available are 
+
+* `assign` to assign issues to users
+
 ```
 trackdown.sh remote assign 68 XYZ
 Assigning 68 to user XYZ
+```
+
+* `comment` to comment issues
+
+```
+trackdown.sh remote comment 68 "Just a comment"
+Adding comment "Just a comment" to issue 68
 ```
 
 
