@@ -834,7 +834,7 @@ if [ "$CMD" = "remote" ] ; then
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to $ISSUE"
       curl -X POST -H "$TOKEN" --data "body=${PARAM}" \
-           ${URL}projects/${PROJECT}/issues/${ISSUE}/notes 2>&1 > /dev/null
+           ${URL}projects/${PROJECT}/issues/${ISSUE}/notes  2> /dev/null > /dev/null
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
@@ -847,9 +847,9 @@ if [ "$CMD" = "remote" ] ; then
         if [ "$ISSUEID" != "null" ] ; then
           echo "Assigning $ISSUE to user $PARAM"
           RESULT=$(curl -X PUT -H "$TOKEN" \
-                   ${URL}projects/${PROJECT}/issues/${ISSUEID}?assignee_id=${USERID} 2> /dev/null|jq .message)
+                   ${URL}projects/${PROJECT}/issues/${ISSUE}?assignee_id=${USERID} 2> /dev/null|jq .message)
           if [ "$RESULT" != "null" ] ; then
-            echo "Could not assign issue $ISSUE to $PARAM"
+            echo "Could not assign issue $ISSUE to $PARAM: $RESULT"
           fi
         else
           echo "No issue $ISSUE known."
