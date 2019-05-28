@@ -832,7 +832,7 @@ if [ "$CMD" = "remote" ] ; then
     PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No gitlab project. $Q" $PROJECT
     if [ "$REMOTE" = "comment" ] ; then
-      echo "Adding comment \"$PARAM\" to $ISSUE"
+      echo "Adding comment \"$PARAM\" to issue $ISSUE"
       curl -X POST -H "$TOKEN" --data "body=${PARAM}" \
            ${URL}projects/${PROJECT}/issues/${ISSUE}/notes  2> /dev/null > /dev/null
       exit
@@ -845,7 +845,7 @@ if [ "$CMD" = "remote" ] ; then
       ISSUEID=$(curl -H "$TOKEN" ${URL}projects/${PROJECT}/issues?iid=${ISSUE} 2> /dev/null|jq .[0].id)
       if [ "$USERID" != "null" ] ; then
         if [ "$ISSUEID" != "null" ] ; then
-          echo "Assigning $ISSUE to user $PARAM"
+          echo "Assigning issue $ISSUE to user $PARAM"
           RESULT=$(curl -X PUT -H "$TOKEN" \
                    ${URL}projects/${PROJECT}/issues/${ISSUE}?assignee_id=${USERID} 2> /dev/null|jq .message)
           if [ "$RESULT" != "null" ] ; then
@@ -883,7 +883,7 @@ if [ "$CMD" = "remote" ] ; then
     if [ "$REMOTE" = "comment" ] ; then
       RESULT=$(curl -X POST -H "Authorization: token $TOKEN" -d "{\"body\":\"${PARAM}\"}"\
            ${URL}/comments 2> /dev/null | jq .message)
-      echo "Adding comment \"$PARAM\" to $ISSUE: $RESULT"
+      echo "Adding comment \"$PARAM\" to issue $ISSUE: $RESULT"
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
@@ -895,7 +895,7 @@ if [ "$CMD" = "remote" ] ; then
         # echo $DATA
         RESULT=$(curl -X POST -H "Authorization: token $TOKEN" -d "$DATA"\
              ${URL}/assignees 2> /dev/null | jq .message)
-        echo "Assigning $ISSUE to user $PARAM: $RESULT"
+        echo "Assigning issue $ISSUE to user $PARAM: $RESULT"
       fi
       exit
     fi
@@ -910,9 +910,21 @@ if [ "$CMD" = "remote" ] ; then
     if [ "$DISPLAY" == "$USER" ] ; then
       echo -n "Password for $DISPLAY on bitbucket.org: "
     fi
+    if [ "$REMOTE" = "comment" ] ; then
+      DATA="{\"content\": { \"raw\": \"${PARAM}\" } }"
+      RESULT=$(curl -X POST -u $USER -H 'Content-Type: application/json' -d "$DATA" ${URL}/comments/ 2> /dev/null | jq .type)
+      echo "Adding comment \"$PARAM\" to issue $ISSUE"
+      if [ "$RESULT" = "\"error\"" ] ; then
+        echo "Error"
+      fi
+      exit
+    fi
     if [ "$REMOTE" = "assign" ] ; then
-      echo "Assigning $ISSUE to user $PARAM"
-      DATA="{\"assignee\": { \"username\": \"${PARAM}\" } }"
+      echo "Assigning issue $ISSUE to user $PARAM"
+      DATA="{\"assignee\": null }"
+      if [ "$PARAM" != "none" ] ; then
+        DATA="{\"assignee\": { \"username\": \"${PARAM}\" } }"
+      fi
       RESULT=$(curl -X PUT -u $USER -H 'Content-Type: application/json' -d "$DATA" ${URL} 2> /dev/null | jq .type)
       if [ "$RESULT" = "\"error\"" ] ; then
         echo "Error"
@@ -926,13 +938,13 @@ if [ "$CMD" = "remote" ] ; then
     KEY=`grep redmine.key= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine api key configured. $Q" $KEY
     if [ "$REMOTE" = "comment" ] ; then
-      echo "Adding comment \"$PARAM\" to $ISSUE"
+      echo "Adding comment \"$PARAM\" to issue $ISSUE"
       curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
            -d "{\"issue\":{\"notes\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json 2> /dev/null
       exit
     fi
     if [ "$REMOTE" = "assign" ] ; then
-      echo "Assigning $ISSUE to user $PARAM"
+      echo "Assigning issue $ISSUE to user $PARAM"
       curl -X PUT -H 'Content-Type: application/json' -H "X-Redmine-API-Key: $KEY" \
            -d "{\"issue\":{\"assigned_to_id\":\"$PARAM\"}}" ${URL}/issues/${ISSUE}.json 2> /dev/null
       exit
@@ -957,7 +969,7 @@ if [ "$CMD" = "remote" ] ; then
     fi
     # Not working right now - cannot find documentation
     if [ "$REMOTE" = "assign" ] ; then
-      echo "Assigning $ISSUE to user $PARAM"
+      echo "Assigning issue $ISSUE to user $PARAM"
       curl -X PATCH -H "Authorization: token $TOKEN" -F "assignee=${PARAM}"  \
            ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE} 2> /dev/null | jq .
       exit
