@@ -119,7 +119,10 @@ Martin Goellnitz / Sun, 3 Feb 2019 23:11:04 [fce39b2ac3fb1df3ccfedc93ee99adf49ca
 
     refs #GITLAB - fix mirror init
 
-## GITHUB offline mirror (in progress)
+Martin Goellnitz / Tue, 28 May 2019 22:15:50 [c17d427c4c0b5f4c00a993c29a4eff9c290d26bb](https://github.com/mgoellnitz/trackdown/commit/c17d427c4c0b5f4c00a993c29a4eff9c290d26bb)
+
+    refs #GITLAB remote commands fixed
+
 
 *mirror*
 
@@ -297,3 +300,9 @@ Martin Goellnitz / Tue, 30 Apr 2019 11:31:14 [dda2b840ad1a81475d02877d2118a1b580
 Martin Goellnitz / Tue, 30 Apr 2019 11:31:34 [acfe5dbdc17bed79b6fb9c5f416a2848e89beee3](https://github.com/mgoellnitz/trackdown/commit/acfe5dbdc17bed79b6fb9c5f416a2848e89beee3)
 
     refs #GOGS - change usage message
+
+
+## JIRA offline mirror
+
+From the list of commonly used issue trackers or project management tools, 
+Jira is one of the most frequently mentioned pieces of software. 

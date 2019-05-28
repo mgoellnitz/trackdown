@@ -2,12 +2,11 @@
 
 ## mirror:
 
-![20%](https://di.9f8.de/140x30/000000/FFFFFF.png&text=20%25)![80%](https://di.9f8.de/560x30/606060/FFFFFF.png&text=80%25)
+![25%](https://di.9f8.de/175x30/000000/FFFFFF.png&text=25%25)![75%](https://di.9f8.de/525x30/606060/FFFFFF.png&text=75%25)
 
-20% completed (1/5) - 80% in progress (4/5)
+25% completed (1/4) - 75% in progress (3/4)
 
 * BITBUCKET issue tracker offline mirror (in progress)
-* GITHUB offline mirror (in progress)
 * GITLAB offline mirror (in progress)
 * GOGS and gitea offline mirror (in progress)
 * REDMINE offline mirror (resolved)
