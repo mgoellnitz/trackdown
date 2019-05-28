@@ -244,7 +244,10 @@ Martin Goellnitz / Mon, 30 Apr 2018 23:50:35 [cc285b530edc77f94b6e450e89bd9118ad
 
     refs #BITBUCKET mirror exports comments
 
-## GOGS and gitea offline mirror (in progress)
+Martin Goellnitz / Tue, 28 May 2019 22:59:09 [e9ce6ed0c0c44464f48b6bf3addd915b16e2a826](https://github.com/mgoellnitz/trackdown/commit/e9ce6ed0c0c44464f48b6bf3addd915b16e2a826)
+
+    refs #BITBUCKET remote commands fixed and extended
+
 
 *mirror*
 
