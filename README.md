@@ -719,7 +719,7 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68
+Assigning 68 to user XYZ
 ```
 
 You have to provide the issue id and the id of the user, which is also always 
@@ -762,7 +762,7 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68
+Assigning 68 to user XYZ
 ```
 
 You have to provide the issues *real* id - not the short one - and the id of
@@ -814,7 +814,7 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68
+Assigning 68 to user XYZ
 ```
 
 You have to provide the issue id and the id of the user, which is also always 
@@ -870,17 +870,18 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68
+Assigning 68 to user XYZ
 ```
 
 
 ## Redmine
 
 For historical reasons my [Tangram](https://github.com/mgoellnitz/tangram)
-project uses [Redmine][redmine] and customers also use [Redmine][redmine]. So 
-there are two scenarios where some interfacing would be helpful.
+project used [Redmine][redmine] some time ago and customers also use 
+[Redmine][redmine]. So there are two scenarios where some interfacing would be 
+helpful.
 
-In addition the roadmap outline of TrackDown is very much inspired from the 
+In addition the roadmap outline of TrackDown is very much inspired by the 
 [Redmine][redmine] roadmap page.
 
 ### Offline mirror
@@ -918,7 +919,7 @@ Adding comment "Hi there." to XYZ
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68 
+Assigning 68 to user XYZ
 ```
 
 You have to provide the id of the user - not its name, which is also always 
