@@ -616,12 +616,17 @@ As an alternative you can at least mirror the issues from [GitLab][gitlab] to
 have the notes with you and now the issue IDs for offline code commits.
 
 
-## Gogs and Gitea
+## Gitea and Gogs
 
 Intended for on premises use as a [GIT][git] based solution for Code and Wiki
-together with an issue tracking section, the still available instance at
-[Pikacode](pikacode), also this go based service can be used as a TrackDown
-storage backend or mirroring source.
+together with an issue tracking section, it is also available in some public
+online incarnations like [CodeBerg](codeberg) and [Pikacode](pikacode).
+
+Of course [Gitea](gitea) can be used as a TrackDownstorage backend or mirroring
+source.
+
+We also expect the related [Gogs](gogs) project to be still usable in the
+same way.
 
 
 ## Trac
@@ -714,7 +719,7 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68
+Assigning 68 to user XYZ
 ```
 
 You have to provide the issue id and the id of the user, which is also always 
@@ -757,7 +762,7 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68
+Assigning 68 to user XYZ
 ```
 
 You have to provide the issues *real* id - not the short one - and the id of
@@ -772,30 +777,31 @@ The commands available are
 * `issue` to create new issues
 
 
-## Gogs Offline Mirror
+## Gitea Offline Mirror
 
 For disconnected situations which TrackDown is supposed to support, it is
-possible to connect a workspace to its [Gogs][gogs] issue tracker and mirror 
-tickets for offline use.
+possible to connect a workspace to its [Gitea][gitea] issue tracker and mirror 
+tickets for offline use. 
 
-This is supposed to work with [Pikacode](pikacode) as the available instance
-in the cloud and the community managed fork [Gitea][gitea].
+Setup parameters default to values from the [Git][git] repository your current
+local directory points to.
 
 The mirror - of course - is not intended for changeing the issues in the issue 
-collection file. State changes will most likely be triggered on the [Gogs][gogs]
-instance in use  by your commit messages or manually, after which a call of the 
+collection file. State changes will most likely be triggered on the [Gitea][gitea]
+instance in use by your commit messages or manually, after which a call of the 
 mirroring script can be helpfull.
 
-Instead of `trackdown.sh use` issue `trackdown.sh gogs` to setup the mirror
+Instead of `trackdown.sh use` issue `trackdown.sh gitea` to setup the mirror
 connection.
 
 ```
-trackdown.sh gogs <apitoken> <projectname> [https://<gogs.host>]
+trackdown.sh gitea <apitoken> <projectname> [https://<gitea.host>]
 ```
 
-If you ommit the url prefix, `https://v2.pikacode.com` is used.
+If you ommit the url prefix and no values can be derived from your current
+working directory, `https://codeberg.org` is used.
 
-Afterwards anytime you can connect to the [gogs][gogs] system, collect the 
+Afterwards anytime you can connect to the [Gitea][gitea] system, collect the 
 current mirror state to you local issue collection file and the roadmap.
 
 ```
@@ -808,7 +814,7 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68
+Assigning 68 to user XYZ
 ```
 
 You have to provide the issue id and the id of the user, which is also always 
@@ -818,6 +824,8 @@ The commands available are
 
 * `assign` to assign issues to users
 * `comment` to comment issues
+
+It is expected that this also works for [Gogs](gogs) backends as well.
 
 
 ## Bitbucket.org Offline Mirror
@@ -862,17 +870,18 @@ on the remote mirroring source system.
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68
+Assigning 68 to user XYZ
 ```
 
 
 ## Redmine
 
 For historical reasons my [Tangram](https://github.com/mgoellnitz/tangram)
-project uses [Redmine][redmine] and customers also use [Redmine][redmine]. So 
-there are two scenarios where some interfacing would be helpful.
+project used [Redmine][redmine] some time ago and customers also use 
+[Redmine][redmine]. So there are two scenarios where some interfacing would be 
+helpful.
 
-In addition the roadmap outline of TrackDown is very much inspired from the 
+In addition the roadmap outline of TrackDown is very much inspired by the 
 [Redmine][redmine] roadmap page.
 
 ### Offline mirror
@@ -910,7 +919,7 @@ Adding comment "Hi there." to XYZ
 
 ```
 trackdown.sh remote assign 68 XYZ
-Assigning XYZ to user 68 
+Assigning 68 to user XYZ
 ```
 
 You have to provide the id of the user - not its name, which is also always 
@@ -979,6 +988,11 @@ mv ../wiki/Milestone1-issues.md ../wiki/issues.md
 (cd ../wiki ; git add Milestone1.md) # or hg
 ```
 
+Of course this cannot only be done for mirror issue collections and is e.g.
+used for trackdown itself like for release 1.0 in
+[this](https://github.com/mgoellnitz/trackdown/blob/trackdown/1.0.md) and
+[this](https://gitlab.com/mgoellnitz/trackdown/blob/trackdown/1.0.md) file.
+
 
 [markdown]: https://daringfireball.net/projects/markdown/
 [git]: http://git-scm.com/
@@ -991,6 +1005,7 @@ mv ../wiki/Milestone1-issues.md ../wiki/issues.md
 [redmine]: http://www.redmine.org/
 [gogs]: https://gogs.io/
 [gitea]: https://gitea.io/
+[codeberg]: https://codeberg.org/
 [pikacode]: https://v2.pikacode.com/
 [mdwiki]: http://mdwiki.info
 [jq]: https://stedolan.github.io/jq/
