@@ -63,7 +63,7 @@ if [ ! -z "$LINE" ] ; then
     STATUS="resolved"
   fi
 fi
-echo "TrackDown: $ID $STATUS"
+echo "TrackDown-$VCS: $ID $STATUS"
 if [ ! -z "$STATUS" ] ; then
   for TID in `echo "$ID"|sed -e 's/,/\ /g'`; do
     HASID=`grep "^\#\#\ ${TID}" $ISSUES`
@@ -117,7 +117,7 @@ if [ ! -z "$STATUS" ] ; then
   if [ ! -z "$AUTOCOMMIT" ] ; then
     WD=`pwd`
     TRACKDOWN=`dirname $ISSUES`
-    # TODO: WHy do we re-discover the VCS here?
+    # TODO: Why do we re-discover the VCS here?
     VCS=`test -d $TRACKDOWN/.hg && echo hg || echo git`
     echo "TrackDown: committing with $VCS in $TRACKDOWN"
     ( cd $TRACKDOWN ; ${VCS} commit -m "Committed for issue(s) #$ID" issues.md roadmap.md > /dev/null)
