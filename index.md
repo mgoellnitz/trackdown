@@ -677,8 +677,9 @@ version of [MDWiki][mdwiki] [exists on GitHub](https://github.com/mgoellnitz/mdw
 
 These seem to address similar issues, but are not under active development
 
- - https://github.com/glogiotatidis/gitissius
- - https://github.com/keredson/distributed-issue-tracker
+ - [GitIssius][gitissius]
+ - [Distributed Issue Tracker](https://github.com/keredson/distributed-issue-tracker)
+ - [Bugs Everywhere][be]
 
 
 # Migration and Offline Mirroring
@@ -1033,20 +1034,22 @@ used for trackdown itself like for release 1.0 in
 
 
 [markdown]: https://daringfireball.net/projects/markdown/
-[git]: http://git-scm.com/
+[mdwiki]: http://mdwiki.info
+[jq]: https://stedolan.github.io/jq/
+[jgit]: https://eclipse.org/jgit/
 [trac]: http://trac.edgewall.org/
-[bitbucket]: https://bitbucket.org/
 [fossil]: http://fossil-scm.org/index.html/doc/trunk/www/index.wiki
+[redmine]: http://www.redmine.org/
+[be]: http://www.bugseverywhere.org/
+[gitissius]: https://github.com/glogiotatidis/gitissius
+[git]: http://git-scm.com/
+[hg]: https://www.mercurial-scm.org/
+[bitbucket]: https://bitbucket.org/
 [gitlab]: https://gitlab.com/
 [github]: https://github.com/
-[jgit]: https://eclipse.org/jgit/
-[redmine]: http://www.redmine.org/
 [gogs]: https://gogs.io/
 [gitea]: https://gitea.io/
 [codeberg]: https://codeberg.org/
 [pikacode]: https://v2.pikacode.com/
-[mdwiki]: http://mdwiki.info
-[jq]: https://stedolan.github.io/jq/
-[hg]: https://www.mercurial-scm.org/
 [hth]: https://www.perforce.com/products/helix-teamhub
 [vss]: https://www.visualstudio.com/team-services/
