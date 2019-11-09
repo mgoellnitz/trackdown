@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-image: provocon/gitlabci-gradle-java
+image: gradle:jdk11
 
 before_script:
   - export GRADLE_USER_HOME=/tmp/.gradle
