@@ -21,9 +21,9 @@
 
 ## oos:
 
-![100%](https://di.9f8.de/700x30/606060/FFFFFF.png&text=100%25)
+![100%](https://di.9f8.de/700x30/000000/FFFFFF.png&text=100%25)
 
-0% completed (0/1) - 100% in progress (1/1)
+100% completed (1/1) - 0% in progress (0/1)
 
-* NETBEANS interoperation not working due to missing hook implementation in JGit (in progress)
+* NETBEANS interoperation not working due to missing hook implementation in JGit (resolved)
 

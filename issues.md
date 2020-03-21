@@ -7,7 +7,7 @@ Right now we have four areas/iterations/sprints in this issue list:
 - *nth* This feature is nice to have but can be left out.
 - *oos* This issue is relevant but out of the scope of this project.
 
-## NETBEANS interoperation not working due to missing hook implementation in JGit (in progress)
+## NETBEANS interoperation not working due to missing hook implementation in JGit (resolved)
 
 *oos*
 
@@ -18,7 +18,8 @@ of the [GIT](http://git-scm.com/) hooks - and not the ones we  use here.
 
 I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with TrackDown
-could not be tested so far.
+could not be tested so far. Output from recent NetBeans 11.3 suggests that
+TrackDown now works from within the IDE.
 
 ## MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
 
