@@ -566,17 +566,18 @@ mirrored [here](https://github.com/mgoellnitz/netbeans-fossil-plugin).
 ## Bitbucket
 
 [Bitbucket.org][bitbucket] a brilliant tool for Open Source or small projects.  
-It has decent VCS solutions, a WIKI which can be used distributed through 
-[GIT][git] or [Mercurial][hg], since this backend together with TrackDown can
-be used in any scenario with both VCS solutions.
+It has decent VCS solutions, a wiki which can be used distributed through 
+[GIT][git]. In the past they a brilliant backend for TrackDownwith both VCS 
+solutions, since they also provided support for [Mercurial][hg], which was
+abandoned mid 2020.
 
 The only thing I'm missing is the distributed offline work for ticketing.
 
 So in this case it is possible to leave out the ticketing of [Bitbucket][bitbucket] 
-and use TrackDown with [Bitbucket][bitbucket] as the [GIT][git] or 
-[Mercurial][hg] based storage backend. And this is exactly what TrackDown was 
-designed for. For migration purposes or if the limited issue tracking within
-bitbucket.org is sufficient, the mirroring feature might come in handy.
+and use TrackDown with [Bitbucket][bitbucket] as the [GIT][git] based storage 
+backend. And this is exactly what TrackDown was designed for. For migration 
+purposes or if the limited issue tracking within bitbucket.org is sufficient, the 
+mirroring feature might come in handy.
 
 Atlassian themselves recommends using Jira.
 
