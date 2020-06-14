@@ -314,7 +314,7 @@ Martin Goellnitz / Tue, 30 Apr 2019 11:31:34 [acfe5dbdc17bed79b6fb9c5f416a2848e8
     refs #GOGS - change usage message
 
 
-## JIRA offline mirror
+## JIRA offline mirror (in progress)
 
 *mirror*
 
@@ -322,3 +322,7 @@ From the list of commonly used issue trackers or project management tools,
 Jira is one of the most frequently mentioned pieces of software. Despite the
 high configurability, some generic extraction is issues as a mirror should be
 made possible with TrackDown.
+
+Martin Goellnitz / Sun, 14 Jun 2020 11:33:04 [4ca9ab255d42721296d418052c6cfb0b2877f060](https://github.com/mgoellnitz/trackdown/commit/4ca9ab255d42721296d418052c6cfb0b2877f060)
+
+    refs #JIRA mirror first steps
