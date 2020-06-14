@@ -7,6 +7,7 @@ Right now we have four areas/iterations/sprints in this issue list:
 - *nth* This feature is nice to have but can be left out.
 - *oos* This issue is relevant but out of the scope of this project.
 
+
 ## NETBEANS interoperation not working due to missing hook implementation in JGit (resolved)
 
 *oos*
@@ -20,6 +21,7 @@ I already helped to add the post-commit hook which is needed by this project
 and it now is part of the latest nightly builds. Interoperation with TrackDown
 could not be tested so far. Output from recent NetBeans 11.3 suggests that
 TrackDown now works from within the IDE.
+
 
 ## MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
 
@@ -36,6 +38,7 @@ This seems to be hard to accomplish with GIT, since there is only a `pre-push`
 hook available and we would need a `post-push` hook to get the right timing
 after the changes have been reflected in the remote issue tracking system.
 
+
 ## GRAPHICAL progress bar for iterations in roadmap (resolved)
 
 *nth*
@@ -51,6 +54,7 @@ Martin Goellnitz / Wed, 28 Dec 2016 01:13:18 [415121a80ee3a216e9a02635df34b30dac
 Martin Goellnitz / Wed, 28 Dec 2016 01:14:37 [30444b0522236166b34660802f12938b043935af](https://github.com/mgoellnitz/trackdown/commit/30444b0522236166b34660802f12938b043935af)
 
     fixes #GRAPHICAL progress bar generation in commit hook
+
 
 ## GITLAB offline mirror (in progress)
 
@@ -163,6 +167,7 @@ Martin Goellnitz / Mon, 30 Apr 2018 19:18:38 [1b4b0f0e5d5a773e520f4d979059ffb98d
 
     refs #GITHUB comments get exported
 
+
 ## REDMINE offline mirror (resolved)
 
 *mirror*
@@ -221,6 +226,7 @@ Martin Goellnitz / Wed, 28 Dec 2016 01:57:29 [01c5211aa1ff2a2056439a1ee1c73ddc7d
 
     resolves #REDMINE migration to trackdown now tested to be working
 
+
 ## BITBUCKET issue tracker offline mirror (in progress)
 
 *mirror*
@@ -249,6 +255,8 @@ Martin Goellnitz / Tue, 28 May 2019 22:59:09 [e9ce6ed0c0c44464f48b6bf3addd915b16
 
     refs #BITBUCKET remote commands fixed and extended
 
+
+## GOGS offline mirror (in progress)
 
 *mirror*
 
@@ -308,5 +316,9 @@ Martin Goellnitz / Tue, 30 Apr 2019 11:31:34 [acfe5dbdc17bed79b6fb9c5f416a2848e8
 
 ## JIRA offline mirror
 
+*mirror*
+
 From the list of commonly used issue trackers or project management tools, 
-Jira is one of the most frequently mentioned pieces of software. 
+Jira is one of the most frequently mentioned pieces of software. Despite the
+high configurability, some generic extraction is issues as a mirror should be
+made possible with TrackDown.
