@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2019 Martin Goellnitz
+# Copyright 2015-2020 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,19 +28,20 @@ if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
   MYNAME=`basename $0`
-MSG=$(echo -e H4sIABEVyFwCA62VTU8bMRCG7/kVc2siQXLnClKFVKRKhV6iHLy7k12zux7XH4m2v74ztjeENggh \
-emHB43n9zCdPXrV4s1jcPtyBI9WMysK2pmHAOmgysNcD7hYA3502Yb6Rrw8eDhfvftM+gPY+ooc9 \
-OTig82I/ZL+a7PSG562YQodgKBRnNQwXtSAQqOQIRo0Ih/XYZP1RG4TtiLt34Y6drjtQDmFUrsdG \
-NCtMAlmq3HtTR+Aso5qg1YyZPaPHi24/MEQL9UDMKPEkHwhO1b02LSzJynXWneCoQ8eJMNcN7lUc \
-QtJYFXnbqICs95R+AYeWvA7kpqLNkUgeBzYyZ6sDp30c+dMR9SU4owMr3PPnbwx5Whv4ev8IzPiA \
-ro5OIqycMnU3p9k5chLSZOoM6/CgKXpm9ynMk96ofEAHfHnJKIOqrgSpi/ytdKhi3WNYk2uvWKKR \
-9LOdWp9uoboCq3tVU4NwDQax8fD8qyTC4cj5hxo0WAkmxTEfcsTKNGzkAuQIdQa1ynHPCJIVW7mf \
-IxJeT9HVCH5i7DE/lHmhhy0PCO1ealkML87W0TNXXaT3QEfDr1B+ttUHNKA4GpygX0s6TuFwaD/V \
-IN02l5tLmGrZnBQnil+4WbVZn5g4l8zESPEVkRxfIrqAAZKi4lIpbtvoBohr+DTdqbKw3YbNThi3 \
-N/XuLHWvan+Rd8ldyB0wQlhldpkZni3+kbiXylqupvdHclzoFfyPnKIqZY6J1c9J5fMlPy+dufpo \
-dlFtpIErdO1m7uaNKJ3l/PPwZXpSR8QT+nz6EeTZ582OyA/6oEL0UtCOjrweNO6Zhos0qrT2VEUx \
-pE30zy4RV5QREWuezrN9mTeNeDTa8RlvtvIib5uydDpHRv/GJFBG+GwPpsjE9Chb6I4HcV7nKb7y \
-v27/ion/YM7FHzis0u4VBwAA)
+MSG=$(echo -e H4sIAB/t5V4CA6WVTW/aQBCG7/yKuRWkBO65VYlUpWqkSk16QRzW9oA3tnfd/QDRX993dm0HGqIo \
+ygWDZ2f2eeeLJ692fDOb3T7ckbOq6lRP69K2LZdBW0Nb3fJmRvTTaRPGE/l462l/8ewP7QNp7yN7 \
+2lpHe3Ze7PvsV9r++IbnrZhCzWRsGJxV216MRcGSSo5kVMe0X3ZVjt9pw7TuePMu3KHWZU3KMXXK \
+NVxJzIJTgBxqOPdmHIHrgWqCViNm9oyeL7r94hB7KlsLRtGTfCg4VTba7GhuezmOuEc66FAjEea6 \
+4q2KbUgxFkP4vlKBEe8pfSHHvfU6WHccYkOJ5LGFEZw7HZD2rsOjtrYZxBkdEOEej/8x5Gpt6Nv9 \
+I4HxgV0ZnSgsnDJlPabZOetE0tGUGdbxXtvowe6TzClep3xgRzg8B0qriitBqiOehQ5FLBsOS+t2 \
+VwhRSfphtzufTrG6ol43qrQV0zUZ5srT858hEY475J9K0tSLmKRjfAnFylQwogBZoc6gvXLoGUHq \
+xTacz4qE19voSiZ/BHaXL8q81NAaA2I3L7UcDC/OvbPPqLqE3pI9GNxi87U7vWdDCmr4SM1S0jHJ \
+gbTfqpVuG8uNEqZaVlPEo41f0KzaLCcm5BJMQIpnRPL6EtEFDJIUDS6FQttG11Jc0qfppsrSeh1W \
+G2Fc35Sbk9Sd1f4i7xxdiA7oKCwyu8wMZgsfiXuu+h7V9P5gHQq9+Dz1s3YKF0cKFCfQr8iO91oZ \
++i7mV6RzvxiTewkw2AYJhwSo0cYHDBHn0ynXZ8xTZVkNzRZTxvxYWryf4w6Zj8VHa8xqJWNUsNut \
+xplaSaSTyn8+hcMMp76ME/r49iPIo8+bfZkvREZD9FKt2h6wpDRvQYNKdCotX1XYGNI+fLXRxJVl \
+UMWad8TJ1s77Tjwq7fAO+3W4ETtvWH21s0b/5RRgWCQn2zgpE9Oj7MI7rIPxTyXpG/5xt2dM+AHO \
+2T/3tMQNmwcAAA==)
   echo $MSG|sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 
@@ -479,9 +480,9 @@ if [ "$CMD" = "mirror" ] ; then
         echo "## $IID $TITLE ($s)"  >>$ISSUES
         echo "" >>$ISSUES
         echo -n "*${MILESTONE}*"  >>$ISSUES
-        LABELS=`jq  -c "${JQ}.labels" $EXPORT`
+        LABELS=`jq  -c "${JQ}.labels" $EXPORT|sed -e 's/"/\`/g'|sed -e 's/,/][/g'`
         if [ ! "$LABELS" = "[]" ] ; then
-          echo -n " $LABELS"|sed -e 's/"/\`/g'|sed -e 's/,/][/g' >>$ISSUES
+          echo -n " $LABELS" >>$ISSUES
         fi
         if [ "$ASSIGNEE" != "null" ] ; then
           echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
@@ -661,6 +662,105 @@ if [ "$CMD" = "mirror" ] ; then
           fi
         done
       fi
+    done
+  fi
+
+  if [ $TYPE = "jira" ] ; then
+    # project = "BMPCMS - Business Marketplace Content Management System"  AND component in ("CM Backend")
+    # rest/api/latest/search?jql=project=13211&component+in+(30428)
+    BASEURL=`grep jira.url= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No jira source url configured. $Q" $BASEURL
+    USER=`grep atlassian.user= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No atlassian user configured. $Q" $USER
+    DISPLAY=`echo $USER|cut -d ':' -f 1`
+    PROJECT=`grep jira.project= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No jira project configured. $Q" $PROJECT
+    issueCollectionHeader "Issues"
+    PAGES="1"
+    PAGE="1"
+    START="0"
+    while [ "$PAGE" -le "$PAGES" ] ; do
+      echo "Chunk $PAGE"
+      URL="${BASEURL}/rest/api/latest/search?startAt=${START}&maxResults=100&jql=project%3D${PROJECT}"
+      # echo "URL: $URL"
+      curl --basic -u $USER $URL 2> /dev/null >$EXPORT
+      checkExport $EXPORT
+      RESULT=`jq '.error?|.message?' $EXPORT`
+      if [ ! "$RESULT" = "null" ] ; then
+        echo "Cannot mirror issues for jira project ${PROJECT} as ${DISPLAY}: ${RESULT}"
+        cd $CWD
+        exit
+      fi
+      ISSUENUMBER=$(jq '.total' $EXPORT)
+      PAGES=$[ $ISSUENUMBER / 100 + 1 ]
+      for id in $(jq  -c '.issues[]|.id' $EXPORT|sed -e 's/"//g') ; do
+        echo $id
+        echo "" >>$ISSUES
+        echo "" >>$ISSUES
+        JQ='.issues[]|select(.id == "'$id'")|.fields|'
+        KEY=`jq  -c '.issues[]|select(.id == "'$id'")|.key' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        TITLE=`jq  -c "${JQ}.summary" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        STATE=`jq  -c "${JQ}.status.statusCategory.key" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g'`
+        PRIORITY=`jq  -c "${JQ}.priority|.name" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        MILESTONE=`jq  -c "${JQ}.fixVersions[0]|.name" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        VERSIONS=`jq  -c "${JQ}.versions[]|.name" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        LABELS=`jq  -c "${JQ}.labels" $EXPORT|sed -e 's/"/\`/g'|sed -e 's/,/][/g'`
+        AUTHOR=`jq  -c "${JQ}.creator.displayName" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        ASSIGNEE=`jq  -c "${JQ}.assignee.displayName" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        DESCRIPTION=`jq  -c "${JQ}.description" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        COMMENTS=""
+
+        echo "## $KEY $TITLE ($s)"  >>$ISSUES
+        echo "" >>$ISSUES
+        LINEBREAK=
+        if [ "$MILESTONE" != "" ] ; then
+          echo -n "*${MILESTONE}*"  >>$ISSUES
+          LINEBREAK="true"
+        fi
+        if [ ! "$LABELS" = "[]" ] ; then
+          echo -n " $LABELS" >>$ISSUES
+          LINEBREAK="true"
+        fi
+        if [ "$ASSIGNEE" != "null" ] ; then
+          if [ ! -z $LINEBREAK ] ; then
+            echo -n " - " >>$ISSUES
+          fi
+          echo -n "Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+          LINEBREAK="true"
+        fi
+        if [ ! -z $LINEBREAK ] ; then
+          echo "" >>$ISSUES
+        fi
+        if [ "$AUTHOR" != "" ] ; then
+          echo "" >>$ISSUES
+          echo "Author: \`$AUTHOR\`" >>$ISSUES
+        fi
+        ## severity / priority
+        echo "" >>$ISSUES
+        echo "### Priority: $PRIORITY" >>$ISSUES
+        if [ "$VERSIONS" != "" ] ; then
+          echo "" >>$ISSUES
+          echo "affected versions: $VERSIONS" >>$ISSUES
+        fi
+        if [ "$DESCRIPTION" != "" ] ; then
+          echo "" >>$ISSUES
+          echo "### Description" >>$ISSUES
+          echo "" >>$ISSUES
+          echo "$DESCRIPTION" >>$ISSUES
+        fi
+        ## comments
+        if [ "$COMMENTS" != "" ] ; then
+          echo "" >>$ISSUES
+          echo "### Comments" >>$ISSUES
+          echo "" >>$ISSUES
+          echo "$COMMENTS" >>$ISSUES
+        fi
+
+        # jq  '.issues[]|select(.id == "'$id'")' $EXPORT
+      done
+      PAGE=$[ $PAGE + 1 ]
+      START=$[ $START + 100 ]
     done
   fi
 
@@ -935,6 +1035,22 @@ if [ "$CMD" = "remote" ] ; then
       exit
     fi
   fi
+  if [ "$TYPE" = "jira" ] ; then
+    USER=`grep atlassian.user= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No atlassian user configured. $Q" $USER
+    PROJECT=`grep jira.project= $TDCONFIG|cut -d '=' -f 2`
+    bailOnZero "No jira project configured. $Q" $PROJECT
+
+    URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues/${ISSUE}"
+    if [ "$REMOTE" = "comment" ] ; then
+      echo "Adding comment NYI."
+      exit
+    fi
+    if [ "$REMOTE" = "assign" ] ; then
+      echo "Assigning issue $ISSUE to user $PARAM. NYI"
+      exit
+    fi
+  fi
   if [ "$TYPE" = "redmine" ] ; then
     URL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No redmine source url configured. $Q" $URL
@@ -1070,6 +1186,33 @@ if [ "$CMD" = "bitbucket" ] ; then
   fi
   echo "bitbucket.project=$P" >> $TDCONFIG
   echo "me=$REMOTEUSER" >> $TDCONFIG
+
+fi
+
+
+# jira command to setup jira as a remote mirror source
+if [ "$CMD" = "jira" ] ; then
+
+  checkJq
+  P=$2
+  bailOnZero "No project name given as the first parameter" $P
+  U=$3
+  bailOnZero "No username given as the second parameter" $U
+  T=${4:-$ATLASSIAN_TOKEN}
+  bailOnZero "No token given as the third parameter" $T
+  B=${5:-$ATLASSIAN_URL}
+  bailOnZero "No jira base url given as the forth parameter" $B
+  preventRepeatedMirrorInit
+  echo "Setting up TrackDown to mirror $P as $U from $B"
+  setupCollectionReference jira
+  echo "atlassian.user=$U:$T" >> $TDCONFIG
+  URL="$B/rest/api/latest/project?key=$P"
+  # echo "URL: $URL"
+  PID=$(curl --basic -u "$U:$T" $URL 2> /dev/null|jq '.[]|.id'|sed -e 's/"//g')
+  echo "jira.url=$B" >> $TDCONFIG
+  echo "jira.project=$PID" >> $TDCONFIG
+  ## TODO: Which string to take for user recognition
+  #echo "me=$U" >> $TDCONFIG
 
 fi
 

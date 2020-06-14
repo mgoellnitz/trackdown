@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2016-2018 Martin Goellnitz
+# Copyright 2016-2020 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ before
 
 # test number of lines in usage message
 USAGE=`$CWD/bin/trackdown.sh|wc -l`
-assertEquals "Unexpected usage output" $USAGE 58
+assertEquals "Unexpected usage output" $USAGE 62
 
 # test if every command section in the script has a usage hint
 $CWD/bin/trackdown.sh|grep ^trackdown.sh|cut -d ' ' -f 2|sort > usages.txt
