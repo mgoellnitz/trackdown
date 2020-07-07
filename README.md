@@ -567,8 +567,8 @@ mirrored [here](https://github.com/mgoellnitz/netbeans-fossil-plugin).
 
 [Bitbucket.org][bitbucket] a brilliant tool for Open Source or small projects.  
 It has decent VCS solutions, a wiki which can be used distributed through 
-[GIT][git]. In the past they a brilliant backend for TrackDownwith both VCS 
-solutions, since they also provided support for [Mercurial][hg], which was
+[GIT][git]. In the past they were a brilliant backend for TrackDown with both 
+VCS  solutions, since they also provided support for [Mercurial][hg], which was
 abandoned mid 2020.
 
 The only thing I'm missing is the distributed offline work for ticketing.
