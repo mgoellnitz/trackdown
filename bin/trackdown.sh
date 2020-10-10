@@ -666,13 +666,14 @@ if [ "$CMD" = "mirror" ] ; then
   fi
 
   if [ $TYPE = "jira" ] ; then
-    # project = "BMPCMS - Business Marketplace Content Management System"  AND component in ("CM Backend")
-    # rest/api/latest/search?jql=project=13211&component+in+(30428)
     BASEURL=`grep jira.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No jira source url configured. $Q" $BASEURL
     USER=`grep atlassian.user= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No atlassian user configured. $Q" $USER
     DISPLAY=`echo $USER|cut -d ':' -f 1`
+    if [ "$DISPLAY" != "$USER" ] ; then
+      COOKIEFILE=$(echo $USER|cut -d ':' -f 2)
+    fi
     PROJECT=`grep jira.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No jira project configured. $Q" $PROJECT
     issueCollectionHeader "Issues"
@@ -682,8 +683,12 @@ if [ "$CMD" = "mirror" ] ; then
     while [ "$PAGE" -le "$PAGES" ] ; do
       echo "Chunk $PAGE"
       URL="${BASEURL}/rest/api/latest/search?startAt=${START}&maxResults=100&jql=project%3D${PROJECT}"
-      # echo "URL: $URL"
-      curl --basic -u $USER $URL 2> /dev/null >$EXPORT
+      echo "URL: $URL"
+      if [ -f "$COOKIEFILE" ] ; then
+        curl -b $COOKIEFILE $URL 2> /dev/null >$EXPORT
+      else
+        curl --basic -u $USER $URL 2> /dev/null >$EXPORT
+      fi
       checkExport $EXPORT
       RESULT=`jq '.error?|.message?' $EXPORT`
       if [ ! "$RESULT" = "null" ] ; then
@@ -1206,11 +1211,15 @@ if [ "$CMD" = "jira" ] ; then
   echo "Setting up TrackDown to mirror $P as $U from $B"
   setupCollectionReference jira
   echo "atlassian.user=$U:$T" >> $TDCONFIG
-  URL="$B/rest/api/latest/project?key=$P"
-  # echo "URL: $URL"
-  PID=$(curl --basic -u "$U:$T" $URL 2> /dev/null|jq '.[]|.id'|sed -e 's/"//g')
+  if [ ! -z "$(echo "$T"|grep '\.')" ] ; then
+    echo "jira.project=$P" >> $TDCONFIG
+  else
+    URL="$B/rest/api/latest/project?key=$P"
+    # echo "URL: $URL"
+    PID=$(curl --basic -u "$U:$T" $URL 2> /dev/null|jq '.[]|.id'|sed -e 's/"//g')
+    echo "jira.project=$PID" >> $TDCONFIG
+  fi
   echo "jira.url=$B" >> $TDCONFIG
-  echo "jira.project=$PID" >> $TDCONFIG
   ## TODO: Which string to take for user recognition
   #echo "me=$U" >> $TDCONFIG
 
