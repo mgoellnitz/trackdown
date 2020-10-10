@@ -448,6 +448,7 @@ if [ "$CMD" = "mirror" ] ; then
   checkJq
   EXPORT=${2:-"/tmp/issues.json"}
   COMMENTS_EXPORT=${3:-"/tmp/issue-comments.json"}
+  ITEM=${4:-"/tmp/issue.json"}
   Q="Did you setup $TYPE mirroring?";
   if [ $TYPE = "gitlab" ] ; then
     URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
@@ -669,6 +670,7 @@ if [ "$CMD" = "mirror" ] ; then
     BASEURL=`grep jira.url= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No jira source url configured. $Q" $BASEURL
     USER=`grep atlassian.user= $TDCONFIG|cut -d '=' -f 2`
+    JQL_SUFFIX=`grep ^jql.suffix= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No atlassian user configured. $Q" $USER
     DISPLAY=`echo $USER|cut -d ':' -f 1`
     if [ "$DISPLAY" != "$USER" ] ; then
@@ -681,9 +683,9 @@ if [ "$CMD" = "mirror" ] ; then
     PAGE="1"
     START="0"
     while [ "$PAGE" -le "$PAGES" ] ; do
-      echo "Chunk $PAGE"
-      URL="${BASEURL}/rest/api/latest/search?startAt=${START}&maxResults=100&jql=project%3D${PROJECT}"
-      echo "URL: $URL"
+      echo "Chunk $PAGE / $PAGES"
+      URL="${BASEURL}/rest/api/latest/search?startAt=${START}&maxResults=200&jql=project%3D${PROJECT}${JQL_SUFFIX}"
+      # echo "URL: $URL"
       if [ -f "$COOKIEFILE" ] ; then
         curl -b $COOKIEFILE $URL 2> /dev/null >$EXPORT
       else
@@ -696,24 +698,27 @@ if [ "$CMD" = "mirror" ] ; then
         cd $CWD
         exit
       fi
-      ISSUENUMBER=$(jq '.total' $EXPORT)
-      PAGES=$[ $ISSUENUMBER / 100 + 1 ]
+      if [ -z "$ISSUENUMBER" ] ; then
+        ISSUENUMBER=$(jq '.total' $EXPORT)
+        PAGES=$[ $ISSUENUMBER / 200 + 1 ]
+        echo "$ISSUENUMBER total issues"
+      fi
       for id in $(jq  -c '.issues[]|.id' $EXPORT|sed -e 's/"//g') ; do
         echo $id
         echo "" >>$ISSUES
         echo "" >>$ISSUES
-        JQ='.issues[]|select(.id == "'$id'")|.fields|'
-        KEY=`jq  -c '.issues[]|select(.id == "'$id'")|.key' $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        TITLE=`jq  -c "${JQ}.summary" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        STATE=`jq  -c "${JQ}.status.statusCategory.key" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g'`
-        PRIORITY=`jq  -c "${JQ}.priority|.name" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        MILESTONE=`jq  -c "${JQ}.fixVersions[0]|.name" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        VERSIONS=`jq  -c "${JQ}.versions[]|.name" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        LABELS=`jq  -c "${JQ}.labels" $EXPORT|sed -e 's/"/\`/g'|sed -e 's/,/][/g'`
-        AUTHOR=`jq  -c "${JQ}.creator.displayName" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        ASSIGNEE=`jq  -c "${JQ}.assignee.displayName" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        DESCRIPTION=`jq  -c "${JQ}.description" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        jq '.issues[]|select(.id == "'$id'")|{key: .key, title: .fields.summary, state: .fields.status.statusCategory.key, priority: .fields.priority.name, milestone: .fields.fixVersions[0].name, labels: .fields.labels, author: .fields.creator.displayName, assignee: .fields.assignee.displayName, description: .fields.description, versions: .fields.versions}' $EXPORT > $ITEM
+        KEY=`jq  -c ".key" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        TITLE=`jq  -c ".title" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        STATE=`jq  -c ".state" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/indeterminate/in progress/g'|sed -e 's/closed/resolved/g'|sed -e 's/done/resolved/g'`
+        PRIORITY=`jq  -c ".priority" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        MILESTONE=`jq  -c ".milestone" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        VERSIONS=`jq  -c ".versions[]|.name" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        LABELS=`jq  -c ".labels" $ITEM|sed -e 's/"/\`/g'|sed -e 's/,/][/g'`
+        AUTHOR=`jq  -c ".author" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        ASSIGNEE=`jq  -c ".assignee" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        DESCRIPTION=`jq  -c ".description" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
         COMMENTS=""
 
         echo "## $KEY $TITLE ($s)"  >>$ISSUES
@@ -765,7 +770,7 @@ if [ "$CMD" = "mirror" ] ; then
         # jq  '.issues[]|select(.id == "'$id'")' $EXPORT
       done
       PAGE=$[ $PAGE + 1 ]
-      START=$[ $START + 100 ]
+      START=$[ $START + 200 ]
     done
   fi
 
