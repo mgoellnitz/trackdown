@@ -326,3 +326,7 @@ made possible with TrackDown.
 Martin Goellnitz / Sun, 14 Jun 2020 11:33:04 [4ca9ab255d42721296d418052c6cfb0b2877f060](https://github.com/mgoellnitz/trackdown/commit/4ca9ab255d42721296d418052c6cfb0b2877f060)
 
     refs #JIRA mirror first steps
+
+Martin Goellnitz / Sat, 10 Oct 2020 13:48:21 [92930f99431e967f3dffcb70747cf667ccabcccf](https://github.com/mgoellnitz/trackdown/commit/92930f99431e967f3dffcb70747cf667ccabcccf)
+
+    refs #JIRA mirror received personal 2FA workaround
