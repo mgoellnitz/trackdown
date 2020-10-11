@@ -757,7 +757,7 @@ if [ "$CMD" = "mirror" ] ; then
           echo "" >>$ISSUES
           echo "### Description" >>$ISSUES
           echo "" >>$ISSUES
-          echo "$DESCRIPTION" >>$ISSUES
+          echo "$DESCRIPTION"|sed -e 's/\\r//g'|sed -e 's/\\n/\n/g' >>$ISSUES
         fi
         ## comments
         if [ "$COMMENTS" != "" ] ; then
