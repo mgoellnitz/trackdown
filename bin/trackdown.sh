@@ -1266,7 +1266,9 @@ if [ "$CMD" = "gitea" ] ; then
   echo "gitea.key=$2" >> $TDCONFIG
   ME=$(curl -H "Authorization: token $2" ${URL}/api/v1/user 2> /dev/null|jq .login|sed -e 's/"//g')
   if [ ! -z "$ME" ] ; then
-    echo "me=$ME" >> $TDCONFIG
+    if [ "$ME" != "null" ] ; then
+      echo "me=$ME" >> $TDCONFIG
+    fi
   fi
 
 fi
