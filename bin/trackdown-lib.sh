@@ -42,7 +42,7 @@ function checkTrackdown {
 
 # Exit if jq is not installed
 function checkJq {
-  if [ `jq 2>&1|wc -l` = 0 ] ; then
+  if [ `jq 2>&1|wc -l` < 2 ] ; then
     echo "To use this functionality, jq must be installed."
     exit
   fi
