@@ -28,20 +28,20 @@ if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
   MYNAME=`basename $0`
-MSG=$(echo -e H4sIAB/t5V4CA6WVTW/aQBCG7/yKuRWkBO65VYlUpWqkSk16QRzW9oA3tnfd/QDRX993dm0HGqIo \
-ygWDZ2f2eeeLJ692fDOb3T7ckbOq6lRP69K2LZdBW0Nb3fJmRvTTaRPGE/l462l/8ewP7QNp7yN7 \
-2lpHe3Ze7PvsV9r++IbnrZhCzWRsGJxV216MRcGSSo5kVMe0X3ZVjt9pw7TuePMu3KHWZU3KMXXK \
-NVxJzIJTgBxqOPdmHIHrgWqCViNm9oyeL7r94hB7KlsLRtGTfCg4VTba7GhuezmOuEc66FAjEea6 \
-4q2KbUgxFkP4vlKBEe8pfSHHvfU6WHccYkOJ5LGFEZw7HZD2rsOjtrYZxBkdEOEej/8x5Gpt6Nv9 \
-I4HxgV0ZnSgsnDJlPabZOetE0tGUGdbxXtvowe6TzClep3xgRzg8B0qriitBqiOehQ5FLBsOS+t2 \
-VwhRSfphtzufTrG6ol43qrQV0zUZ5srT858hEY475J9K0tSLmKRjfAnFylQwogBZoc6gvXLoGUHq \
-xTacz4qE19voSiZ/BHaXL8q81NAaA2I3L7UcDC/OvbPPqLqE3pI9GNxi87U7vWdDCmr4SM1S0jHJ \
-gbTfqpVuG8uNEqZaVlPEo41f0KzaLCcm5BJMQIpnRPL6EtEFDJIUDS6FQttG11Jc0qfppsrSeh1W \
-G2Fc35Sbk9Sd1f4i7xxdiA7oKCwyu8wMZgsfiXuu+h7V9P5gHQq9+Dz1s3YKF0cKFCfQr8iO91oZ \
-+i7mV6RzvxiTewkw2AYJhwSo0cYHDBHn0ynXZ8xTZVkNzRZTxvxYWryf4w6Zj8VHa8xqJWNUsNut \
-xplaSaSTyn8+hcMMp76ME/r49iPIo8+bfZkvREZD9FKt2h6wpDRvQYNKdCotX1XYGNI+fLXRxJVl \
-UMWad8TJ1s77Tjwq7fAO+3W4ETtvWH21s0b/5RRgWCQn2zgpE9Oj7MI7rIPxTyXpG/5xt2dM+AHO \
-2T/3tMQNmwcAAA==)
+MSG=$(echo -e H4sIAIhM3V8CA6WVTW/bMAyG7/kVvC0BuvTe29ACQ4cVGLB2lyAH2WZi1bbk6SNB9uv3UrLdZHUx \
+FL3Eifmhhy8p5smrPd8sFrcPd+SsqjrV06a0bctl0NbQTre8XRD9cNqE0SO7t54Os77ftQ+kvY/s \
+aWcdHdh5sR9yXGn70xuRt2IKNZOxYQhWbTubi4IllQLJqI7psO6qnL/ThmnT8fa/cMdalzUpx9Qp \
+13AlOQtOCXKqwe/NPALXA9UErUbMHBk9z4b95BB7KlsLRqknxVBwqmy02dPS9uKOvCc66lBDCPO5 \
+4p2KbUg5VkP6vlKBke8pfSHHvfU6WHcacqMS0bGFEZx7HSB71+FRW9sMxRkdkOEej38x5Ght6Ov9 \
+I4HxgV0ZnVRYOGXKepTZOeukpJMpM6zjg7bRg92nMqd8nfKBHcF5CZRWFVeCVEc8Cx2KWDYc1tbt \
+r5CiEvlht3ufvFhdgb3igt2ePpNhrjw9/x6EcNxBfypJUy/FpDrGl6hYmQpGNCBXqDNorxxmRpB6 \
+sQ3+uSLh9Ta6ksmfgN3lgzIvNbTBBbHbl14Ohpfg3tlndF1S78geDU6x+di9PrAh1euGT9SsRY6p \
+HJT2S7UybWO70cLUy2rKeLLxE4ZVm/XEBC3BBKR4QSSv54hmMEgkGkIKhbGNrqW4pg/TTZ2lzSZc \
+b4Vxc1Nuz6S76P0s7xJTiAnoKKwyu9wZ3C18JO6l6nt00/ujdWj06uPUz9opHBwpUJxAv0Ad77Uy \
+9E3Mr0iXfjWKOwcYbAPBUQKq0cYHXCLO3knrC+aps6yGYYtJMT+2Fu+XOEPux+q9PWZ1PV6la0lw \
+1vCPKzdc3TSOcSIe376HdIx5cxzzgRAyRC9Nqu0Ru0nzDjRoQKfSzlWFjSGtwVeLTEJZ7qdY82o4 \
+W9Z5zUlEpR3eYa0OJ2LVDRuvdtboP5wSDPvjbAmnysT0KCvwDltg/C9J9Q1/tLsLJvwA5+Ivl9zR \
+kJIHAAA=)
   echo $MSG|sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 
@@ -231,10 +231,6 @@ if [ "$CMD" = "use" ] ; then
       if [ "$CASE" = "bitbucket.org" ] ; then
         echo "Discovered bitbucket.org remote"
         echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
-      fi
-      if [ "$CASE" = "v2.pikacode.com" ] ; then
-        echo "Discovered pikacode gitea remote"
-        echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
       fi
       if [ "$CASE" = "codeberg.org" ] ; then
         echo "Discovered codeberg gitea remote"
@@ -1248,7 +1244,7 @@ if [ "$CMD" = "redmine" ] ; then
 fi
 
 
-# gitea command to setup a gitea like codeberg or pikacode system or a gogs backend as a remote mirror source
+# gitea command to setup a gitea system like codeberg or a gogs backend as a remote mirror source
 if [ "$CMD" = "gitea" ] ; then
 
   checkJq

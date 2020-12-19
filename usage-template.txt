@@ -26,7 +26,7 @@ CMD init
 
 CMD mirror
   Sync with reviously setup tracking master 
-  (gitlab, github, bitbucket.org, redmine, gogs, gitea, pikacode - needs jq)
+  (gitlab, github, bitbucket.org, redmine, gogs, gitea, codeberg - needs jq)
 
 CMD remote c i p
   Issue remote command c on issue i with parameter p on remote mirroring source system
@@ -48,7 +48,7 @@ CMD jira p u t u
   (needs jq)
 
 CMD gitea k [p [u]]
-  setup gitea (or gogs) mirroring project p with given apikey k and gitea/codeberg/pikacode/gogs base url u 
+  setup gitea (or gogs) mirroring project p with given apikey k and gitea/codeberg/gogs base url u 
   (needs jq) - Values default to cloned project you're in.
 
 CMD redmine k p u

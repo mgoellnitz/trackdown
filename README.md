@@ -621,7 +621,7 @@ have the notes with you and now the issue IDs for offline code commits.
 
 Intended for on premises use as a [GIT][git] based solution for Code and Wiki
 together with an issue tracking section, it is also available in some public
-online incarnations like [CodeBerg](codeberg) and [Pikacode](pikacode).
+online incarnations like [CodeBerg](codeberg).
 
 Of course [Gitea](gitea) can be used as a TrackDownstorage backend or mirroring
 source.
@@ -1051,6 +1051,5 @@ used for trackdown itself like for release 1.0 in
 [gogs]: https://gogs.io/
 [gitea]: https://gitea.io/
 [codeberg]: https://codeberg.org/
-[pikacode]: https://v2.pikacode.com/
 [hth]: https://www.perforce.com/products/helix-teamhub
 [vss]: https://www.visualstudio.com/team-services/
