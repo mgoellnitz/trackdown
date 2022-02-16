@@ -56,7 +56,7 @@ Martin Goellnitz / Wed, 28 Dec 2016 01:14:37 [30444b0522236166b34660802f12938b04
     fixes #GRAPHICAL progress bar generation in commit hook
 
 
-## GITLAB offline mirror (in progress)
+## GITLAB offline mirror (resolved)
 
 *mirror*
 
@@ -227,7 +227,7 @@ Martin Goellnitz / Wed, 28 Dec 2016 01:57:29 [01c5211aa1ff2a2056439a1ee1c73ddc7d
     resolves #REDMINE migration to trackdown now tested to be working
 
 
-## BITBUCKET issue tracker offline mirror (in progress)
+## BITBUCKET issue tracker offline mirror (resolved)
 
 *mirror*
 
@@ -256,7 +256,7 @@ Martin Goellnitz / Tue, 28 May 2019 22:59:09 [e9ce6ed0c0c44464f48b6bf3addd915b16
     refs #BITBUCKET remote commands fixed and extended
 
 
-## GOGS offline mirror (in progress)
+## GOGS offline mirror (resolved)
 
 *mirror*
 
@@ -314,7 +314,7 @@ Martin Goellnitz / Tue, 30 Apr 2019 11:31:34 [acfe5dbdc17bed79b6fb9c5f416a2848e8
     refs #GOGS - change usage message
 
 
-## JIRA offline mirror (in progress)
+## JIRA offline mirror (resolved)
 
 *mirror*
 
