@@ -3,6 +3,7 @@
 [![Latest Release](https://img.shields.io/github/release/mgoellnitz/trackdown.svg)](https://github.com/mgoellnitz/trackdown/releases/latest)
 [![License](https://img.shields.io/github/license/mgoellnitz/trackdown.svg)](https://github.com/mgoellnitz/trackdown/blob/master/LICENSE)
 [![Build](https://img.shields.io/gitlab/pipeline/mgoellnitz/trackdown.svg)](https://gitlab.com/mgoellnitz/trackdown/pipelines)
+[![Download](https://img.shields.io/badge/Download-Snapshot-blue)](https://gitlab.com/mgoellnitz/trackdown/-/jobs/artifacts/master/download?job=build)
 
 Issue Tracking with plain [Markdown][markdown] for [GIT][git] and 
 [Mercurial][hg].
@@ -228,9 +229,9 @@ trackdown.sh use ../wiki/issues.md
 when using TrackDown with the issue collection file at a different location.
 Automatic commit and push (see below) will be switched off in the latter case.
 
-This creates (git or hg ignored) links `issues.md` and `roadmap.md` in the root 
+This creates (git or hg ignored) links `issues.md` and `roadmap.md` in the root
 directory of your project pointing to the issue collection file and the roadmap.
-Additionally it will configure a post-commit hook for [GIT][git] or a commit 
+Additionally it will configure a post-commit hook for [GIT][git] or a commit
 hook for [Mercurial][hg] respectively.
 
 After this step you can edit the issue collection file following the format
@@ -239,20 +240,20 @@ mentioned above.
 
 # Commands in the Commit Messages
 
-TrackDown is supposed to read the commit messages when not used as a plain 
+TrackDown is supposed to read the commit messages when not used as a plain
 mirror and interpret the contents as potential commands for the modification of
 alongside you work. 
 
-When using [GIT][git], TrackDown relies on an implementation, which is capable 
+When using [GIT][git], TrackDown relies on an implementation, which is capable
 of executing the script hooks, which is - as opposed to [Mercurial][hg] - not
 the case for all implementations.
 
-[JGit ][jgit] is lacking this (for the post commit hooks used here), and as a 
-result NetBeans and Eclipse cannot use this mimik! With Eclipse you might be 
-lucky using the [nightly builds](http://download.eclipse.org/egit/updates-nightly/) 
+[JGit ][jgit] is lacking this (for the post commit hooks used here), and as a
+result NetBeans and Eclipse cannot use this mimik! With Eclipse you might be
+lucky using the [nightly builds](http://download.eclipse.org/egit/updates-nightly/)
 of JGit (Version 4.6 an up).
 
-Right now TrackDown understands only two commands in the commit messages. 
+Right now TrackDown understands only two commands in the commit messages.
 
 
 ## refs #*id*[,*id*...]
@@ -264,7 +265,7 @@ git commit -m "refs #MYID - comment" files...
 ```
 
 This command changes the state to "in progress" from anything like new, nothing,
-or even resolved. If the commit relates to more than one issue, the issues can 
+or even resolved. If the commit relates to more than one issue, the issues can
 be separated by commas.
 
 ```
@@ -299,7 +300,7 @@ git commit -m "fixes #ONEID,ANOTHERID - comment" files...
 
 # Command Line Tools
 
-In addition to the init and integration tools, the following commands are 
+In addition to the init and integration tools, the following commands are
 available:
 
 
@@ -312,10 +313,10 @@ labels like suggested, the command
 trackdown.sh roadmap
 ```
 
-prints out a complete roadmap of the project sorted by "target versions" in 
+prints out a complete roadmap of the project sorted by "target versions" in
 [Markdown][markdown] format.
 
-The term "target version" could also be read as "release" or "sprint" or 
+The term "target version" could also be read as "release" or "sprint" or
 anything which describes your development process best.
 
 
@@ -330,7 +331,7 @@ trackdown.sh ls 1.1
 
 where all issues intended to be completed in "target version" 1.1 are listed.
 
-The term "target version" could also be read as "release" or "sprint" or 
+The term "target version" could also be read as "release" or "sprint" or
 anything which describes your development process best.
 
 
@@ -354,7 +355,7 @@ The `me` placeholder in the case is taken - in that order - from
 * The `me` entry in the `.trackdown/config` file
 * The local user name from the environment variable `$USER`
 
-Optionally you can add a path to an issue collection file as an additional parameter 
+Optionally you can add a path to an issue collection file as an additional parameter
 like in
 
 ```
@@ -451,7 +452,7 @@ Example config file for TrackDown:
 ## Auto Commit all Issue Collection Changes
 
 Automatically commits the new change to the trackdown branch. If you didn't
-change the default location where your source code repository contains the 
+change the default location where your source code repository contains the
 a trackdown branch, you will want to leave the unchanged with the default
 value `true`.
 
@@ -461,18 +462,18 @@ In other scenarios you may switch it to `false`.
 ## Auto Push all Issue Collection Commits
 
 Automatically pushes after each commit to the upstream repository. If you didn't
-change the default locations where your source code repository is the upstream 
+change the default locations where your source code repository is the upstream
 repository of your issue collection you will want to leave the unchanged
 with the default value `true`.
 
 In other scenarios you may switch it to false. E.g. if the issue collection is
-part of your project wiki then automatic pushing might lead to remote 
+part of your project wiki then automatic pushing might lead to remote
 operations, which is not desirable.
 
 
 ## Online commit summary prefix
 
-With some GIT backends it is possible to obtain summary with changes and 
+With some GIT backends it is possible to obtain summary with changes and
 commit message online for every commit. To use this facility place a prefix
 in the config file where hash of a commit can be appended to for a valid
 link for that commit.
@@ -505,8 +506,8 @@ use.
 
 ## Prerequisites
 
-TrackDown relies on a [GIT][git] or [Mercurial][hg] installation available on 
-the path when used with distributed version control as the backend. The 
+TrackDown relies on a [GIT][git] or [Mercurial][hg] installation available on
+the path when used with distributed version control as the backend. The
 mirror feature in turn heavily relies in an installation of [jq][jq] available
 through your path.
 
@@ -522,7 +523,7 @@ cygwin are in use.
 
 # Related Projects
 
-I only came accross relates projects which have certain limitations or are 
+I only came accross relates projects which have certain limitations or are
 unmaintained. In each case the limitations have an extent that kept me from
 using these systems except for very small or test projects.
 
@@ -537,24 +538,24 @@ What I liked about fossil is, that it brings the three core elements of developm
 
 local to my machine for distributed development or disconnected situations.
 
-You don't have to maintain backups since the remote instances are your backups 
+You don't have to maintain backups since the remote instances are your backups
 of the source code, wiki, and ticketing state.
 
 It does not have a wiki capable of shared editing with later merging like the
 [GIT][git] based wikis of [GitLab][gitlab], [GitHub][github], or 
 [Bitbucket][bitbucket].
 
-Also it is not possible to the contents of the wiki outside the [Fossil][fossil] 
+Also it is not possible to the contents of the wiki outside the [Fossil][fossil]
 context e.g. for a documentation web site, since you cannot export the wikis
 raw data. (Yes, [Fossil][fossil] provides means to usr the wiki directly as
 a documentation site system, which is similar but not exactly the same.)
 
-The drawback is, that it does all these things by creating a nearly closed shop 
-system not open to re-use of these elements and not open to external tooling 
+The drawback is, that it does all these things by creating a nearly closed shop
+system not open to re-use of these elements and not open to external tooling
 outside the [Fossil][fossil] scripting facility.
 
 Additionally I have to keep the [Fossil][fossil] internal web server running for
-each repository I am using, to be able to read the notes and issues for a 
+each repository I am using, to be able to read the notes and issues for a
 project.
 
 Also there is only poor IDE support for [Fossil][fossil] right now, with the
@@ -565,18 +566,18 @@ mirrored [here](https://github.com/mgoellnitz/netbeans-fossil-plugin).
 
 ## Bitbucket
 
-[Bitbucket.org][bitbucket] a brilliant tool for Open Source or small projects.  
-It has decent VCS solutions, a wiki which can be used distributed through 
-[GIT][git]. In the past they were a brilliant backend for TrackDown with both 
+[Bitbucket.org][bitbucket] a brilliant tool for Open Source or small projects.
+It has decent VCS solutions, a wiki which can be used distributed through
+[GIT][git]. In the past they were a brilliant backend for TrackDown with both
 VCS  solutions, since they also provided support for [Mercurial][hg], which was
 abandoned mid 2020.
 
 The only thing I'm missing is the distributed offline work for ticketing.
 
-So in this case it is possible to leave out the ticketing of [Bitbucket][bitbucket] 
-and use TrackDown with [Bitbucket][bitbucket] as the [GIT][git] based storage 
-backend. And this is exactly what TrackDown was designed for. For migration 
-purposes or if the limited issue tracking within bitbucket.org is sufficient, the 
+So in this case it is possible to leave out the ticketing of [Bitbucket][bitbucket]
+and use TrackDown with [Bitbucket][bitbucket] as the [GIT][git] based storage
+backend. And this is exactly what TrackDown was designed for. For migration
+purposes or if the limited issue tracking within bitbucket.org is sufficient, the
 mirroring feature might come in handy.
 
 Atlassian themselves recommends using Jira.
@@ -584,15 +585,15 @@ Atlassian themselves recommends using Jira.
 
 ## GitHub
 
-[GitHub][github] is the obvious solution used in so many [GIT][git] powered 
-projects together with a [GIT][git] based wiki (as opposed to [Bitbucket][bitbucket] 
-and  [GitLab][gitlab] the Wiki is a flat folder - be warned) and many other 
+[GitHub][github] is the obvious solution used in so many [GIT][git] powered
+projects together with a [GIT][git] based wiki (as opposed to [Bitbucket][bitbucket]
+and  [GitLab][gitlab] the Wiki is a flat folder - be warned) and many other
 usefull details.
 
 The only thing I'm missing is the distributed offline work for ticketing.
 
-So in this case it is possible to leave out the ticketing of [GitHub][github] 
-and use TrackDown with [GitHub][github] as the [GIT][git] based 
+So in this case it is possible to leave out the ticketing of [GitHub][github]
+and use TrackDown with [GitHub][github] as the [GIT][git] based
 storage backend. And this is exactly what TrackDown was designed for.
 
 As an alternative you can at least mirror the issues from [GitHub][github] to
@@ -609,8 +610,8 @@ integration and usefull tools and details.
 
 The only thing I'm missing is the distributed offline work for ticketing.
 
-So in this case it is possible to leave out the ticketing of [GitLab][gitlab] 
-and use TrackDown with [GitLab][gitlab] as the [GIT][git] based 
+So in this case it is possible to leave out the ticketing of [GitLab][gitlab]
+and use TrackDown with [GitLab][gitlab] as the [GIT][git] based
 storage backend. And this is exactly what TrackDown was designed for.
 
 As an alternative you can at least mirror the issues from [GitLab][gitlab] to
@@ -621,7 +622,7 @@ have the notes with you and now the issue IDs for offline code commits.
 
 Intended for on premises use as a [GIT][git] based solution for Code and Wiki
 together with an issue tracking section, it is also available in some public
-online incarnations like [CodeBerg](codeberg) and [Pikacode](pikacode).
+online incarnations like [CodeBerg](codeberg).
 
 Of course [Gitea](gitea) can be used as a TrackDownstorage backend or mirroring
 source.
@@ -632,16 +633,16 @@ same way.
 
 ## Trac
 
-A few years ago a colleague stated that he is running a local VM for each 
-project, he is involved with, to take notes, track issues, and maintain source 
+A few years ago a colleague stated that he is running a local VM for each
+project, he is involved with, to take notes, track issues, and maintain source
 code.
 
 Of course this does not imply shared use of the Trac service or disconnected use.
 
-Also while Trac is a brilliant tool, this leaves me with the necessity to 
-maintain the locally running instances and take backups of them in addition to 
-the project VCS and source code repositories. This is not the case for the 
-[GIT][git] based solutions in this list, which have a remote repository as a 
+Also while Trac is a brilliant tool, this leaves me with the necessity to
+maintain the locally running instances and take backups of them in addition to
+the project VCS and source code repositories. This is not the case for the
+[GIT][git] based solutions in this list, which have a remote repository as a
 backup wiki and source code.
 
 
@@ -696,8 +697,8 @@ For disconnected situations which TrackDown is supposed to support, it is
 possible to connect a workspace to its [GitHub][github] issue tracker and
 mirror tickets for offline use.
 
-The mirror - of course - is not intended for changeing the issues in the issue 
-collection file. State changes will most likely be triggered on [GitHub][github] 
+The mirror - of course - is not intended for changeing the issues in the issue
+collection file. State changes will most likely be triggered on [GitHub][github]
 by your commit messages or manually, after which a call of the mirroring script
 can be helpfull.
 
@@ -708,7 +709,7 @@ connection.
 trackdown.sh github <projectname> <owner> <apitoken>
 ```
 
-Afterwards anytime you can connect to the [GitHub][github] system, collect the 
+Afterwards anytime you can connect to the [GitHub][github] system, collect the
 current mirror state to you local issue collection file and the roadmap.
 
 ```
@@ -719,10 +720,10 @@ Additionally - since you now are on your command line and perhaps don't want
 to switch windows every second - there is a `remote` command to issue commands
 on the remote mirroring source system.
 
-You have to provide the issue-id and the id of the user, which is also always 
+You have to provide the issue-id and the id of the user, which is also always
 exported to the issue collection file to facilitate this.
 
-The commands available are 
+The commands available are
 
 * `assign` to assign issues to users
 
@@ -745,8 +746,8 @@ For disconnected situations which TrackDown is supposed to support, it is
 possible to connect a workspace to its [GitLab][gitlab] issue tracker and
 mirror tickets for offline use.
 
-The mirror - of course - is not intended for changeing the issues in the issue 
-collection file. State changes will most likely be triggered on [GitLab][gitlab] 
+The mirror - of course - is not intended for changeing the issues in the issue
+collection file. State changes will most likely be triggered on [GitLab][gitlab]
 by your commit messages or manually, after which a call of the mirroring script
 can be helpfull.
 
@@ -760,7 +761,7 @@ trackdown.sh gitlab <apitoken> <projectname> [https://<gitlab.host>]
 If you ommit the url prefix, `https://gitlab.com` is used. The project name must
 be given without any group or user addition.
 
-Afterwards anytime you can connect to the [GitLab][gitlab] system, collect the 
+Afterwards anytime you can connect to the [GitLab][gitlab] system, collect the
 current mirror state to you local issue collection file and the roadmap.
 
 ```
@@ -776,10 +777,10 @@ trackdown.sh remote assign 68 XYZ
 Assigning 68 to user XYZ
 ```
 
-You have to provide the issue-id and the id of the user, which is also always 
+You have to provide the issue-id and the id of the user, which is also always
 exported to the issue collection file to facilitate this.
 
-The commands available are 
+The commands available are
 
 * `assign` to assign issues to users
 
@@ -803,15 +804,15 @@ Adding comment "Just a comment" to issue 68
 ## Gitea Offline Mirror
 
 For disconnected situations which TrackDown is supposed to support, it is
-possible to connect a workspace to its [Gitea][gitea] issue tracker and mirror 
+possible to connect a workspace to its [Gitea][gitea] issue tracker and mirror
 tickets for offline use. 
 
 Setup parameters default to values from the [Git][git] repository your current
 local directory points to.
 
-The mirror - of course - is not intended for changeing the issues in the issue 
+The mirror - of course - is not intended for changeing the issues in the issue
 collection file. State changes will most likely be triggered on the [Gitea][gitea]
-instance in use by your commit messages or manually, after which a call of the 
+instance in use by your commit messages or manually, after which a call of the
 mirroring script can be helpfull.
 
 Instead of `trackdown.sh use` issue `trackdown.sh gitea` to setup the mirror
@@ -824,7 +825,7 @@ trackdown.sh gitea <apitoken> <projectname> [https://<gitea.host>]
 If you ommit the url prefix and no values can be derived from your current
 working directory, `https://codeberg.org` is used.
 
-Afterwards anytime you can connect to the [Gitea][gitea] system, collect the 
+Afterwards anytime you can connect to the [Gitea][gitea] system, collect the
 current mirror state to you local issue collection file and the roadmap.
 
 ```
@@ -835,10 +836,10 @@ Additionally - since you now are on your command line and perhaps don't want
 to switch windows every second - there is a `remote` command to issue commands
 on the remote mirroring source system.
 
-You have to provide the issue id and the id of the user, which is also always 
+You have to provide the issue id and the id of the user, which is also always
 exported to the issue collection file to facilitate this.
 
-The commands available are 
+The commands available are
 
 * `assign` to assign issues to users
 
@@ -869,8 +870,8 @@ the offline mirror capabililties to this tool for smother migration away from
 the prorietary issue tracker.
 
 The mirror again is not intended for changeing the issues in the issue 
-collection file. State changes will most likely be triggered on 
-[Bitbucket.org][bitbucket] by your commit messages or manually, after which a 
+collection file. State changes will most likely be triggered on
+[Bitbucket.org][bitbucket] by your commit messages or manually, after which a
 call of the mirroring script can be helpfull.
 
 Instead of `trackdown.sh use` issue `trackdown.sh github` to setup the mirror
@@ -880,7 +881,7 @@ connection.
 trackdown.sh bitbucket <projectname> <owner> <app-password>
 ```
 
-Afterwards anytime you can connect to the [Bitbucket.org][bitbucket] system, 
+Afterwards anytime you can connect to the [Bitbucket.org][bitbucket] system,
 collect the current mirror state to you local issue collection file and the 
 roadmap.
 
@@ -897,7 +898,7 @@ Additionally - since you now are on your command line and perhaps don't want
 to switch windows every second - there is a `remote` command to issue commands
 on the remote mirroring source system.
 
-The commands available are 
+The commands available are
 
 * `assign` to assign issues to users
 
@@ -917,11 +918,11 @@ Adding comment "Just a comment" to issue 68
 ## Redmine
 
 For historical reasons my [Tangram](https://github.com/mgoellnitz/tangram)
-project used [Redmine][redmine] some time ago and customers also use 
-[Redmine][redmine]. So there are two scenarios where some interfacing would be 
+project used [Redmine][redmine] some time ago and customers also use
+[Redmine][redmine]. So there are two scenarios where some interfacing would be
 helpful.
 
-In addition the roadmap outline of TrackDown is very much inspired by the 
+In addition the roadmap outline of TrackDown is very much inspired by the
 [Redmine][redmine] roadmap page.
 
 ### Offline mirror
@@ -941,7 +942,7 @@ connection.
 trackdown.sh redmine <apikey> <projectname>[,<projectname>...] https://<redmine.host>/
 ```
 
-Afterwards anytime you can connect to the [Redmine][redmine] system, collect the 
+Afterwards anytime you can connect to the [Redmine][redmine] system, collect the
 current mirror state to you local issue collection file and the roadmap.
 
 ```
@@ -969,11 +970,11 @@ exported to the issue collection file to facility this.
 ### Migration
 
 When you think this information mirrored right now is sufficient to cut the ties,
-you can setup the created issue collection and roadmap as the repository and do 
+you can setup the created issue collection and roadmap as the repository and do
 a `trackdown.sh use`.
 
-The full migration is not covered by a command yet and setting up the mirrored 
-data in the special TrackDown branch or any other locaion of your chosing must 
+The full migration is not covered by a command yet and setting up the mirrored
+data in the special TrackDown branch or any other locaion of your chosing must
 be accomplished manually. The needed steps include:
 
 *Latest Mirror*
@@ -1051,6 +1052,5 @@ used for trackdown itself like for release 1.0 in
 [gogs]: https://gogs.io/
 [gitea]: https://gitea.io/
 [codeberg]: https://codeberg.org/
-[pikacode]: https://v2.pikacode.com/
 [hth]: https://www.perforce.com/products/helix-teamhub
 [vss]: https://www.visualstudio.com/team-services/
