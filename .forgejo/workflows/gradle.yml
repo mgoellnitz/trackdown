@@ -29,24 +29,32 @@ jobs:
   build:
 
     runs-on: provocon
+    container:
+      image: debian:stable-slim
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 11
-      uses: https://github.com/actions/setup-java@v4
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-    - name: Prepare Tools
-      run: sudo apt update ; sudo apt install -yq jq file curl mercurial git bash bash-completion
-    - name: Build with Gradle
-      uses: https://github.com/gradle/gradle-build-action@v2
-      with:
-        arguments: build
-    - name: Extract Package
-      run: unzip build/distributions/*.zip
-    - name: Archive Package
-      uses: actions/upload-artifact@v4
-      with:
-        name: trackdown
-        path: trackdown*
+      - name: Prepare Tools
+        run: apt update ; apt install -yq nodejs docker.io jq file curl unzip mercurial git bash bash-completion
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: https://github.com/actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        uses: https://github.com/gradle/gradle-build-action@v2
+        with:
+          arguments: build
+
+      - name: Extract Package
+        run: unzip build/distributions/*.zip
+
+      - name: Archive Package
+        uses: actions/upload-artifact@v3
+        with:
+          name: trackdown
+          path: trackdown*
