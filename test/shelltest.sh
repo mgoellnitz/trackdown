@@ -19,6 +19,14 @@
 function before {
   CWD=`pwd`
   TEST=`basename $0 .sh`
+  # test mercurial availability
+  HGAVAIL=`which hg`
+  # echo "$HGAVAIL"
+  if [ -z "$HGAVAIL" ] ; then
+    echo "No hg/Mercurial available on the command line."
+    exit 1
+  fi
+
   rm -rf build/test/$TEST
   mkdir -p build/test/$TEST
   cd build/test/$TEST
