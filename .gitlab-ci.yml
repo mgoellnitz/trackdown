@@ -1,5 +1,5 @@
 #
-# Copyright 2019-2022 Martin Goellnitz
+# Copyright 2019-2024 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,10 +20,10 @@ before_script:
   - export GRADLE_USER_HOME=/tmp/.gradle
 
 stages:
-  - trackdown
+  - build
 
-build:
-  stage: trackdown
+trackdown:
+  stage: build
   script:
   - apt update
   - apt install -yq jq file curl mercurial git bash bash-completion
@@ -33,7 +33,7 @@ build:
     paths:
     - trackdown*
     expire_in: 5 days
-    name: ${CI_BUILD_STAGE}
+    name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}
 
 cache:
   paths:
