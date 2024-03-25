@@ -22,9 +22,6 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-  REGISTRY: ghcr.io
-
 jobs:
   build:
 
