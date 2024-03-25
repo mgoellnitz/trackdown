@@ -24,10 +24,14 @@ stages:
 
 build:
   stage: trackdown
-  script: apt update ; apt install -yq jq file curl mercurial git bash bash-completion ; gradle build
+  script:
+  - apt update
+  - apt install -yq jq file curl mercurial git bash bash-completion
+  - gradle build
+  - unzip build/distributions/*.zip
   artifacts:
     paths:
-    - build/distributions/*
+    - trackdown*
     expire_in: 5 days
     name: ${CI_BUILD_STAGE}
 
