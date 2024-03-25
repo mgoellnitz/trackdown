@@ -19,6 +19,9 @@ or [Mercurial][hg] as well?
 
 Then this here is for you!
 
+[Support this project](https://ko-fi.com/backendzeit):
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L4L5T3APO)
+
 It is not intended for large, permanently online or connected teams and heavy 
 flows of tickets though, since you will be having only one file with plain 
 [Markdown][markdown] with your issues - and optionally other stuff - collected 
