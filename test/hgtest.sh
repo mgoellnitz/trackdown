@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2016-2019 Martin Goellnitz
+# Copyright 2016-2024 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 #
 
 # include test "framework"
+LANG=C
 MYDIR=`dirname $0`
 source $MYDIR/shelltest.sh
 
@@ -24,6 +25,10 @@ source $MYDIR/shelltest.sh
 before
 
 hg init
+mkdir -p .hg/dummy
+(cd .hg/dummy ; hg init)
+echo -e "[paths]\ndefault = .hg/dummy" >> .hg/hgrc
+echo -e "[ui]\nusername = Author Name <author@example.org>" >> .hg/hgrc
 cp -r $CWD/README.md .
 cp -r $CWD/bin/t*sh .
 
