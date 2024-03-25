@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2018 Martin Goellnitz
+# Copyright 2015-2012 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ function checkTrackdown {
 
 # Exit if jq is not installed
 function checkJq {
-  if [ `jq 2>&1|wc -l` < 2 ] ; then
+  if [ "$(which jq|wc -l)" -lt 1 ] ; then
     echo "To use this functionality, jq must be installed."
     exit
   fi
