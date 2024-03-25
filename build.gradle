@@ -36,6 +36,9 @@ sourceSets {
   }
 }
 
+// Don't issue tar archive
+distTar.enabled = false
+
 distributions {
   main {
     contents {
