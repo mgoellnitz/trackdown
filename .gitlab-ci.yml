@@ -24,7 +24,7 @@ stages:
 
 build:
   stage: trackdown
-  script: apt-get update ; apt-get install -yq jq file curl mercurial git bash bash-completion ; gradle build
+  script: apt update ; apt install -yq jq file curl mercurial git bash bash-completion ; gradle build
   artifacts:
     paths:
     - build/distributions/*
