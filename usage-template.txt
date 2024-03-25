@@ -36,11 +36,11 @@ CMD github k [p [o]]
   (needs jq) - Values default to cloned project you're in.
 
 CMD gitlab k p [u]
-  Setup gitlab mirroring project p with given apikey k and gitlab base url u. 
+  Setup gitlab mirroring project p with given apikey k and gitlab base url u.
   (needs jq) - Values default to cloned project you're in.
 
 CMD bitbucket [[t/]p [u[:c]]]
-  Setup bitbucket.org mirroring project p (in team t) with for user u and (app password c) 
+  Setup bitbucket.org mirroring project p (in team t) with for user u and (app password c)
   (needs jq) - Values default to cloned project you're in.
 
 CMD jira p u t u
@@ -48,11 +48,11 @@ CMD jira p u t u
   (needs jq)
 
 CMD gitea k [p [u]]
-  setup gitea (or gogs) mirroring project p with given apikey k and gitea/codeberg/gogs base url u 
+  setup gitea (or gogs) mirroring project p with given apikey k and gitea/codeberg/gogs base url u
   (needs jq) - Values default to cloned project you're in.
 
 CMD redmine k p u
-  setup redmine mirroring project p with given apikey k and redmine base url u. 
+  setup redmine mirroring project p with given apikey k and redmine base url u.
   (needs jq)
 
 CMD status

@@ -28,7 +28,7 @@ if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
   MYNAME=`basename $0`
-MSG=$(echo -e H4sIAIhM3V8CA6WVTW/bMAyG7/kVvC0BuvTe29ACQ4cVGLB2lyAH2WZi1bbk6SNB9uv3UrLdZHUx \
+MSG=$(echo -e H4sIAAAAAAACA6WVTW/bMAyG7/kVvC0BuvTe29ACQ4cVGLB2lyAH2WZi1bbk6SNB9uv3UrLdZHUx \
 FL3Eifmhhy8p5smrPd8sFrcPd+SsqjrV06a0bctl0NbQTre8XRD9cNqE0SO7t54Os77ftQ+kvY/s \
 aWcdHdh5sR9yXGn70xuRt2IKNZOxYQhWbTubi4IllQLJqI7psO6qnL/ThmnT8fa/cMdalzUpx9Qp \
 13AlOQtOCXKqwe/NPALXA9UErUbMHBk9z4b95BB7KlsLRqknxVBwqmy02dPS9uKOvCc66lBDCPO5 \
@@ -36,12 +36,12 @@ aWcdHdh5sR9yXGn70xuRt2IKNZOxYQhWbTubi4IllQLJqI7psO6qnL/ThmnT8fa/cMdalzUpx9Qp \
 I4HxgV0ZnVRYOGXKepTZOeukpJMpM6zjg7bRg92nMqd8nfKBHcF5CZRWFVeCVEc8Cx2KWDYc1tbt \
 r5CiEvlht3ufvFhdgb3igt2ePpNhrjw9/x6EcNxBfypJUy/FpDrGl6hYmQpGNCBXqDNorxxmRpB6 \
 sQ3+uSLh9Ta6ksmfgN3lgzIvNbTBBbHbl14Ohpfg3tlndF1S78geDU6x+di9PrAh1euGT9SsRY6p \
-HJT2S7UybWO70cLUy2rKeLLxE4ZVm/XEBC3BBKR4QSSv54hmMEgkGkIKhbGNrqW4pg/TTZ2lzSZc \
-b4Vxc1Nuz6S76P0s7xJTiAnoKKwyu9wZ3C18JO6l6nt00/ujdWj06uPUz9opHBwpUJxAv0Ad77Uy \
-9E3Mr0iXfjWKOwcYbAPBUQKq0cYHXCLO3knrC+aps6yGYYtJMT+2Fu+XOEPux+q9PWZ1PV6la0lw \
-1vCPKzdc3TSOcSIe376HdIx5cxzzgRAyRC9Nqu0Ru0nzDjRoQKfSzlWFjSGtwVeLTEJZ7qdY82o4 \
-W9Z5zUlEpR3eYa0OJ2LVDRuvdtboP5wSDPvjbAmnysT0KCvwDltg/C9J9Q1/tLsLJvwA5+Ivl9zR \
-kJIHAAA=)
+HJT2S7UybWO70cLUy2rKeLLxE4ZVm/XEBC3BBKR4QSSv54hmMEgkGkIKhbGNrqX4cbipsbTZhOut \
+IG5uyu2Zchetn8VdYggxAB2FVUaXK4OrhY+EvVR9j2Z6f7QOfV59GPpZO4VzIwWKE+cXaOO9Voa+ \
+ifkV6NKvRmnn+IJtIDcqQDHa+IArxNk7KX3BPPWV1TBqMQnmx8bi/RJnyO1YvbfDrK7Hi3QtCc7a \
+/WHhhnubZjFOwOPb94COMW/NYj4PMobopUW1PWIvad4BBvJ3Ku1bVdgY0gp8tcQklOVuijWvhbNF \
+nVecRFTa4R1W6nAi1tyw7Wpnjf7DKcGwO84WcCpMTI+y/u6wAcb/kVTe8Ce7u2DCD3Au/gK+z+hv \
+jgcAAA==)
   echo $MSG|sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 
