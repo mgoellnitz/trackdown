@@ -129,6 +129,8 @@ Martin Goellnitz / Tue, 28 May 2019 22:15:50 [c17d427c4c0b5f4c00a993c29a4eff9c29
     refs #GITLAB remote commands fixed
 
 
+## GITHUB offline mirror (in progress)
+
 *mirror*
 
 TrackDown should be capable of translating [GitHub](https://github.com) JSON 
