@@ -189,12 +189,12 @@ if [ "$CMD" = "use" ] ; then
       ISSUES=".git/trackdown/issues.md"
       cd $TDBASE
       if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
-        git fetch
+        git fetch origin trackdown:trackdown
       fi
       NAME=`git config -l|grep user.name|cut -d '=' -f 2`
       MAIL=`git config -l|grep user.email|cut -d '=' -f 2`
       echo "prepare local"
-      test -z `git branch |grep trackdown|sed -e 's/\ /_/g'` && git branch trackdown
+      test -z `git branch|grep trackdown|sed -e 's/\ /_/g'` && git branch trackdown
       AUTOPUSH=true
       if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
         git branch --set-upstream-to=origin/trackdown trackdown
