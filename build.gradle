@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2015-2018 Martin Goellnitz
+ * Copyright 2015-2024 Martin Goellnitz
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+plugins {
+  id "com.netflix.nebula.ospackage" version "11.8.1"
+}
 
 // Use the Java plugin to to get the sourceSets defined
 apply plugin: 'distribution'
@@ -44,10 +47,39 @@ distributions {
     contents {
       from 'README.md'
       from 'bin'
-      // into 'usr/local/bin'
     }
   }
 }
+
+ospackage {
+  packageName = project.name
+  version = '1.1-SNAPSHOT'
+  release = 1
+  maintainer = 'Martin Goellnitz'
+  url = 'https://mgoellnitz.github.io/trackdown'
+  into("/usr/share/$project.name") {
+    from '.'
+    include 'README.md'
+  }
+  into("/usr/lib/$packageName") {
+    from "bin"
+    include '*.sh'
+  }
+}
+
+buildDeb {
+  link("/usr/bin/$project.name", "/usr/lib/$packageName/trackdown.sh")
+  link("/usr/bin/td", "/usr/lib/$packageName/trackdown.sh")
+}
+
+buildRpm.dependsOn buildDeb
+
+buildRpm {
+  link("/usr/bin/$project.name", "/usr/lib/$packageName/trackdown.sh")
+  link("/usr/bin/td", "/usr/lib/$packageName/trackdown.sh")
+}
+
+distZip.dependsOn buildRpm
 
 check.doFirst {
   exec {
