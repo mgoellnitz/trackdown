@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2020 Martin Goellnitz
+# Copyright 2015-2022 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,20 +28,20 @@ if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
   MYNAME=`basename $0`
-MSG=$(echo -e H4sIAAAAAAACA6WVTW/bMAyG7/kVvC0BuvTe29ACQ4cVGLB2lyAH2WZi1bbk6SNB9uv3UrLdZHUx \
-FL3Eifmhhy8p5smrPd8sFrcPd+SsqjrV06a0bctl0NbQTre8XRD9cNqE0SO7t54Os77ftQ+kvY/s \
-aWcdHdh5sR9yXGn70xuRt2IKNZOxYQhWbTubi4IllQLJqI7psO6qnL/ThmnT8fa/cMdalzUpx9Qp \
-13AlOQtOCXKqwe/NPALXA9UErUbMHBk9z4b95BB7KlsLRqknxVBwqmy02dPS9uKOvCc66lBDCPO5 \
-4p2KbUg5VkP6vlKBke8pfSHHvfU6WHcacqMS0bGFEZx7HSB71+FRW9sMxRkdkOEej38x5Ght6Ov9 \
-I4HxgV0ZnVRYOGXKepTZOeukpJMpM6zjg7bRg92nMqd8nfKBHcF5CZRWFVeCVEc8Cx2KWDYc1tbt \
-r5CiEvlht3ufvFhdgb3igt2ePpNhrjw9/x6EcNxBfypJUy/FpDrGl6hYmQpGNCBXqDNorxxmRpB6 \
-sQ3+uSLh9Ta6ksmfgN3lgzIvNbTBBbHbl14Ohpfg3tlndF1S78geDU6x+di9PrAh1euGT9SsRY6p \
-HJT2S7UybWO70cLUy2rKeLLxE4ZVm/XEBC3BBKR4QSSv54hmMEgkGkIKhbGNrqX4cbipsbTZhOut \
-IG5uyu2Zchetn8VdYggxAB2FVUaXK4OrhY+EvVR9j2Z6f7QOfV59GPpZO4VzIwWKE+cXaOO9Voa+ \
-ifkV6NKvRmnn+IJtIDcqQDHa+IArxNk7KX3BPPWV1TBqMQnmx8bi/RJnyO1YvbfDrK7Hi3QtCc7a \
-/WHhhnubZjFOwOPb94COMW/NYj4PMobopUW1PWIvad4BBvJ3Ku1bVdgY0gp8tcQklOVuijWvhbNF \
-nVecRFTa4R1W6nAi1tyw7Wpnjf7DKcGwO84WcCpMTI+y/u6wAcb/kVTe8Ce7u2DCD3Au/gK+z+hv \
-jgcAAA==)
+MSG=$(echo -e H4sIAAAAAAACA6WVTW/aQBCG7/yKuRWklNxzqxKpStVIlZr0gjis7QFvbO+6+wGiv77v7K4JNERV \
+lAsGz8c+887s8OTVlm9ms9uHO3JWNYMaaVXbvuc6aGtoo3tez4h+OG3C5JHde0+7i77ftQ+kvY/s \
+aWMd7dh5se9yXG3HwxuRt2IKLZOxoQSrvr+Yi4IllQLJqIFptxyanH/Qhmk18Pq/cPtW1y0pxzQo \
+13EjOStOCXKq4vdmHoEbgWqCVhNmjoyeL4b95BBHqnsLRqknxVBwqu602dLcjuKOvAfa69BCCPO5 \
+4Y2KfUg5FiX92KjAyPeUvpDj0XodrDuU3KhEdOxhBOdWB8g+DHi01nalOKMDMtzj8S+GHK0Nfb1/ \
+JDA+sKujkworp0zdTjI7Z52UdDB1hh0d77SNHvA+1XlMOCgf2BG852DpVXUlTG3Es9KhinXHYWnd \
+9gqVNKI/7HbrkxerK8A3XLHb0mcyzI2n599FCccDGkA1aRqlmlTI9BIlK9PAiA7kEnUhVQ5DI0ij \
+2Ip/Lkl4vY2uZvIHYA/5oMxLHa1wQ+z6pZnF8BI8OvuMtkvqDdm9wSk2H7vVOzakRt3xgbqlyHEs \
+B6X9Ur2M29Rv9DA1szlmPNj4CdOqzfLIBC3BBKR4RiSvLxFdwCCRqIRUCnMbXU/x43DHxtJqFa7X \
+gri6qdcnyp21/iLuHFOIARgoLDK63BncLXwk7LkaRzTT+7116PPiw9DP2imcGylQPHJ+gTbea2Xo \
+m5hfgc79YpL2El+wHeRGBShGGx9whzh7J6XPmI99ZVVGLSbB/NRYvJ/jDLkdi/d2mNX1dJGuJcFJ \
+uz8sXLm3aRbjEXh6+x7QKeatWcznQcYQvbSotXssJs0bwED+QaWFqyobQ9qBr7aYhLLcTbHmtXCy \
+qfOOk4hGO7zDTi0nYs+Vddc6a/QfTgnK7jjZwKkwMT3K+rvDBpj+SFJ55V92c8aEH+Cc/QUyPzzU \
+jwcAAA==)
   echo $MSG|sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 
