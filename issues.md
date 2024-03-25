@@ -1,6 +1,6 @@
 # TrackDown Issues
 
-Right now we have four areas/iterations/sprints in this issue list:
+Right now, we have four areas/iterations/sprints in this issue list:
 
 - *1.0* This should be accomplished before an 1.0 release.
 - *mirror* Everything related to just mirroring issue collection is collected here
@@ -12,9 +12,9 @@ Right now we have four areas/iterations/sprints in this issue list:
 
 *oos*
 
-While some IDE integrations rely on the [GIT](http://git-scm.com/) command line 
-tooling and thus work perfectly together with this project, NetBeans decided to 
-use the [JGit](https://eclipse.org/jgit/) library, which only supports a subsets 
+While some IDE integrations rely on the [GIT](http://git-scm.com/) command line
+tooling and thus work perfectly together with this project, NetBeans decided to
+use the [JGit](https://eclipse.org/jgit/) library, which only supports a subset
 of the [GIT](http://git-scm.com/) hooks - and not the ones we  use here.
 
 I already helped to add the post-commit hook which is needed by this project
@@ -27,7 +27,7 @@ TrackDown now works from within the IDE.
 
 *nth*
 
-For users of the mirror feature of collections with Redmine, GitHub, Gitlab, 
+For users of the mirror feature of collections with Redmine, GitHub, GitLab,
 and Gogs a hook implementation should mirror the issue collection on push
 to keep it updated in exactly the situations where the local machine must
 be connected to the remote site - or at least somehow to the internet.
@@ -35,7 +35,7 @@ be connected to the remote site - or at least somehow to the internet.
 _Note_
 
 This seems to be hard to accomplish with GIT, since there is only a `pre-push`
-hook available and we would need a `post-push` hook to get the right timing
+hook available, and we would need a `post-push` hook to get the right timing
 after the changes have been reflected in the remote issue tracking system.
 
 
@@ -43,9 +43,9 @@ after the changes have been reflected in the remote issue tracking system.
 
 *nth*
 
-Not only output percentages about the progress a certain release, iteration,
-or sprint has made, but also present a graphical progress bar for easier
-overview about the current state.
+Do not only output percentages about the progress of a certain release,
+iteration, or sprint has made, but also present a graphical progress bar for
+easier overview about the current state.
 
 Martin Goellnitz / Wed, 28 Dec 2016 01:13:18 [415121a80ee3a216e9a02635df34b30dacb34f73](https://github.com/mgoellnitz/trackdown/commit/415121a80ee3a216e9a02635df34b30dacb34f73)
 
@@ -60,8 +60,8 @@ Martin Goellnitz / Wed, 28 Dec 2016 01:14:37 [30444b0522236166b34660802f12938b04
 
 *mirror*
 
-TrackDown should be capable of translating [GitLab](https://gitlab.com/) JSON 
-exports of tickets to the special markdown format given here as a mirror for 
+TrackDown should be capable of translating [GitLab](https://gitlab.com/) JSON
+exports of tickets to the special Markdown format given here as a mirror for
 offline use.
 
 Martin Goellnitz / Sun Nov 13 19:10:27 2016 [29eb793d1caa2e42c1f120aa31e7ceb27929ca6b](https://github.com/mgoellnitz/trackdown/commit/29eb793d1caa2e42c1f120aa31e7ceb27929ca6b)
@@ -133,8 +133,8 @@ Martin Goellnitz / Tue, 28 May 2019 22:15:50 [c17d427c4c0b5f4c00a993c29a4eff9c29
 
 *mirror*
 
-TrackDown should be capable of translating [GitHub](https://github.com) JSON 
-exports of tickets to the special markdown format given here as a mirror for 
+TrackDown should be capable of translating [GitHub](https://github.com) JSON
+exports of tickets to the special Markdown format given here as a mirror for
 offline use.
 
 Martin Goellnitz / Sun Nov 13 21:19:35 2016 [35a52a9d751029ac5cbc3730ea28a3fc682663ce](https://github.com/mgoellnitz/trackdown/commit/35a52a9d751029ac5cbc3730ea28a3fc682663ce)
@@ -174,17 +174,17 @@ Martin Goellnitz / Mon, 30 Apr 2018 19:18:38 [1b4b0f0e5d5a773e520f4d979059ffb98d
 
 *mirror*
 
-For how historical reasons I have projects with Redmine ticketing in 
-use and still with relevant tickets. Some of them might even be a candidate to 
-migrate to TrackDown for others it might be sufficient to get a current offline 
-mirror when the repository is not available.
+For historical reasons, I have projects with Redmine ticketing in use and still
+with relevant tickets. Some of them might even be a candidate to migrate to
+TrackDown for others it might be sufficient to get a current offline mirror
+when the repository is not available.
 
-TrackDown should be capable of translating Redmine JSON exports of tickets to 
-the special markdown format given here. 
+TrackDown should be capable of translating Redmine JSON exports of tickets to
+the special Markdown format given here.
 
-For the mirror scenario, certain limitations are acceptable, 
+For the mirror scenario, certain limitations are acceptable,
 
-For  migration scenarios the commit lists should be included and even closed 
+For migration scenarios, the commit lists should be included and even closed
 tickets should be taken into account to not lose the relevant parts of the
 project history.
 
@@ -233,8 +233,8 @@ Martin Goellnitz / Wed, 28 Dec 2016 01:57:29 [01c5211aa1ff2a2056439a1ee1c73ddc7d
 
 *mirror*
 
-TrackDown should be capable of translating [Bitbucket.org](https://bitbucket.org/) 
-JSON exports of tickets to the special markdown format given here as a mirror for 
+TrackDown should be capable of translating [Bitbucket.org](https://bitbucket.org/)
+JSON exports of tickets to the special Markdown format given here as a mirror for
 offline use.
 
 Martin Goellnitz / Sat Dec 3 13:05:30 2016 [53f1165e8e009ca843909c6d67daaabc7a318f6c](https://github.com/mgoellnitz/trackdown/commit/53f1165e8e009ca843909c6d67daaabc7a318f6c)
@@ -262,14 +262,11 @@ Martin Goellnitz / Tue, 28 May 2019 22:59:09 [e9ce6ed0c0c44464f48b6bf3addd915b16
 
 *mirror*
 
-TrackDown should be capable of translating [gitea](https://gitea.io/) JSON 
-exports of tickets to the special markdown format given here as a mirror for 
-offline  use. Publicly available instances are [CodeBerg][https://codeberg.org/]
-and [Pikacode](https://v2.pikacode.com/), where we now should use 
-[CodeBerg][https://codeberg.org/] as the default public backend.
-
-This also should relate to the not that active project 
-[gogs](https://gogs.io/).
+TrackDown should be capable of translating [Gitea](https://gitea.io/) JSON
+exports of tickets to the special Markdown format given here as a mirror for
+offline  use. This mirror is supposed to work with [Gitea](https://gitea.io/),
+[Forgejo](https://forgejo.org/), and [Gogs](https://gogs.io) likewise.
+[Codeberg](https://codeberg.org/) is the default public backend.
 
 Martin Goellnitz / Sat Dec 3 02:56:16 2016 [e438fa86d8f6d112565899dcbfec466001ea13b4](https://github.com/mgoellnitz/trackdown/commit/e438fa86d8f6d112565899dcbfec466001ea13b4)
 
@@ -320,7 +317,7 @@ Martin Goellnitz / Tue, 30 Apr 2019 11:31:34 [acfe5dbdc17bed79b6fb9c5f416a2848e8
 
 *mirror*
 
-From the list of commonly used issue trackers or project management tools, 
+From the list of commonly used issue trackers or project management tools,
 Jira is one of the most frequently mentioned pieces of software. Despite the
 high configurability, some generic extraction is issues as a mirror should be
 made possible with TrackDown.
