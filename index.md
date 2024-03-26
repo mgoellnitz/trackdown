@@ -3,7 +3,7 @@
 [![Latest Release](https://img.shields.io/github/release/mgoellnitz/trackdown.svg)](https://github.com/mgoellnitz/trackdown/releases/latest)
 [![License](https://img.shields.io/github/license/mgoellnitz/trackdown.svg)](https://github.com/mgoellnitz/trackdown/blob/master/LICENSE)
 [![Build](https://img.shields.io/gitlab/pipeline/mgoellnitz/trackdown.svg)](https://gitlab.com/mgoellnitz/trackdown/pipelines)
-[![Download](https://img.shields.io/badge/Download-Snapshot-blue)](https://gitlab.com/mgoellnitz/trackdown/-/jobs/artifacts/master/download?job=build)
+[![Download](https://img.shields.io/badge/Download-Snapshot-blue)](https://gitlab.com/mgoellnitz/trackdown/-/jobs/artifacts/master/download?job=trackdown)
 
 Issue Tracking with plain [Markdown][markdown] for [GIT][git] and
 [Mercurial][hg].
