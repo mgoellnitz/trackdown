@@ -124,7 +124,7 @@ fi
 if [ "$CMD" = "issues" ] ; then
 
   discoverIssues
-  grep "^\#\#\ " $ISSUES | sed -e "s/^##\ /- /g"
+  grep "^##\s" $ISSUES | sed -e "s/^##\ /- /g"
 
 fi
 
