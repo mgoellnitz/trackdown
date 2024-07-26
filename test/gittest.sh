@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2016 Martin Goellnitz
+# Copyright 2016-2024 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ source $MYDIR/shelltest.sh
 # setup test
 before
 
-git init
+git init 2> /dev/null
 git config --local user.name "Mr Tester"
 git config --local user.email "test@provocon.eu"
 cp -r $CWD/README.md .
