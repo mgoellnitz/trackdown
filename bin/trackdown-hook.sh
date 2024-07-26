@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2019 Martin Goellnitz
+# Copyright 2015-2024 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-DIR=`dirname $0`
+DIR=$(dirname $(readlink $0))
 . $DIR/trackdown-lib.sh
 CWD=`pwd`
 windUp trackdown

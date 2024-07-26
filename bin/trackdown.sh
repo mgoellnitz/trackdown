@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2022 Martin Goellnitz
+# Copyright 2015-2024 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 CMD=$1
 ISSUES=$2
-DIR=`dirname $0`
+DIR=$(dirname $(readlink $0))
 CWD=`pwd`
 
 . $DIR/trackdown-lib.sh
