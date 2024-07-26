@@ -42,10 +42,11 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: build
+        run: ./gradlew build
 
       - name: Extract Package
         run: unzip build/distributions/*.zip
