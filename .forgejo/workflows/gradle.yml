@@ -43,7 +43,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Gradle
-        uses: https://github.com/gradle/gradle-build-action@v2
+        uses: https://github.com/gradle/gradle-build-action@v3
         with:
           arguments: build
 
@@ -51,7 +51,7 @@ jobs:
         run: unzip build/distributions/*.zip
 
       - name: Archive Package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trackdown
           path: trackdown*
