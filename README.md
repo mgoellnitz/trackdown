@@ -28,14 +28,22 @@ flows of tickets though, since you will be having only one file with plain
 in it.
 
 The currently open issues of TrackDown itself can be found
-[here](https://github.com/mgoellnitz/trackdown/blob/trackdown/issues.md),
-[here](https://codeberg.org/backendzeit/trackdown/src/branch/trackdown/issues.md) and
-[here](https://gitlab.com/mgoellnitz/trackdown/blob/trackdown/issues.md).
+[here](https://codeberg.org/backendzeit/trackdown/src/branch/trackdown/issues.md),
+[here](https://gitlab.com/mgoellnitz/trackdown/blob/trackdown/issues.md), and
+[here](https://github.com/mgoellnitz/trackdown/blob/trackdown/issues.md).
 
 The corresponding roadmap is placed
-[here](https://github.com/mgoellnitz/trackdown/blob/trackdown/roadmap.md),
-[here](https://codeberg.org/backendzeit/trackdown/src/branch/trackdown/roadmap.md) and
-[here](https://gitlab.com/mgoellnitz/trackdown/blob/trackdown/roadmap.md).
+[here](https://codeberg.org/backendzeit/trackdown/src/branch/trackdown/roadmap.md),
+[here](https://gitlab.com/mgoellnitz/trackdown/blob/trackdown/roadmap.md), and
+[here](https://github.com/mgoellnitz/trackdown/blob/trackdown/roadmap.md).
+
+
+## Feedback
+
+The primary home of this project for contribution and feedback lives at
+[Codeberg][codeberg] with additional mirrors at [GitLab][gitlab] and
+[GitHub][github].
+
 
 # Design
 
