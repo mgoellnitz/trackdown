@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-DIR=$(dirname $(readlink $0))
+DIR=$(dirname $(readlink -f $0))
 . $DIR/trackdown-lib.sh
 CWD=`pwd`
 windUp trackdown

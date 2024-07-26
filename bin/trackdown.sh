@@ -18,7 +18,7 @@
 
 CMD=$1
 ISSUES=$2
-DIR=$(dirname $(readlink $0))
+DIR=$(dirname $(readlink -f $0))
 CWD=`pwd`
 
 . $DIR/trackdown-lib.sh
