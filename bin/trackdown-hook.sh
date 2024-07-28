@@ -46,19 +46,19 @@ if [ ! -z "$LINE" ] ; then
   echo "Line: $LINE"
   ID=`echo $LINE|sed -e 's/.*#\([0-9a-zA-Z,]*\).*/\1/g'`
   echo "ID: $ID"
-  MARKER=`echo $LINE|grep -i "refs \#$ID"`
+  MARKER=`echo $LINE|grep -i "refs #$ID"`
   if [ ! -z "$MARKER" ] ; then
     STATUS="in progress"
   fi
-  MARKER=`echo $LINE|grep -i "fixes \#$ID"`
+  MARKER=`echo $LINE|grep -i "fixes #$ID"`
   if [ ! -z "$MARKER" ] ; then
     STATUS="resolved"
   fi
-  MARKER=`echo $LINE|grep -i "resolves \#$ID"`
+  MARKER=`echo $LINE|grep -i "resolves #$ID"`
   if [ ! -z "$MARKER" ] ; then
     STATUS="resolved"
   fi
-  MARKER=`echo $LINE|grep -i "resolve \#$ID"`
+  MARKER=`echo $LINE|grep -i "resolve #$ID"`
   if [ ! -z "$MARKER" ] ; then
     STATUS="resolved"
   fi
@@ -66,16 +66,16 @@ fi
 echo "TrackDown-$VCS: $ID $STATUS"
 if [ ! -z "$STATUS" ] ; then
   for TID in `echo "$ID"|sed -e 's/,/\ /g'`; do
-    HASID=`grep "^\#\#\ ${TID}" $ISSUES`
+    HASID=`grep "^##\s${TID}" $ISSUES`
     if [ ! -z "$HASID" ] ; then
       echo "TrackDown: Issue $TID"
       sed -i.remove -e "s/##\ $TID\ \(.*\)\ (.*)/## $TID \1/g" $ISSUES
       sed -i.remove -e "s/##\ $TID\ \(.*\)/## $TID \1 ($STATUS)/g" $ISSUES
       rm $ISSUES.remove
-      ISLAST=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${TID}.*$STATUS" |tail -1|grep $TID`
+      ISLAST=`grep -n "^##\s" $ISSUES|grep -A1 "${TID}.*$STATUS" |tail -1|grep $TID`
       # echo "last: $ISLAST"
       if [ -z "$ISLAST" ] ; then
-        SECTION=`grep -n "^\#\#\ " $ISSUES|grep -A1 "${TID}.*$STATUS"|tail -1|cut -d ':' -f 1`
+        SECTION=`grep -n "^##\s" $ISSUES|grep -A1 "${TID}.*$STATUS"|tail -1|cut -d ':' -f 1`
         LINES=`cat $ISSUES|wc -l`
         # echo "SECTION $SECTION - LINES $LINES"
         FILE=$ISSUES.remove

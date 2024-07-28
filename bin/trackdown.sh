@@ -90,7 +90,7 @@ if [ "$CMD" = "ls" ] ; then
   # Location of the issues file
   ISSUES=$3
   discoverIssues
-  grep -B2 "^\*$2\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'
+  grep -B2 "^\*$2\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /* /g'
 
 fi
 
@@ -105,7 +105,7 @@ if [ "$CMD" = "mine" ] ; then
   if [ -z "$ME" ] ; then
     ME="$USER"
   fi
-  grep -B2 "Currently.assigned.to...$ME" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'
+  grep -B2 "Currently.assigned.to...$ME" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /* /g'
 
 fi
 
@@ -145,7 +145,7 @@ if [ "$CMD" = "copy" ] ; then
   cp $ISSUES $COPY
   for START in `grep -n -B2 "^\*$2\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1` ; do 
     REST=$[ $LINES - $START + 1 ]
-    SIZE=`tail -$REST $COPY|grep -n ^\#\#\ |head -2|tail -1|cut -d ':' -f 1`
+    SIZE=`tail -$REST $COPY|grep -n "^##\s"|head -2|tail -1|cut -d ':' -f 1`
     # tail -$REST $ISSUES|head -1
     # echo "Starting at line $START with $SIZE lines."
     if [ $SIZE = 1 ] ; then

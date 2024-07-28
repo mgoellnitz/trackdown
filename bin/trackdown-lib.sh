@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2012 Martin Goellnitz
+# Copyright 2015-2024 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -138,11 +138,11 @@ function roadmap {
   echo "# Roadmap"
   echo ""
   IC=`basename $ISSUES .md`
-  for rr in `grep -A2 "^\#\#\ " $ISSUES|grep "^\*[A-Za-z0-9][A-Za-z0-9\._\ -]*\*"|cut -d '*' -f 2|sort|uniq|sed -e 's/\ /__/g'` ; do
+  for rr in `grep -A2 "^##\s" $ISSUES|grep "^\*[A-Za-z0-9][A-Za-z0-9\._\ -]*\*"|cut -d '*' -f 2|sort|uniq|sed -e 's/\ /__/g'` ; do
     r=`echo $rr|sed -e 's/__/ /g'`
-    TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
-    RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(resolved)'|wc -l`
-    PROGRESS=`grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(in progress)'|wc -l`
+    TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
+    RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(resolved)'|wc -l`
+    PROGRESS=`grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(in progress)'|wc -l`
     RESPERC=$[$RESOLVED * 100 / $TOTAL]
     PROPERC=$[$PROGRESS * 100 / $TOTAL]
     RESTPERC=$[ 100 - $PROPERC - $RESPERC ]
@@ -161,7 +161,7 @@ function roadmap {
     echo ""
     echo "$RESPERC% completed ($RESOLVED/$TOTAL) - $PROPERC% in progress ($PROGRESS/$TOTAL)"
     echo ""
-    grep -B2 "^\*$r\*" $ISSUES|grep "^\#\#\ "|sed -e 's/^\#\#\ /* /g'|awk '{print $NF,$0}'| sort | cut -f2- -d' '
+    grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /* /g'|awk '{print $NF,$0}'| sort | cut -f2- -d' '
     echo ""
   done
 }
