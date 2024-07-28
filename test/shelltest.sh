@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2016 Martin Goellnitz
+# Copyright 2016-2024 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 function before {
   CWD=`pwd`
   TEST=`basename $0 .sh`
+  export DEB_GREP_ENABLE_STRAY_BACKSLASH_WARN=1
   # test mercurial availability
   HGAVAIL=`which hg`
   # echo "$HGAVAIL"
