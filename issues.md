@@ -3,6 +3,7 @@
 Right now, we have four areas/iterations/sprints in this issue list:
 
 - *1.0* This should be accomplished before an 1.0 release.
+- *fix* Bugfixing topics.
 - *mirror* Everything related to just mirroring issue collection is collected here
 - *nth* This feature is nice to have but can be left out.
 - *oos* This issue is relevant but out of the scope of this project.
@@ -333,3 +334,12 @@ Martin Goellnitz / Sat, 10 Oct 2020 13:48:21 [92930f99431e967f3dffcb70747cf667cc
 Martin Goellnitz / Sat, 10 Oct 2020 21:09:35 [fb572db97462503f232e834ae3e73b5f74ca66b7](https://github.com/mgoellnitz/trackdown/commit/fb572db97462503f232e834ae3e73b5f74ca66b7)
 
     refs #JIRA mirroring acceleration
+
+
+## BACKSLASHES in some regular expressions should be removed (in progress)
+
+Scattered around the code, we find regular expressions using backslashes at places where they must not be present. GNU grep ignores these, but produces a warning message. Debian again hides this error message. We should fix the regular expressions instead of relying on the hiding of the messages.
+
+Martin Goellnitz / Sun, 28 Jul 2024 21:29:55 [36b3f195707e9516b9b00ee4162b25bbb362109a](https://github.com/mgoellnitz/trackdown/commit/36b3f195707e9516b9b00ee4162b25bbb362109a)
+
+    refs #BACKSLASHES - Unhide warning message for Debian to discover defective regular expressions
