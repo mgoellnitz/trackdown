@@ -51,8 +51,9 @@ jobs:
       - name: Extract Package
         run: unzip build/distributions/*.zip
 
-      - name: Archive Package
-        uses: actions/upload-artifact@v4
-        with:
-          name: trackdown
-          path: trackdown*
+# Not working on codeberg.org for us right now
+#      - name: Archive Package
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: trackdown
+#          path: trackdown*
