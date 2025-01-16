@@ -28,7 +28,7 @@ assertEquals "Unexpected usage output" $USAGE 62
 
 # test if every command section in the script has a usage hint
 $CWD/bin/trackdown.sh|grep ^trackdown.sh|cut -d ' ' -f 2|sort > usages.txt
-grep CMD..= $CWD/bin/trackdown.sh|cut -d '"' -f 4|sort > commands.txt
+grep CMD..= $CWD/bin/trackdown.sh|cut -d ' ' -f 5|sort > commands.txt
 DIFF=`diff -u usages.txt commands.txt`
 assertEquals "Command missing or surplus usage hint" "$DIFF" ""
 

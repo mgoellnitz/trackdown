@@ -67,12 +67,12 @@ VCS=`test -d .hg && echo hg || ( test -d .git && echo git || echo plain )`
 TDCONFIG=$TDBASE/.trackdown/config
 echo "TrackDown-$VCS: base directory $TDBASE"
 cd $CWD
-if [ "$VCS" == "git" ] ; then
+if [ "$VCS" = "git" ] ; then
   if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
     REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
   fi
 fi
-if [ "$VCS" == "hg" ] ; then
+if [ "$VCS" = "hg" ] ; then
   if [ $(hg paths | grep defaut | wc -l) -eq 1 ] ; then
     REMOTE=`hg paths default|cut -d '@' -f 2`
   fi
@@ -595,7 +595,7 @@ if [ "$CMD" = mirror ] ; then
     PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
     bailOnZero "No bitbucket.org project configured. $Q" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues"
-    if [ "$DISPLAY" == "$USER" ] ; then
+    if [ "$DISPLAY" = "$USER" ] ; then
       echo -n "Password for $DISPLAY on bitbucket.org: "
     fi
     curl --basic -u $USER $URL 2> /dev/null >$EXPORT
@@ -638,7 +638,7 @@ if [ "$CMD" = mirror ] ; then
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g'|sed -e 's/\\r//g' >>$ISSUES
       fi
       COMMENTS_URL=`jq  -c "${JQ}.links.comments.href" $EXPORT|sed -e 's/"//g'`
-      if [ "$DISPLAY" == "$USER" ] ; then
+      if [ "$DISPLAY" = "$USER" ] ; then
         echo -n "Password for $DISPLAY on bitbucket.org: "
       fi
       curl --basic -u $USER $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
@@ -1016,7 +1016,7 @@ if [ "$CMD" = remote ] ; then
     bailOnZero "No bitbucket.org project configured. $Q" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues/${ISSUE}"
     DISPLAY=`echo $USER|cut -d ':' -f 1`
-    if [ "$DISPLAY" == "$USER" ] ; then
+    if [ "$DISPLAY" = "$USER" ] ; then
       echo -n "Password for $DISPLAY on bitbucket.org: "
     fi
     if [ "$REMOTE" = "comment" ] ; then
