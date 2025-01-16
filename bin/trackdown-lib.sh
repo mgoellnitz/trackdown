@@ -17,15 +17,15 @@
 #
 
 # wind up the directory tree until we find a hidden folder of the given name $1
-function windUp {
-  while [ `pwd` != "/"  -a ! -d .$1 ] ; do
+windUp() {
+  while [ $(pwd) != "/"  -a ! -d .$1 ] ; do
     cd ..
   done
 }
 
 
 # $1 message to issue when not given $2 parameter to check
-function bailOnZero {
+bailOnZero() {
   if [ -z "$2" ] ; then
     echo $1
     exit
@@ -33,7 +33,7 @@ function bailOnZero {
 }  
 
 # Exit if trackdown is not initialized
-function checkTrackdown {
+checkTrackdown() {
     if [ ! -f $TDCONFIG ] ; then
       echo "Project not initialized for trackdown use."
       exit
@@ -41,7 +41,7 @@ function checkTrackdown {
 }
 
 # Exit if jq is not installed
-function checkJq {
+checkJq() {
   if [ "$(which jq|wc -l)" -lt 1 ] ; then
     echo "To use this functionality, jq must be installed."
     exit
@@ -49,7 +49,7 @@ function checkJq {
 }
 
 # Discover issues collection file from setup
-function discoverIssues {
+discoverIssues() {
   if [ -z "$ISSUES" ] ; then
     ISSUES=`test -f $TDCONFIG && grep location= $TDCONFIG|cut -d '=' -f 2`
     if [ -z "$ISSUES" ] ; then
@@ -66,7 +66,7 @@ function discoverIssues {
 }
 
 # Prevent mirror setup to occur repeatedly
-function preventRepeatedMirrorInit {
+preventRepeatedMirrorInit() {
   MIRROR=`test -f $TDCONFIG && grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
   if [ ! -z $MIRROR ] ; then
     echo "Mirror setup already done in this repository with type $MIRROR."
@@ -75,7 +75,7 @@ function preventRepeatedMirrorInit {
 }
 
 # Discovers the VCS in use and sets up ignore file suppport variables
-function ignoreFileHelper {
+ignoreFileHelper() {
   if [ -d $TDBASE/.git ] ; then
     IGNOREFILE="$TDBASE/.gitignore"
     IFBEGIN="/"
@@ -95,7 +95,7 @@ function ignoreFileHelper {
 }
 
 # Do common setup steps for collection for mirror type $1
-function setupCollectionReference {
+setupCollectionReference() {
   COLLECTION=$1-issues.md
   test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
   echo "autocommit=false" > $TDCONFIG
@@ -117,7 +117,7 @@ function setupCollectionReference {
 }
 
 # check if export result file $1 exists. Bails otherwise...
-function checkExport {
+checkExport() {
   if [ ! -f $1 ] ; then
     echo "JSON export file $1 not found. Export seemed to have failed..."
     exit
@@ -125,7 +125,7 @@ function checkExport {
 }
 
 # Create issue collection header with title $1 in issue collection file
-function issueCollectionHeader {
+issueCollectionHeader() {
   test -z "$2" && echo -n "" > $ISSUES
   echo "# $1" >>$ISSUES
   echo "" >>$ISSUES
@@ -134,7 +134,7 @@ function issueCollectionHeader {
 }
 
 # Generate a roadmap from the issue collection
-function roadmap {
+roadmap() {
   echo "# Roadmap"
   echo ""
   IC=`basename $ISSUES .md`
@@ -167,7 +167,7 @@ function roadmap {
 }
 
 # Write the roadmap to the roadmap file
-function writeRoadmap {
+writeRoadmap() {
   ROADMAP=`dirname $ISSUES`/roadmap.md
   roadmap > $ROADMAP
 }
