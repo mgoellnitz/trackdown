@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 #
-# Copyright 2016-2020 Martin Goellnitz
+# Copyright 2016-2025 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 #
 
 # include test "framework"
-source `dirname $0`/shelltest.sh
+. `dirname $0`/shelltest.sh
 
 # setup test
 before

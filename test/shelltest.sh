@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 #
-# Copyright 2016-2024 Martin Goellnitz
+# Copyright 2016-2025 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-function before {
+before() {
   CWD=`pwd`
   TEST=`basename $0 .sh`
   export DEB_GREP_ENABLE_STRAY_BACKSLASH_WARN=1
@@ -34,12 +34,12 @@ function before {
   echo "Executing test '$TEST'"
 }
 
-function after {
+after() {
   cd $CWD
 }
 
 # assert that variable $2 has value $3, outputs message $1 otherwise
-function assertEquals {
+assertEquals() {
   if [ "$2" != "$3" ] ; then
     echo "$1: '$2' - expected '$3'"
     pwd
@@ -48,7 +48,7 @@ function assertEquals {
 }
 
 # assert that file $2 exists, outputs message $1 otherwise
-function assertExists {
+assertExists() {
   if [ ! -f $2 ] ; then 
     echo "$1: $2" 
     pwd

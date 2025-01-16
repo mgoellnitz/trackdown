@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Copyright 2016-2018 Martin Goellnitz
 #
@@ -18,7 +18,7 @@
 
 # include test "framework"
 MYDIR=`dirname $0`
-source $MYDIR/shelltest.sh
+. $MYDIR/shelltest.sh
 
 # setup test
 before
