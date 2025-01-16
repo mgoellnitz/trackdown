@@ -85,7 +85,7 @@ if [ ! -z "$REMOTE" ] ; then
 fi
 
 # ls command to list potential issues in the collection for a certain release
-if [ "$CMD" = "ls" ] ; then
+if [ "$CMD" = ls ] ; then
 
   # Location of the issues file
   ISSUES=$3
@@ -96,7 +96,7 @@ fi
 
 
 # command to list my issues in the collection
-if [ "$CMD" = "mine" ] ; then
+if [ "$CMD" = mine ] ; then
 
   discoverIssues
   if [ -z "$ME" ] ; then
@@ -111,7 +111,7 @@ fi
 
 
 # roadmap command to pretty print a roadmap
-if [ "$CMD" = "roadmap" ] ; then
+if [ "$CMD" = roadmap ] ; then
 
   # Location of the issues file
   discoverIssues
@@ -121,7 +121,7 @@ fi
 
 
 # issues command to list all potential issues in the collection
-if [ "$CMD" = "issues" ] ; then
+if [ "$CMD" = issues ] ; then
 
   discoverIssues
   grep "^##\s" $ISSUES | sed -e "s/^##\ /- /g"
@@ -130,7 +130,7 @@ fi
 
 
 # copy all issues for a given milestore to a separate file
-if [ "$CMD" = "copy" ] ; then
+if [ "$CMD" = copy ] ; then
 
   # Location of the issues file
   ISSUES=$3
@@ -169,7 +169,7 @@ fi
 
 
 # use command
-if [ "$CMD" = "use" ] ; then
+if [ "$CMD" = use ] ; then
 
   if [ -f $TDCONFIG ] ; then
     echo "Project already initialized for trackdown use."
@@ -299,7 +299,7 @@ fi
 
 
 # update command to use the latest git post commit hook
-if [ "$CMD" = "update" ] ; then
+if [ "$CMD" = update ] ; then
 
   checkTrackdown
   if [ -d $TDBASE/.git ] ; then
@@ -321,7 +321,7 @@ fi
 
 
 #  issue collection and roadmap status command
-if [ "$CMD" = "status" ] ; then
+if [ "$CMD" = status ] ; then
 
   discoverIssues
   DIR=`dirname $ISSUES`
@@ -339,7 +339,7 @@ fi
 
 
 #  remote vcs sync command
-if [ "$CMD" = "sync" ] ; then
+if [ "$CMD" = sync ] ; then
 
   discoverIssues
   DIR=`dirname $ISSUES`
@@ -378,7 +378,7 @@ fi
 
 
 # init command
-if [ "$CMD" = "init" ] ; then
+if [ "$CMD" = init ] ; then
 
   if [ -d $TDBASE/.git ] ; then
     cd $TDBASE
@@ -434,7 +434,7 @@ fi
 
 
 # command to mirror the issue collection file from a remote system and calculate roadmap accordingly
-if [ "$CMD" = "mirror" ] ; then
+if [ "$CMD" = mirror ] ; then
  
   checkTrackdown
   TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
@@ -918,7 +918,7 @@ fi
 
 
 # remote command to issue commands on mirror sources
-if [ "$CMD" = "remote" ] ; then
+if [ "$CMD" = remote ] ; then
 
   checkTrackdown
   TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
@@ -1106,7 +1106,7 @@ fi
 
 
 # gitlab command to setup a gitlab system as a remote mirror source
-if [ "$CMD" = "gitlab" ] ; then
+if [ "$CMD" = gitlab ] ; then
 
   checkJq
   bailOnZero "No api token given as the first parameter" $2
@@ -1149,7 +1149,7 @@ fi
 
 
 # github command to setup a github system as a remote mirror source
-if [ "$CMD" = "github" ] ; then
+if [ "$CMD" = github ] ; then
 
   checkJq
   TOKEN=${2:-$GITHUB_COM_TOKEN}
@@ -1170,7 +1170,7 @@ fi
 
 
 # bitbucket command to setup bitbucket.org as a remote mirror source
-if [ "$CMD" = "bitbucket" ] ; then
+if [ "$CMD" = bitbucket ] ; then
 
   checkJq
   P=${2:-$REMOTEPROJECT}
@@ -1197,7 +1197,7 @@ fi
 
 
 # jira command to setup jira as a remote mirror source
-if [ "$CMD" = "jira" ] ; then
+if [ "$CMD" = jira ] ; then
 
   checkJq
   P=$2
@@ -1228,7 +1228,7 @@ fi
 
 
 # redmine command to setup a redmine system as a remote mirror source
-if [ "$CMD" = "redmine" ] ; then
+if [ "$CMD" = redmine ] ; then
 
   checkJq
   bailOnZero "No api key given as the first parameter" $2
@@ -1245,7 +1245,7 @@ fi
 
 
 # gitea command to setup a gitea system like codeberg or a gogs backend as a remote mirror source
-if [ "$CMD" = "gitea" ] ; then
+if [ "$CMD" = gitea ] ; then
 
   checkJq
   bailOnZero "No api token given as the first parameter" $2
