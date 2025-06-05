@@ -65,7 +65,7 @@ assertEquals "Unexpected commit hook output" "$OUTPUT" "added 1 changesets with 
 OUTPUT=`grep "## FIRST" issues.md`
 assertEquals "Unexpected issue collection content" "$OUTPUT" "## FIRST issue (in progress)"
 
-OUTPUT=`cat issues.md|wc -l`
+OUTPUT=`cat issues.md|wc -l|sed -e 's/\ //g'`
 assertEquals "Unexpected issue collection size" "$OUTPUT" "14"
 
 # cleanup test
