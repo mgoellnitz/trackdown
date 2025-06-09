@@ -205,6 +205,7 @@ if [ "$CMD" = use ] ; then
       cd .git
       git clone --branch trackdown $REMOTE trackdown
       cd trackdown
+      rm -f .git/hooks/*.sample
       git config --local push.default simple
       git config --local user.email "$MAIL"
       git config --local user.name "$NAME"
