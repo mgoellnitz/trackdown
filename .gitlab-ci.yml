@@ -27,7 +27,7 @@ trackdown:
   script:
   - apt update
   - apt install -yq jq file curl mercurial git bash bash-completion
-  - gradle build
+  - ./gradlew build
   - unzip build/distributions/*.zip
   artifacts:
     paths:
