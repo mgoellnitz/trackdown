@@ -82,17 +82,20 @@ buildRpm {
 distZip.dependsOn buildRpm
 
 check.doFirst {
-  exec {
-    commandLine "mkdir", "-p", "$buildDir/test/.trackdown"
-  }
+  def testTrackdownDir = file("$buildDir/test/.trackdown")
+  testTrackdownDir.mkdirs()
   def tests = fileTree('test') {
     include '**/*.sh'
     exclude '**/shelltest.sh'
   }
-  tests.each { file ->
-    // print "$file \n"
-    exec {
-      commandLine "$file"
+  tests.each { 
+    file -> {
+      def e = "$file".execute()
+      println e.text.trim()
+      sleep (1000)
+      if (e.exitValue() != 0) {
+        throw new Exception("$file failed.")
+      }
     }
   }
 }
