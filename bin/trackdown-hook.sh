@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
+# shellcheck disable=SC2086
+# shellcheck disable=SC2129
+# shellcheck disable=SC2164
 DIR=$(dirname $(readlink -f $0))
 . $DIR/trackdown-lib.sh
 CWD=$(pwd)
@@ -79,7 +82,7 @@ if [ ! -z "$STATUS" ] ; then
         LINES=$(cat $ISSUES|wc -l)
         # echo "SECTION $SECTION - LINES $LINES"
         FILE=$ISSUES.remove
-        head -$(( $SECTION - 1 )) $ISSUES >>$FILE
+        head -$(( SECTION - 1 )) $ISSUES >>$FILE
       else
         FILE=$ISSUES
         echo "" >>$FILE
@@ -102,7 +105,7 @@ if [ ! -z "$STATUS" ] ; then
       fi
       if [ -z "$ISLAST" ] ; then
         echo "" >>$ISSUES.remove
-        tail -(( $LINES - $SECTION + 1 )) $ISSUES >>$ISSUES.remove
+        tail -$(( LINES - SECTION + 1 )) $ISSUES >>$ISSUES.remove
         mv $ISSUES.remove $ISSUES
       fi
     else
