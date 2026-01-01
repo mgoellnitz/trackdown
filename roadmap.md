@@ -1,5 +1,13 @@
 # Roadmap
 
+## clean:
+
+![0%](https://di.9f8.de/1x30/eeeeee/808080.png&text=0%25)
+
+0% completed (0/1) - 0% in progress (0/1)
+
+* PORTABILITY of shell code
+
 ## nth:
 
 ![50%](https://di.9f8.de/350x30/000000/FFFFFF.png&text=50%25)![50%](https://di.9f8.de/350x30/eeeeee/808080.png&text=50%25)

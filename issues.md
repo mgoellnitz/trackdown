@@ -2,9 +2,10 @@
 
 Right now, we have four areas/iterations/sprints in this issue list:
 
-- *nth* This feature is nice to have but can be left out.
-- *oos* This issue is relevant but out of the scope of this project.
-- *fix* Bugfixing topics.
+- *nth*   This feature is nice to have but can be left out.
+- *clean* Clean up the code for portability, readabiliy and resource consumption.
+- *oos*   This issue is relevant but out of the scope of this project.
+- *fix*   Bugfixing topics.
 
 
 ## NETBEANS interoperation not working due to missing hook implementation in JGit (resolved)
@@ -69,3 +70,12 @@ Martin Goellnitz / Sun, 28 Jul 2024 21:29:55 [36b3f195707e9516b9b00ee4162b25bbb3
 Martin Goellnitz / Sun, 28 Jul 2024 21:43:22 [d504d06e74afea9461f0e4bca44bf8a2ba83dba8](https://github.com/mgoellnitz/trackdown/commit/d504d06e74afea9461f0e4bca44bf8a2ba83dba8)
 
     refs #BACKSLASHES fix regular expressions when using grep
+
+
+## PORTABILITY of shell code
+
+*clean*
+
+The code explicitly and silently relies on some bash features, which is not
+necessary and could be replaced by code relying on less resource hungry shell
+implementation especially for implicitly called scripts like the hook.
