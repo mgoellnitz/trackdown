@@ -51,13 +51,13 @@ checkJq() {
 # Discover issues collection file from setup
 discoverIssues() {
   if [ -z "$ISSUES" ] ; then
-    ISSUES=`test -f $TDCONFIG && grep location= $TDCONFIG|cut -d '=' -f 2`
+    ISSUES=$(test -f $TDCONFIG && grep location= $TDCONFIG|cut -d '=' -f 2)
     if [ -z "$ISSUES" ] ; then
       test -d $TDBASE/.git && ISSUES=".git/trackdown/issues.md"
       test -d $TDBASE/.hg && ISSUES=".hg/trackdown/issues.md"
     fi
-    ESCAPEDBASE=`echo $TDBASE|sed -e 's/\//\\\_xxxxx_\//g'|sed -e 's/_xxxxx_//g'`
-    ISSUES=`echo $ISSUES|sed -e "s/^\([a-zA-Z0-9\.]\)/$ESCAPEDBASE\/\1/g"`
+    ESCAPEDBASE=$(echo $TDBASE|sed -e 's/\//\\\_xxxxx_\//g'|sed -e 's/_xxxxx_//g')
+    ISSUES=$(echo $ISSUES|sed -e "s/^\([a-zA-Z0-9\.]\)/$ESCAPEDBASE\/\1/g")
   fi
   if [ ! -f $ISSUES ] ; then
     echo "No issue collection file found. Are we in a TrackDown context?"
@@ -67,7 +67,7 @@ discoverIssues() {
 
 # Prevent mirror setup to occur repeatedly
 preventRepeatedMirrorInit() {
-  MIRROR=`test -f $TDCONFIG && grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
+  MIRROR=$(test -f $TDCONFIG && grep mirror.type= $TDCONFIG|cut -d '=' -f 2)
   if [ ! -z $MIRROR ] ; then
     echo "Mirror setup already done in this repository with type $MIRROR."
     exit
@@ -87,7 +87,7 @@ ignoreFileHelper() {
     IFEND="\$"
   fi
   if [ ! -z "$IGNOREFILE" ] ; then
-    CHECK=`grep -s .trackdown $IGNOREFILE|wc -l`
+    CHECK=$(grep -s .trackdown $IGNOREFILE|wc -l)
     if [ $CHECK = 0 ] ; then
       echo "${IFBEGIN}.trackdown${IFEND}" >> $IGNOREFILE
     fi
@@ -103,11 +103,11 @@ setupCollectionReference() {
   echo "location=$COLLECTION" >> $TDCONFIG
   ignoreFileHelper
   if [ ! -z "$IGNOREFILE" ] ; then
-    CHECK=`grep -s $COLLECTION $IGNOREFILE|wc -l`
+    CHECK=$(grep -s $COLLECTION $IGNOREFILE|wc -l)
     if [ $CHECK = 0 ] ; then
       echo "${IFBEGIN}$COLLECTION${IFEND}" >> $IGNOREFILE
     fi
-    CHECK=`grep -s roadmap.md $IGNOREFILE|wc -l`
+    CHECK=$(grep -s roadmap.md $IGNOREFILE|wc -l)
     if [ $CHECK = 0 ] ; then
      echo "${IFBEGIN}roadmap.md${IFEND}" >> $IGNOREFILE
     fi
@@ -137,12 +137,12 @@ issueCollectionHeader() {
 roadmap() {
   echo "# Roadmap"
   echo ""
-  IC=`basename $ISSUES .md`
-  for rr in `grep -A2 "^##\s" $ISSUES|grep "^\*[A-Za-z0-9][A-Za-z0-9\._\ -]*\*"|cut -d '*' -f 2|sort|uniq|sed -e 's/\ /__/g'` ; do
-    r=`echo $rr|sed -e 's/__/ /g'`
-    TOTAL=`grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l`
-    RESOLVED=`grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(resolved)'|wc -l`
-    PROGRESS=`grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(in progress)'|wc -l`
+  IC=$(basename $ISSUES .md)
+  for rr in $(grep -A2 "^##\s" $ISSUES|grep "^\*[A-Za-z0-9][A-Za-z0-9\._\ -]*\*"|cut -d '*' -f 2|sort|uniq|sed -e 's/\ /__/g') ; do
+    r=$(echo $rr|sed -e 's/__/ /g')
+    TOTAL=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l)
+    RESOLVED=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(resolved)'|wc -l)
+    PROGRESS=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(in progress)'|wc -l)
     RESPERC=$[$RESOLVED * 100 / $TOTAL]
     PROPERC=$[$PROGRESS * 100 / $TOTAL]
     RESTPERC=$[ 100 - $PROPERC - $RESPERC ]
@@ -168,6 +168,6 @@ roadmap() {
 
 # Write the roadmap to the roadmap file
 writeRoadmap() {
-  ROADMAP=`dirname $ISSUES`/roadmap.md
+  ROADMAP=$(dirname $ISSUES)/roadmap.md
   roadmap > $ROADMAP
 }

@@ -16,12 +16,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 DIR=$(dirname $(readlink -f $0))
-CWD=`pwd`
+CWD=$(pwd)
 
 . $DIR/trackdown-lib.sh
 
 windUp trackdown
-TDBASE=`pwd`
+TDBASE=$(pwd)
 if [ ! -f .trackdown/config ] ; then
   echo "TrackDown not configured."
   exit 1
@@ -34,9 +34,9 @@ echo "TrackDown-plain: base directory $TDBASE"
 cd $CWD
 
 TMPFILE=/tmp/trackdown-login-result
-URL=`grep jira.url= $TDCONFIG|cut -d '=' -f 2`
-USER=`grep atlassian.user= $TDCONFIG|cut -d '=' -f 2|cut -d ':' -f 1`
-COOKIEFILE=`grep atlassian.user= $TDCONFIG|cut -d '=' -f 2|cut -d ':' -f 2`
+URL=$(grep jira.url= $TDCONFIG|cut -d '=' -f 2)
+USER=$(grep atlassian.user= $TDCONFIG|cut -d '=' -f 2|cut -d ':' -f 1)
+COOKIEFILE=$(grep atlassian.user= $TDCONFIG|cut -d '=' -f 2|cut -d ':' -f 2)
 echo -n "Password for $USER @ $URL: "
 read -s PASSWORD
 echo ""

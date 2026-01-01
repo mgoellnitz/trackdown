@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2024 Martin Goellnitz
+# Copyright 2015-2026 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,11 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
+# shellcheck disable=SC2086
+# shellcheck disable=SC2129
 
 CMD=$1
 ISSUES=$2
 DIR=$(dirname $(readlink -f $0))
-CWD=`pwd`
+CWD=$(pwd)
 
 . $DIR/trackdown-lib.sh
 
@@ -27,7 +29,7 @@ CWD=`pwd`
 if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
-  MYNAME=`basename $0`
+  MYNAME=$(basename $0)
 MSG=$(echo -e H4sIAAAAAAACA6WVTW/aQBCG7/yKuRWklNxzqxKpStVIlZr0gjis7QFvbO+6+wGiv77v7K4JNERV \
 lAsGz8c+887s8OTVlm9ms9uHO3JWNYMaaVXbvuc6aGtoo3tez4h+OG3C5JHde0+7i77ftQ+kvY/s \
 aWMd7dh5se9yXG3HwxuRt2IKLZOxoQSrvr+Yi4IllQLJqIFptxyanH/Qhmk18Pq/cPtW1y0pxzQo \
@@ -49,7 +51,7 @@ fi
 
 
 windUp trackdown
-TDBASE=`pwd`
+TDBASE=$(pwd)
 # At least try to find a reference base directory from DVCS
 if [ ! -f .trackdown/config ] ; then
   cd $CWD
@@ -59,28 +61,28 @@ if [ ! -f .trackdown/config ] ; then
     windUp git
   fi
 fi
-TDBASE=`pwd`
+TDBASE=$(pwd)
 if [ "$TDBASE" = "/" ] ; then
   TDBASE=$CWD
 fi
-VCS=`test -d .hg && echo hg || ( test -d .git && echo git || echo plain )`
+VCS=$(test -d .hg && echo hg || ( test -d .git && echo git || echo plain ))
 TDCONFIG=$TDBASE/.trackdown/config
 echo "TrackDown-$VCS: base directory $TDBASE"
 cd $CWD
 if [ "$VCS" = "git" ] ; then
   if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
-    REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
+    REMOTE=$(git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g')
   fi
 fi
 if [ "$VCS" = "hg" ] ; then
   if [ $(hg paths | grep defaut | wc -l) -eq 1 ] ; then
-    REMOTE=`hg paths default|cut -d '@' -f 2`
+    REMOTE=$(hg paths default|cut -d '@' -f 2)
   fi
 fi
 if [ ! -z "$REMOTE" ] ; then
-  CASE=`echo $REMOTE|cut -d '/' -f 1`
-  REMOTEUSER=`echo $REMOTE|cut -d '/' -f 2`
-  REMOTEPROJECT=`echo $REMOTE|cut -d '/' -f 3`
+  CASE=$(echo $REMOTE|cut -d '/' -f 1)
+  REMOTEUSER=$(echo $REMOTE|cut -d '/' -f 2)
+  REMOTEPROJECT=$(echo $REMOTE|cut -d '/' -f 3)
   test ! -z "$REMOTE" && echo "Remote system is $CASE with project \"$REMOTEPROJECT\" and user $REMOTEUSER"
 fi
 
@@ -100,7 +102,7 @@ if [ "$CMD" = mine ] ; then
 
   discoverIssues
   if [ -z "$ME" ] ; then
-    ME=`grep me= $TDCONFIG|cut -d '=' -f 2`
+    ME=$(grep me= $TDCONFIG|cut -d '=' -f 2)
   fi
   if [ -z "$ME" ] ; then
     ME="$USER"
@@ -135,17 +137,17 @@ if [ "$CMD" = copy ] ; then
   # Location of the issues file
   ISSUES=$3
   discoverIssues
-  ISSUEDIR=`dirname $ISSUES`
-  LINECOUNT=`cat $ISSUES|wc -l`
+  ISSUEDIR=$(dirname $ISSUES)
+  LINECOUNT=$(cat $ISSUES|wc -l)
   MILESTONE=$ISSUEDIR/$2
   echo "# Issues resolved in $2" > "$MILESTONE.md"
   echo "" >> "$MILESTONE.md"
   TOTALSIZE=0
   COPY=$ISSUEDIR/$2-issues.md
   cp $ISSUES $COPY
-  for START in `grep -n -B2 "^\*$2\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1` ; do 
+  for START in $(grep -n -B2 "^\*$2\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1) ; do 
     REST=$[ $LINECOUNT - $START + 1 ]
-    SIZE=`tail -$REST $COPY|grep -n "^##\s"|head -2|tail -1|cut -d ':' -f 1`
+    SIZE=$(tail -$REST $COPY|grep -n "^##\s"|head -2|tail -1|cut -d ':' -f 1)
     # tail -$REST $ISSUES|head -1
     # echo "Starting at line $START with $SIZE lines."
     if [ $SIZE = 1 ] ; then
@@ -156,7 +158,7 @@ if [ "$CMD" = copy ] ; then
     CSTART=$[ $START - $TOTALSIZE ]
     # tail -$REST $COPY|head -1
     # echo "Starting at line $CSTART with $SIZE lines."
-    CUT=`date +%s%N`.md
+    CUT=$(date +%s%N).md
     head -$[ $CSTART - 1 ] $COPY >$CUT
     if [ $SIZE != 1 ] ; then
       tail -$[ $REST - $SIZE + 1 ] $COPY >>$CUT  
@@ -182,7 +184,7 @@ if [ "$CMD" = use ] ; then
     ln -s $DIR/trackdown-lib.sh $TDBASE/.git/hooks/
     test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
     if [ -z "$ISSUES" ] ; then
-      if [ `(git branch -r;git branch -l)|grep trackdown|wc -l` = 0 ] ; then
+      if [ $((git branch -r;git branch -l)|grep trackdown|wc -l) = 0 ] ; then
         echo "GIT repository doesn't contain a trackdown branch. Did you issue the init command? Exiting."
         exit
       fi
@@ -191,10 +193,10 @@ if [ "$CMD" = use ] ; then
       if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
         git fetch origin trackdown:trackdown
       fi
-      NAME=`git config -l|grep user.name|cut -d '=' -f 2`
-      MAIL=`git config -l|grep user.email|cut -d '=' -f 2`
+      NAME=$(git config -l|grep user.name|cut -d '=' -f 2)
+      MAIL=$(git config -l|grep user.email|cut -d '=' -f 2)
       echo "prepare local"
-      test -z `git branch|grep trackdown|sed -e 's/\ /_/g'` && git branch trackdown
+      test -z $(git branch|grep trackdown|sed -e 's/\ /_/g') && git branch trackdown
       AUTOPUSH=true
       if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
         git branch --set-upstream-to=origin/trackdown trackdown
@@ -218,8 +220,8 @@ if [ "$CMD" = use ] ; then
     fi
 
     if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
-      REMOTE=`git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g'`
-      CASE=`echo $REMOTE|cut -d '/' -f 1`
+      REMOTE=$(git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g')
+      CASE=$(echo $REMOTE|cut -d '/' -f 1)
       test ! -z "$REMOTE" && echo "Remote system host is $CASE."
       if [ "$CASE" = "gitlab.com" ] ; then
         echo "Discovered gitlab remote"
@@ -242,7 +244,7 @@ if [ "$CMD" = use ] ; then
   if [ -d $TDBASE/.hg ] ; then
     test ! -d .trackdown && mkdir .trackdown
     if [ -z "$ISSUES" ] ; then
-      if [ `hg branches|grep trackdown|wc -l` = 0 ] ; then
+      if [ $(hg branches|grep trackdown|wc -l) = 0 ] ; then
         echo "Mercurial repository missing trackdown branch. Did you issue the init command? Exiting."
         exit
       fi
@@ -262,8 +264,8 @@ if [ "$CMD" = use ] ; then
     cd $CWD
 
     if [ $(hg paths | grep defaut | wc -l) -eq 1 ] ; then
-      REMOTE=`hg paths default|cut -d '@' -f 2`
-      CASE=`echo $REMOTE|cut -d '/' -f 1`
+      REMOTE=$(hg paths default|cut -d '@' -f 2)
+      CASE=$(echo $REMOTE|cut -d '/' -f 1)
       echo "Remote system is $CASE."
       if [ "$CASE" = "bitbucket.org" ] ; then
         echo "Discovered bitbucket.org remote"
@@ -274,19 +276,19 @@ if [ "$CMD" = use ] ; then
   fi
   if [ -f $TDCONFIG ] ; then
     echo "location=$ISSUES" >> $TDCONFIG
-    ID=`dirname $TDBASE/$ISSUES`
+    ID=$(dirname $TDBASE/$ISSUES)
     cd $TDBASE
     ignoreFileHelper
     if [ "$TDBASE" != "$ID" ] ; then
       ln -sf $ISSUES issues.md
-      ln -sf `dirname $ISSUES`/roadmap.md roadmap.md
-      CHECK=`grep -s roadmap.md $IGNOREFILE|wc -l`
+      ln -sf $(dirname $ISSUES)/roadmap.md roadmap.md
+      CHECK=$(grep -s roadmap.md $IGNOREFILE|wc -l)
       if [ $CHECK = 0 ] ; then
        echo "${IFBEGIN}roadmap.md${IFEND}" >> $IGNOREFILE
       fi
     fi
     if [ -h issues.md ] ; then
-      CHECK=`grep issues.md $IGNOREFILE|wc -l`
+      CHECK=$(grep issues.md $IGNOREFILE|wc -l)
       if [ $CHECK = 0 ] ; then
         echo "${IFBEGIN}issues.md${IFEND}" >> $IGNOREFILE
       fi
@@ -304,7 +306,7 @@ if [ "$CMD" = update ] ; then
 
   checkTrackdown
   if [ -d $TDBASE/.git ] ; then
-    TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
+    TYPE=$(grep mirror.type= $TDCONFIG|cut -d '=' -f 2)
     if [ -z $TYPE ] ; then
       rm -f $TDBASE/.git/hooks/post-commit
       rm -f $TDBASE/.git/hooks/trackdown-lib.sh
@@ -325,7 +327,7 @@ fi
 if [ "$CMD" = status ] ; then
 
   discoverIssues
-  DIR=`dirname $ISSUES`
+  DIR=$(dirname $ISSUES)
   if [ -d $DIR/.git ] ; then
     (cd $DIR ; git diff)
   else
@@ -343,9 +345,9 @@ fi
 if [ "$CMD" = sync ] ; then
 
   discoverIssues
-  DIR=`dirname $ISSUES`
+  DIR=$(dirname $ISSUES)
   if [ -d $DIR/.git ] ; then
-    if [ `cd $DIR ; git branch -l|grep ^*|cut -d ' ' -f 2` != "trackdown" ] ; then
+    if [ $(cd $DIR ; git branch -l|grep ^*|cut -d ' ' -f 2) != "trackdown" ] ; then
       echo "Not working on a special trackdown branch. Exiting."
       exit
     fi
@@ -364,7 +366,7 @@ if [ "$CMD" = sync ] ; then
     (cd $DIR ; git gc ; git push)
   fi
   if [ -d $DIR/.hg ] ; then
-    if [ `cd $DIR ; hg branch` != "trackdown" ] ; then
+    if [ $(cd $DIR ; hg branch) != "trackdown" ] ; then
       echo "Not working on a special trackdown branch. Exiting."
       exit
     fi
@@ -383,16 +385,16 @@ if [ "$CMD" = init ] ; then
 
   if [ -d $TDBASE/.git ] ; then
     cd $TDBASE
-    if [ `git log|wc -l` = 0 ] ; then
+    if [ $(git log|wc -l) = 0 ] ; then
       echo "GIT repository missing commits. Exiting."
       exit
     fi
-    if [ `(git branch -r;git branch -l)|sed -e s/^.\ //g|grep trackdown|wc -l` != 0 ] ; then
+    if [ $((git branch -r;git branch -l)|sed -e s/^.\ //g|grep trackdown|wc -l) != 0 ] ; then
       echo "TrackDown branch already present. Exiting."
       exit
     fi
     git stash
-    BRANCH=`git branch|grep '*'|cut -d ' ' -f 2`
+    BRANCH=$(git branch|grep '*'|cut -d ' ' -f 2)
     git checkout --orphan trackdown
     git rm -rf .
     echo "# Issues" > issues.md
@@ -407,15 +409,15 @@ if [ "$CMD" = init ] ; then
   fi
   if [ -d .hg ] ; then
     cd $TDBASE
-    if [ `hg log|wc -l` = 0 ] ; then
+    if [ $(hg log|wc -l) = 0 ] ; then
       echo "Mercurial repository missing commits. Exiting."
       exit
     fi
-    if [ `hg branches|grep trackdown|wc -l` != 0 ] ; then
+    if [ $(hg branches|grep trackdown|wc -l) != 0 ] ; then
       echo "TrackDown branch already present. Exiting."
       exit
     fi
-    BRANCH=`hg branch`
+    BRANCH=$(hg branch)
     hg update -r 0
     hg branch trackdown
     hg rm -f .
@@ -438,7 +440,7 @@ fi
 if [ "$CMD" = mirror ] ; then
  
   checkTrackdown
-  TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
+  TYPE=$(grep mirror.type= $TDCONFIG|cut -d '=' -f 2)
   bailOnZero "No mirror setup done for this repository." $TYPE
   unset ISSUES
   discoverIssues
@@ -446,17 +448,17 @@ if [ "$CMD" = mirror ] ; then
   EXPORT=${2:-"/tmp/issues.json"}
   COMMENTS_EXPORT=${3:-"/tmp/issue-comments.json"}
   ITEM=${4:-"/tmp/issue.json"}
-  Q="Did you setup $TYPE mirroring?";
+  Q="Did you setup $TYPE mirroring?"
   if [ $TYPE = "gitlab" ] ; then
-    URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
+    URL=$(grep gitlab.url= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitlab source url configured. $Q" $URL
-    TOKEN=`grep gitlab.key= $TDCONFIG|cut -d '=' -f 2`
+    TOKEN=$(grep gitlab.key= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitlab api token configured. $Q" $TOKEN
     TOKEN="PRIVATE-TOKEN: $TOKEN"
-    PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
+    PROJECT=$(grep gitlab.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitlab project. $Q" $PROJECT
     URL="${URL}/api/v4/projects/$PROJECT/issues"
-    PAGES=`curl -D - -X HEAD -H "$TOKEN" "$URL?per_page=100" 2> /dev/null|grep X-Total-Pages|sed -e 's/X.Total.Pages..\([0-9]*\).*/\1/g'`
+    PAGES=$(curl -D - -X HEAD -H "$TOKEN" "$URL?per_page=100" 2> /dev/null|grep X-Total-Pages|sed -e 's/X.Total.Pages..\([0-9]*\).*/\1/g')
     echo "$PAGES chunks of issues"
     issueCollectionHeader "Issues"
     PAGE="1"
@@ -464,21 +466,21 @@ if [ "$CMD" = mirror ] ; then
       echo "Chunk $PAGE"
       curl -H "$TOKEN" "$URL?per_page=100&page=$PAGE" 2> /dev/null >$EXPORT
       checkExport $EXPORT
-      for id in `jq  -c '.[]|.id' $EXPORT` ; do
+      for id in $(jq  -c '.[]|.id' $EXPORT) ; do
         echo "" >>$ISSUES
         echo "" >>$ISSUES
         JQ='.[]|select(.id == '$id')|'
-        TITLE=`jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        IID=`jq  -c "${JQ}.iid" $EXPORT|sed -e 's/"//g'`
-        STATE=`jq  -c "${JQ}.state" $EXPORT|sed -e 's/"//g'`
-        s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g'`
-        MILESTONE=`jq  -c "${JQ}.milestone|.title" $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
-        ASSIGNEE=`jq  -c "${JQ}.assignee.username" $EXPORT|sed -e 's/"//g'`
-        ASSIGNEE_NAME=`jq  -c "${JQ}.assignee.name" $EXPORT|sed -e 's/"//g'`
+        TITLE=$(jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+        IID=$(jq  -c "${JQ}.iid" $EXPORT|sed -e 's/"//g')
+        STATE=$(jq  -c "${JQ}.state" $EXPORT|sed -e 's/"//g')
+        s=$(echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/closed/resolved/g')
+        MILESTONE=$(jq  -c "${JQ}.milestone|.title" $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g')
+        ASSIGNEE=$(jq  -c "${JQ}.assignee.username" $EXPORT|sed -e 's/"//g')
+        ASSIGNEE_NAME=$(jq  -c "${JQ}.assignee.name" $EXPORT|sed -e 's/"//g')
         echo "## $IID $TITLE ($s)"  >>$ISSUES
         echo "" >>$ISSUES
         echo -n "*${MILESTONE}*"  >>$ISSUES
-        LABELS=`jq  -c "${JQ}.labels" $EXPORT|sed -e 's/"/\`/g'|sed -e 's/,/][/g'`
+        LABELS=$(jq  -c "${JQ}.labels" $EXPORT|sed -e 's/"/\`/g'|sed -e 's/,/][/g')
         if [ ! "$LABELS" = "[]" ] ; then
           echo -n " $LABELS" >>$ISSUES
         fi
@@ -486,15 +488,15 @@ if [ "$CMD" = mirror ] ; then
           echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
         fi
         echo "" >>$ISSUES
-        AUTHOR=`jq  -c "${JQ}.author.username" $EXPORT|sed -e 's/"//g'`
-        AUTHOR_NAME=`jq  -c "${JQ}.author.name" $EXPORT|sed -e 's/"//g'`
+        AUTHOR=$(jq  -c "${JQ}.author.username" $EXPORT|sed -e 's/"//g')
+        AUTHOR_NAME=$(jq  -c "${JQ}.author.name" $EXPORT|sed -e 's/"//g')
         echo "" >>$ISSUES
         if [ "$AUTHOR" != "null" ] ; then
           echo -n "Author: \`$AUTHOR\` $AUTHOR_NAME " >>$ISSUES
         fi
         echo "" >>$ISSUES
-        DESCRIPTION=`jq  -c "${JQ}.description" $EXPORT`
-        USERCOMMENTSNO=`jq  -c "${JQ}.user_notes_count" $EXPORT`
+        DESCRIPTION=$(jq  -c "${JQ}.description" $EXPORT)
+        USERCOMMENTSNO=$(jq  -c "${JQ}.user_notes_count" $EXPORT)
         if [ "$DESCRIPTION" != "null" ] ; then
           echo "" >>$ISSUES
           echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g' >>$ISSUES
@@ -506,12 +508,12 @@ if [ "$CMD" = mirror ] ; then
         if [ "$COMMENTSNO" != "0" ] ; then
           echo "" >>$ISSUES
           echo "### Comments" >>$ISSUES
-          for cid in `jq  -c '.[]|.id' $COMMENTS_EXPORT` ; do
+          for cid in $(jq  -c '.[]|.id' $COMMENTS_EXPORT) ; do
             echo "" >>$ISSUES
             BODY=$(jq  -c '.[]|select(.id == '$cid')|.body' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
-            COMMENT_DATE=`jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g'`
-            COMMENTER=`jq  -c '.[]|select(.id == '$cid')|.author.username' $COMMENTS_EXPORT|sed -e 's/"//g'`
-            COMMENTER_NAME=`jq  -c '.[]|select(.id == '$cid')|.author.name' $COMMENTS_EXPORT|sed -e 's/"//g'`
+            COMMENT_DATE=$(jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g')
+            COMMENTER=$(jq  -c '.[]|select(.id == '$cid')|.author.username' $COMMENTS_EXPORT|sed -e 's/"//g')
+            COMMENTER_NAME=$(jq  -c '.[]|select(.id == '$cid')|.author.name' $COMMENTS_EXPORT|sed -e 's/"//g')
             echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE" >>$ISSUES
             echo "" >>$ISSUES
             echo "$BODY" >>$ISSUES
@@ -523,32 +525,32 @@ if [ "$CMD" = mirror ] ; then
   fi
 
   if [ $TYPE = "github" ] ; then
-    OWNER=`grep github.owner= $TDCONFIG|cut -d '=' -f 2`
+    OWNER=$(grep github.owner= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No github repository owner configured. $Q" $OWNER
-    TOKEN=`grep github.key= $TDCONFIG|cut -d '=' -f 2`
+    TOKEN=$(grep github.key= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No github api token configured. $Q" $TOKEN
-    PROJECT=`grep github.project= $TDCONFIG|cut -d '=' -f 2`
+    PROJECT=$(grep github.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No github project. $Q" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues?state=all"
     curl -H "Authorization: token $TOKEN" $URL 2> /dev/null >$EXPORT
     checkExport $EXPORT
-    RESULT=`jq '.message?' $EXPORT`
+    RESULT=$(jq '.message?' $EXPORT)
     if [ ! -z "$RESULT" ] ; then
       echo "Cannot mirror issues for github project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
     issueCollectionHeader "Issues"
-    for id in `jq  -c '.[]|.id' $EXPORT` ; do
+    for id in $(jq  -c '.[]|.id' $EXPORT) ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
       JQ='.[]|select(.id == '$id')|'
-      TITLE=`jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-      IID=`jq  -c "${JQ}.number" $EXPORT|sed -e 's/"//g'`
-      STATE=`jq  -c "${JQ}.state" $EXPORT|sed -e 's/"//g'`
-      s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
-      MILESTONE=`jq  -c "${JQ}.milestone.title" $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
-      ASSIGNEE=`jq  -c "${JQ}.assignee" $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g'`
-      LABELS=`jq  -c "${JQ}.labels" $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g'`
+      TITLE=$(jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+      IID=$(jq  -c "${JQ}.number" $EXPORT|sed -e 's/"//g')
+      STATE=$(jq  -c "${JQ}.state" $EXPORT|sed -e 's/"//g')
+      s=$(echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g')
+      MILESTONE=$(jq  -c "${JQ}.milestone.title" $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g')
+      ASSIGNEE=$(jq  -c "${JQ}.assignee" $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g')
+      LABELS=$(jq  -c "${JQ}.labels" $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g')
       echo "## $IID $TITLE ($s)"  >>$ISSUES
       echo "" >>$ISSUES
       echo -n "*${MILESTONE}*"  >>$ISSUES
@@ -559,28 +561,28 @@ if [ "$CMD" = mirror ] ; then
         echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
       fi
       echo "" >>$ISSUES
-      AUTHOR=`jq  -c "${JQ}.user.login" $EXPORT|sed -e 's/"//g'`
-      AUTHOR_URL=`jq  -c "${JQ}.user.html_url" $EXPORT|sed -e 's/"//g'`
+      AUTHOR=$(jq  -c "${JQ}.user.login" $EXPORT|sed -e 's/"//g')
+      AUTHOR_URL=$(jq  -c "${JQ}.user.html_url" $EXPORT|sed -e 's/"//g')
       if [ "$AUTHOR" != "null" ] ; then
         echo "" >>$ISSUES
         echo "Author: \`$AUTHOR\`" >>$ISSUES
       fi
-      DESCRIPTION=`jq  -c "${JQ}.body" $EXPORT`
+      DESCRIPTION=$(jq  -c "${JQ}.body" $EXPORT)
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g'|sed -e 's/\\r//g' >>$ISSUES
       fi
-      COMMENTSNO=`jq  -c "${JQ}.comments" $EXPORT`
+      COMMENTSNO=$(jq  -c "${JQ}.comments" $EXPORT)
       if [ "$COMMENTSNO" != "0" ] ; then
-        COMMENTS_URL=`jq  -c "${JQ}.comments_url" $EXPORT|sed -e 's/"//g'`
+        COMMENTS_URL=$(jq  -c "${JQ}.comments_url" $EXPORT|sed -e 's/"//g')
         curl -H "Authorization: token $TOKEN" $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
         echo "" >>$ISSUES
         echo "### Comments" >>$ISSUES
-        for cid in `jq  -c '.[]|.id' $COMMENTS_EXPORT` ; do
+        for cid in $(jq  -c '.[]|.id' $COMMENTS_EXPORT) ; do
           echo "" >>$ISSUES
           BODY=$(jq  -c '.[]|select(.id == '$cid')|.body' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
-          COMMENT_DATE=`jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g'`
-          COMMENTER=`jq  -c '.[]|select(.id == '$cid')|.user.login' $COMMENTS_EXPORT|sed -e 's/"//g'`
+          COMMENT_DATE=$(jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g')
+          COMMENTER=$(jq  -c '.[]|select(.id == '$cid')|.user.login' $COMMENTS_EXPORT|sed -e 's/"//g')
           echo "$COMMENTER ($COMMENT_DATE)" >>$ISSUES
           echo "" >>$ISSUES
           echo "$BODY" >>$ISSUES
@@ -590,10 +592,10 @@ if [ "$CMD" = mirror ] ; then
   fi
 
   if [ $TYPE = "bitbucket" ] ; then
-    USER=`grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2`
+    USER=$(grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No bitbucket.org user configured. $Q" $USER
-    DISPLAY=`echo $USER|cut -d ':' -f 1`
-    PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
+    DISPLAY=$(echo $USER|cut -d ':' -f 1)
+    PROJECT=$(grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No bitbucket.org project configured. $Q" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues"
     if [ "$DISPLAY" = "$USER" ] ; then
@@ -601,24 +603,24 @@ if [ "$CMD" = mirror ] ; then
     fi
     curl --basic -u $USER $URL 2> /dev/null >$EXPORT
     checkExport $EXPORT
-    RESULT=`jq '.error?|.message?' $EXPORT`
+    RESULT=$(jq '.error?|.message?' $EXPORT)
     if [ ! "$RESULT" = "null" ] ; then
       echo "Cannot mirror issues for bitbucket.org project ${PROJECT} as ${DISPLAY}: ${RESULT}"
       cd $CWD
       exit
     fi
     issueCollectionHeader "Issues"
-    for id in `jq  -c '.values[].id' $EXPORT` ; do
+    for id in $(jq  -c '.values[].id' $EXPORT) ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
       JQ='.values[]|select(.id == '$id')|'
-      TITLE=`jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-      STATE=`jq  -c "${JQ}.state" $EXPORT|sed -e 's/"//g'`
-      PRIORITY=`jq  -c "${JQ}.priority" $EXPORT|sed -e 's/"//g'`
-      TYPE=`jq  -c "${JQ}.type" $EXPORT|sed -e 's/"//g'`
-      s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
-      ASSIGNEE=`jq  -c "${JQ}.assignee|.username" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
-      ASSIGNEE_NAME=`jq  -c "${JQ}.assignee|.display_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      TITLE=$(jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+      STATE=$(jq  -c "${JQ}.state" $EXPORT|sed -e 's/"//g')
+      PRIORITY=$(jq  -c "${JQ}.priority" $EXPORT|sed -e 's/"//g')
+      TYPE=$(jq  -c "${JQ}.type" $EXPORT|sed -e 's/"//g')
+      s=$(echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g')
+      ASSIGNEE=$(jq  -c "${JQ}.assignee|.username" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
+      ASSIGNEE_NAME=$(jq  -c "${JQ}.assignee|.display_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       echo "## $id $TITLE ($s)"  >>$ISSUES
       echo "" >>$ISSUES
       # Priority used as milestone
@@ -627,18 +629,18 @@ if [ "$CMD" = mirror ] ; then
         echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
       fi
       echo "" >>$ISSUES
-      AUTHOR=`jq  -c "${JQ}.reporter|.username" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
-      AUTHOR_NAME=`jq  -c "${JQ}.reporter|.display_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      AUTHOR=$(jq  -c "${JQ}.reporter|.username" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
+      AUTHOR_NAME=$(jq  -c "${JQ}.reporter|.display_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       echo "" >>$ISSUES
       if [ "$AUTHOR" != "null" ] ; then
         echo "Author: \`$AUTHOR\` $AUTHOR_NAME" >>$ISSUES
       fi
-      DESCRIPTION=`jq  -c "${JQ}.content.raw" $EXPORT`
+      DESCRIPTION=$(jq  -c "${JQ}.content.raw" $EXPORT)
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g'|sed -e 's/\\r//g' >>$ISSUES
       fi
-      COMMENTS_URL=`jq  -c "${JQ}.links.comments.href" $EXPORT|sed -e 's/"//g'`
+      COMMENTS_URL=$(jq  -c "${JQ}.links.comments.href" $EXPORT|sed -e 's/"//g')
       if [ "$DISPLAY" = "$USER" ] ; then
         echo -n "Password for $DISPLAY on bitbucket.org: "
       fi
@@ -647,12 +649,12 @@ if [ "$CMD" = mirror ] ; then
       if [ "$COMMENTSNO" != "0" ] ; then
         echo "" >>$ISSUES
         echo "### Comments" >>$ISSUES
-        for cid in `jq  -c '.values[]|.id' $COMMENTS_EXPORT` ; do
+        for cid in $(jq  -c '.values[]|.id' $COMMENTS_EXPORT) ; do
           BODY=$(jq  -c '.values[]|select(.id == '$cid')|.content.raw' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
           if [ "$BODY" != "null" ] ; then
-            COMMENT_DATE=`jq  -c '.values[]|select(.id == '$cid')|.created_on' $COMMENTS_EXPORT|sed -e 's/"//g'`
-            COMMENTER=`jq  -c '.values[]|select(.id == '$cid')|.user.username' $COMMENTS_EXPORT|sed -e 's/"//g'`
-            COMMENTER_NAME=`jq  -c '.values[]|select(.id == '$cid')|.user.display_name' $COMMENTS_EXPORT|sed -e 's/"//g'`
+            COMMENT_DATE=$(jq  -c '.values[]|select(.id == '$cid')|.created_on' $COMMENTS_EXPORT|sed -e 's/"//g')
+            COMMENTER=$(jq  -c '.values[]|select(.id == '$cid')|.user.username' $COMMENTS_EXPORT|sed -e 's/"//g')
+            COMMENTER_NAME=$(jq  -c '.values[]|select(.id == '$cid')|.user.display_name' $COMMENTS_EXPORT|sed -e 's/"//g')
             echo "" >>$ISSUES
             echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE" >>$ISSUES
             echo "" >>$ISSUES
@@ -664,16 +666,16 @@ if [ "$CMD" = mirror ] ; then
   fi
 
   if [ $TYPE = "jira" ] ; then
-    BASEURL=`grep jira.url= $TDCONFIG|cut -d '=' -f 2`
+    BASEURL=$(grep jira.url= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No jira source url configured. $Q" $BASEURL
-    USER=`grep atlassian.user= $TDCONFIG|cut -d '=' -f 2`
-    JQL_SUFFIX=`grep ^jql.suffix= $TDCONFIG|cut -d '=' -f 2`
+    USER=$(grep atlassian.user= $TDCONFIG|cut -d '=' -f 2)
+    JQL_SUFFIX=$(grep ^jql.suffix= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No atlassian user configured. $Q" $USER
-    DISPLAY=`echo $USER|cut -d ':' -f 1`
+    DISPLAY=$(echo $USER|cut -d ':' -f 1)
     if [ "$DISPLAY" != "$USER" ] ; then
       COOKIEFILE=$(echo $USER|cut -d ':' -f 2)
     fi
-    PROJECT=`grep jira.project= $TDCONFIG|cut -d '=' -f 2`
+    PROJECT=$(grep jira.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No jira project configured. $Q" $PROJECT
     issueCollectionHeader "Issues"
     PAGES="1"
@@ -689,7 +691,7 @@ if [ "$CMD" = mirror ] ; then
         curl --basic -u $USER $URL 2> /dev/null >$EXPORT
       fi
       checkExport $EXPORT
-      RESULT=`jq '.error?|.message?' $EXPORT`
+      RESULT=$(jq '.error?|.message?' $EXPORT)
       if [ ! "$RESULT" = "null" ] ; then
         echo "Cannot mirror issues for jira project ${PROJECT} as ${DISPLAY}: ${RESULT}"
         cd $CWD
@@ -705,17 +707,17 @@ if [ "$CMD" = mirror ] ; then
         echo "" >>$ISSUES
         echo "" >>$ISSUES
         jq '.issues[]|select(.id == "'$id'")|{key: .key, title: .fields.summary, state: .fields.status.statusCategory.key, priority: .fields.priority.name, milestone: .fields.fixVersions[0].name, labels: .fields.labels, author: .fields.creator.displayName, assignee: .fields.assignee.displayName, description: .fields.description, versions: .fields.versions}' $EXPORT > $ITEM
-        KEY=`jq  -c ".key" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        TITLE=`jq  -c ".title" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        STATE=`jq  -c ".state" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        s=`echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/indeterminate/in progress/g'|sed -e 's/closed/resolved/g'|sed -e 's/done/resolved/g'`
-        PRIORITY=`jq  -c ".priority" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        MILESTONE=`jq  -c ".milestone" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        VERSIONS=`jq  -c ".versions[]|.name" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        LABELS=`jq  -c ".labels" $ITEM|sed -e 's/"/\`/g'|sed -e 's/,/][/g'`
-        AUTHOR=`jq  -c ".author" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        ASSIGNEE=`jq  -c ".assignee" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-        DESCRIPTION=`jq  -c ".description" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
+        KEY=$(jq  -c ".key" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+        TITLE=$(jq  -c ".title" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+        STATE=$(jq  -c ".state" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+        s=$(echo $STATE|sed -e 's/opened/in progress/g'|sed -e 's/indeterminate/in progress/g'|sed -e 's/closed/resolved/g'|sed -e 's/done/resolved/g')
+        PRIORITY=$(jq  -c ".priority" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+        MILESTONE=$(jq  -c ".milestone" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+        VERSIONS=$(jq  -c ".versions[]|.name" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+        LABELS=$(jq  -c ".labels" $ITEM|sed -e 's/"/\`/g'|sed -e 's/,/][/g')
+        AUTHOR=$(jq  -c ".author" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+        ASSIGNEE=$(jq  -c ".assignee" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+        DESCRIPTION=$(jq  -c ".description" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
         COMMENTS=""
 
         echo "## $KEY $TITLE ($s)"  >>$ISSUES
@@ -772,14 +774,14 @@ if [ "$CMD" = mirror ] ; then
   fi
 
   if [ $TYPE = "redmine" ] ; then
-    BASEURL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
+    BASEURL=$(grep redmine.url= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No redmine source url configured. $Q" $BASEURL
-    KEY=`grep redmine.key= $TDCONFIG|cut -d '=' -f 2`
+    KEY=$(grep redmine.key= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No redmine api key configured. $Q" $KEY
-    PROJECTS=`grep redmine.project= $TDCONFIG|cut -d '=' -f 2`
+    PROJECTS=$(grep redmine.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No redmine project. $Q" $PROJECTS
     rm $ISSUES
-    for PROJECT in `echo "$PROJECTS"|sed -e 's/,/\ /g'`; do
+    for PROJECT in $(echo "$PROJECTS"|sed -e 's/,/\ /g'); do
       echo "Project: $PROJECT"
       issueCollectionHeader "$PROJECT" "append"
       COUNT=0
@@ -790,20 +792,20 @@ if [ "$CMD" = mirror ] ; then
         curl -H "X-Redmine-API-Key: $KEY" "$URL" 2> /dev/null >$EXPORT
         checkExport $EXPORT
         PAGE=$[ $PAGE + 1 ]
-        COUNT=`jq  -c '.total_count' $EXPORT`
-        OFFSET=`jq  -c '.offset' $EXPORT`
+        COUNT=$(jq  -c '.total_count' $EXPORT)
+        OFFSET=$(jq  -c '.offset' $EXPORT)
         test $OFFSET -lt $COUNT && echo "continue $OFFSET - $COUNT"
-        for id in `jq  -c '.issues[]|.id' $EXPORT` ; do
+        for id in $(jq  -c '.issues[]|.id' $EXPORT) ; do
           echo "" >>$ISSUES
           echo "" >>$ISSUES
-          SUBJECT=`jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g'`
-          STATUS=`jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
-          s=`echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'|sed -e 's/Erledigt/Resolved/g'`
+          SUBJECT=$(jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g')
+          STATUS=$(jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g')
+          s=$(echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'|sed -e 's/Erledigt/Resolved/g')
           echo "## $id $SUBJECT ($s)" >>$ISSUES
           echo "" >>$ISSUES
-          VERSION=`jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/*No Milestone*/g'|sed -e 's/.*name...\(.*\)"./*\1*/g'`
-          ASSIGNEE=`jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
-          PRIORITY=`jq  -c '.issues[]|select(.id == '$id')|.priority' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g'`
+          VERSION=$(jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/*No Milestone*/g'|sed -e 's/.*name...\(.*\)"./*\1*/g')
+          ASSIGNEE=$(jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g')
+          PRIORITY=$(jq  -c '.issues[]|select(.id == '$id')|.priority' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g')
           echo -n "${VERSION}"  >>$ISSUES
           if [ "$ASSIGNEE" != "null" ] ; then
             echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
@@ -814,7 +816,7 @@ if [ "$CMD" = mirror ] ; then
           echo "" >>$ISSUES
           echo "### Description" >>$ISSUES
           echo "" >>$ISSUES
-          AUTHOR=`jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g'`
+          AUTHOR=$(jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g')
           if [ "$AUTHOR" != "null" ] ; then
             echo "Author: \`$AUTHOR\`" >>$ISSUES
             echo "" >>$ISSUES
@@ -843,33 +845,33 @@ if [ "$CMD" = mirror ] ; then
   fi
 
   if [ $TYPE = "gitea" ] ; then
-    URL=`grep gitea.url= $TDCONFIG|cut -d '=' -f 2`
+    URL=$(grep gitea.url= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitea source url configured. $Q" $URL
-    TOKEN=`grep gitea.key= $TDCONFIG|cut -d '=' -f 2`
+    TOKEN=$(grep gitea.key= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitea api token configured. $Q" $TOKEN
-    PROJECT=`grep gitea.project= $TDCONFIG|cut -d '=' -f 2`
+    PROJECT=$(grep gitea.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitea (or gogs) project. $Q" $PROJECT
     URL="${URL}/api/v1/repos/${PROJECT}/issues"
     curl -H "Authorization: token $TOKEN" "${URL}?state=all" 2> /dev/null >$EXPORT
     checkExport $EXPORT
-    RESULT=`jq '.message?' $EXPORT`
+    RESULT=$(jq '.message?' $EXPORT)
     if [ ! -z "$RESULT" ] ; then
       echo "Cannot mirror issues for gitea (or gogs) project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
     issueCollectionHeader "Issues"
-    for id in `jq  -c '.[]|.id' $EXPORT` ; do
+    for id in $(jq  -c '.[]|.id' $EXPORT) ; do
       echo "" >>$ISSUES
       echo "" >>$ISSUES
       JQ='.[]|select(.id == '$id')|'
-      TITLE=`jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g'`
-      IID=`jq  -c "${JQ}.number" $EXPORT|sed -e 's/"//g'`
-      STATE=`jq  -c "${JQ}.state" $EXPORT|sed -e 's/"//g'`
-      s=`echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g'`
-      MILESTONE=`jq  -c "${JQ}.milestone|.title" $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g'`
-      ASSIGNEE=`jq  -c "${JQ}.assignee|.login" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
-      ASSIGNEE_NAME=`jq  -c "${JQ}.assignee|.full_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
-      LABELS=`jq  -c "${JQ}.labels" $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g'`
+      TITLE=$(jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
+      IID=$(jq  -c "${JQ}.number" $EXPORT|sed -e 's/"//g')
+      STATE=$(jq  -c "${JQ}.state" $EXPORT|sed -e 's/"//g')
+      s=$(echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g')
+      MILESTONE=$(jq  -c "${JQ}.milestone|.title" $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g')
+      ASSIGNEE=$(jq  -c "${JQ}.assignee|.login" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
+      ASSIGNEE_NAME=$(jq  -c "${JQ}.assignee|.full_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
+      LABELS=$(jq  -c "${JQ}.labels" $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g')
       echo "## $IID $TITLE ($s)"  >>$ISSUES
       echo "" >>$ISSUES
       echo -n "*${MILESTONE}*"  >>$ISSUES
@@ -880,30 +882,30 @@ if [ "$CMD" = mirror ] ; then
         echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
       fi
       echo "" >>$ISSUES
-      AUTHOR=`jq  -c "${JQ}.user|.login" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
-      AUTHOR_NAME=`jq  -c "${JQ}.user|.full_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g`
+      AUTHOR=$(jq  -c "${JQ}.user|.login" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
+      AUTHOR_NAME=$(jq  -c "${JQ}.user|.full_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       echo "" >>$ISSUES
       if [ "$AUTHOR" != "null" ] ; then
         echo -n "Author: \`$AUTHOR\` $AUTHOR_NAME  " >>$ISSUES
       fi
       echo "Remote ID $id" >>$ISSUES
-      DESCRIPTION=`jq  -c "${JQ}.body" $EXPORT`
+      DESCRIPTION=$(jq  -c "${JQ}.body" $EXPORT)
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
         echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\n/\n&/g'|sed -e 's/\\n//g'|sed -e 's/\\r//g' >>$ISSUES
       fi
-      COMMENTSNO=`jq  -c "${JQ}.comments" $EXPORT`
+      COMMENTSNO=$(jq  -c "${JQ}.comments" $EXPORT)
       if [ "$COMMENTSNO" != "0" ] ; then
         COMMENTS_URL=$(echo ${URL}/${IID}/comments)
         curl -H "Authorization: token $TOKEN" $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
         echo "" >>$ISSUES
         echo "### Comments" >>$ISSUES
-        for cid in `jq  -c '.[]|.id' $COMMENTS_EXPORT` ; do
+        for cid in $(jq  -c '.[]|.id' $COMMENTS_EXPORT) ; do
           echo "" >>$ISSUES
           BODY=$(jq  -c '.[]|select(.id == '$cid')|.body' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
-          COMMENT_DATE=`jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g'`
-          COMMENTER=`jq  -c '.[]|select(.id == '$cid')|.user.login' $COMMENTS_EXPORT|sed -e 's/"//g'`
-          COMMENTER_NAME=`jq  -c '.[]|select(.id == '$cid')|.user.full_name' $COMMENTS_EXPORT|sed -e 's/"//g'`
+          COMMENT_DATE=$(jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g')
+          COMMENTER=$(jq  -c '.[]|select(.id == '$cid')|.user.login' $COMMENTS_EXPORT|sed -e 's/"//g')
+          COMMENTER_NAME=$(jq  -c '.[]|select(.id == '$cid')|.user.full_name' $COMMENTS_EXPORT|sed -e 's/"//g')
           echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE" >>$ISSUES
           echo "" >>$ISSUES
           echo "$BODY" >>$ISSUES
@@ -922,7 +924,7 @@ fi
 if [ "$CMD" = remote ] ; then
 
   checkTrackdown
-  TYPE=`grep mirror.type= $TDCONFIG|cut -d '=' -f 2`
+  TYPE=$(grep mirror.type= $TDCONFIG|cut -d '=' -f 2)
   bailOnZero "No mirror setup done for this repository." $TYPE
   REMOTE=$2
   bailOnZero "No remote command given as the second parameter" $REMOTE
@@ -933,13 +935,13 @@ if [ "$CMD" = remote ] ; then
   # echo "Remote command: $REMOTE Target issue: $ISSUE Parameter: $PARAM"
   Q="Did you setup $TYPE mirroring?";
   if [ "$TYPE" = "gitlab" ] ; then
-    URL=`grep gitlab.url= $TDCONFIG|cut -d '=' -f 2`
+    URL=$(grep gitlab.url= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitlab source url configured. $Q" $URL
     URL=$URL/api/v4/
-    TOKEN=`grep gitlab.key= $TDCONFIG|cut -d '=' -f 2`
+    TOKEN=$(grep gitlab.key= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitlab api token configured. $Q" $TOKEN
     TOKEN="PRIVATE-TOKEN:  $TOKEN"
-    PROJECT=`grep gitlab.project= $TDCONFIG|cut -d '=' -f 2`
+    PROJECT=$(grep gitlab.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitlab project. $Q" $PROJECT
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to issue $ISSUE"
@@ -983,11 +985,11 @@ if [ "$CMD" = remote ] ; then
     fi
   fi
   if [ "$TYPE" = "github" ] ; then
-    OWNER=`grep github.owner= $TDCONFIG|cut -d '=' -f 2`
+    OWNER=$(grep github.owner= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No github owner configured. $Q" $OWNER
-    TOKEN=`grep github.key= $TDCONFIG|cut -d '=' -f 2`
+    TOKEN=$(grep github.key= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No github api token configured. $Q" $TOKEN
-    PROJECT=`grep github.project= $TDCONFIG|cut -d '=' -f 2`
+    PROJECT=$(grep github.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No github project. $Q" $PROJECT
     URL="https://api.github.com/repos/${OWNER}/${PROJECT}/issues/${ISSUE}"
     if [ "$REMOTE" = "comment" ] ; then
@@ -1011,12 +1013,12 @@ if [ "$CMD" = remote ] ; then
     fi
   fi
   if [ "$TYPE" = "bitbucket" ] ; then
-    USER=`grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2`
+    USER=$(grep bitbucket.user= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No bitbucket.org user configured. $Q" $USER
-    PROJECT=`grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2`
+    PROJECT=$(grep bitbucket.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No bitbucket.org project configured. $Q" $PROJECT
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues/${ISSUE}"
-    DISPLAY=`echo $USER|cut -d ':' -f 1`
+    DISPLAY=$(echo $USER|cut -d ':' -f 1)
     if [ "$DISPLAY" = "$USER" ] ; then
       echo -n "Password for $DISPLAY on bitbucket.org: "
     fi
@@ -1043,9 +1045,9 @@ if [ "$CMD" = remote ] ; then
     fi
   fi
   if [ "$TYPE" = "jira" ] ; then
-    USER=`grep atlassian.user= $TDCONFIG|cut -d '=' -f 2`
+    USER=$(grep atlassian.user= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No atlassian user configured. $Q" $USER
-    PROJECT=`grep jira.project= $TDCONFIG|cut -d '=' -f 2`
+    PROJECT=$(grep jira.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No jira project configured. $Q" $PROJECT
 
     URL="https://api.bitbucket.org/2.0/repositories/${PROJECT}/issues/${ISSUE}"
@@ -1059,9 +1061,9 @@ if [ "$CMD" = remote ] ; then
     fi
   fi
   if [ "$TYPE" = "redmine" ] ; then
-    URL=`grep redmine.url= $TDCONFIG|cut -d '=' -f 2`
+    URL=$(grep redmine.url= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No redmine source url configured. $Q" $URL
-    KEY=`grep redmine.key= $TDCONFIG|cut -d '=' -f 2`
+    KEY=$(grep redmine.key= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No redmine api key configured. $Q" $KEY
     if [ "$REMOTE" = "comment" ] ; then
       echo "Adding comment \"$PARAM\" to issue $ISSUE"
@@ -1077,11 +1079,11 @@ if [ "$CMD" = remote ] ; then
     fi
   fi
   if [ "$TYPE" = "gitea" ] ; then
-    URL=`grep gitea.url= $TDCONFIG|cut -d '=' -f 2`
+    URL=$(grep gitea.url= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitea (or gogs) source url configured. $Q" $URL
-    TOKEN=`grep gitea.key= $TDCONFIG|cut -d '=' -f 2`
+    TOKEN=$(grep gitea.key= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitea (or gogs) api token configured. $Q" $TOKEN
-    PROJECT=`grep gitea.project= $TDCONFIG|cut -d '=' -f 2`
+    PROJECT=$(grep gitea.project= $TDCONFIG|cut -d '=' -f 2)
     bailOnZero "No gitea (or gogs) project. $Q" $PROJECT
     if [ "$REMOTE" = "comment" ] ; then
       RESULT=$(curl -X POST -H "Authorization: token $TOKEN" --data "body=${PARAM}" \
@@ -1122,11 +1124,11 @@ if [ "$CMD" = gitlab ] ; then
   URL=${4:-https://$HOST}
   N=$(echo $P|sed -e 's/\(.*\)\/\(.*\)/\2/g')
   PL=$(curl -L -H "PRIVATE-TOKEN: $2" ${URL}'/api/v4/projects?per_page=100&search='$N 2> /dev/null)
-  CHECK=`echo $PL|jq '.message'`
+  CHECK=$(echo $PL|jq '.message')
   if [ -z "$CHECK" ] ; then
-    PID=`echo $PL|jq '.[]|select(.name=="'$P'")|.id'`
+    PID=$(echo $PL|jq '.[]|select(.name=="'$P'")|.id')
     if [ -z "$PID" ] ; then
-      PID=`echo $PL|jq '.[]|select(.path_with_namespace=="'$P'")|.id'`
+      PID=$(echo $PL|jq '.[]|select(.path_with_namespace=="'$P'")|.id')
     fi
     if [ -z "$PID" ] ; then
       echo "No project $P on $URL"

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2015-2024 Martin Goellnitz
+# Copyright 2015-2026 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,66 +17,66 @@
 #
 DIR=$(dirname $(readlink -f $0))
 . $DIR/trackdown-lib.sh
-CWD=`pwd`
+CWD=$(pwd)
 windUp trackdown
-TDBASE=`pwd`
-VCS=`test -d .hg && echo hg || echo git`
+TDBASE=$(pwd)
+VCS=$(test -d .hg && echo hg || echo git)
 TDCONFIG=$TDBASE/.trackdown/config
 echo "TrackDown-$VCS: Base directory $TDBASE"
 cd $CWD
 checkTrackdown
 discoverIssues
 # Prefix for links to online commit descriptions
-PREFIX=`grep prefix= $TDCONFIG|cut -d '=' -f 2`
+PREFIX=$(grep prefix= $TDCONFIG|cut -d '=' -f 2)
 # echo "ISSUES $ISSUES"
 if [ $VCS = "hg" ] ; then
-  AUTHOR=`hg log -l 1 --template "{person(author)}\n"`
-  DATE=`hg log -l 1 --template "{localdate(date)|date}\n"`
-  LINE=`hg log -l 1 --template "{desc}\n"|grep \#`
-  HASH=`hg log -l 1 --template "{node}\n"`
+  AUTHOR$(hg log -l 1 --template "{person(author)}\n")
+  DATE=$(hg log -l 1 --template "{localdate(date)|date}\n")
+  LINE=$(hg log -l 1 --template "{desc}\n"|grep \#)
+  HASH=$(hg log -l 1 --template "{node}\n")
 fi
 if [ $VCS = "git" ] ; then
-  AUTHOR=`git log -n 1 --format=%an`
-  DATE=`git log -n 1 --format=%aD|cut -d '+' -f 1|sed -e 's/\ $//g'`
-  LINE=`git log -n 1 --format=%s|grep \#`
-  HASH=`git log -n 1 --format="%H"`
+  AUTHOR=$(git log -n 1 --format=%an)
+  DATE=$(git log -n 1 --format=%aD|cut -d '+' -f 1|sed -e 's/\ $//g')
+  LINE=$(git log -n 1 --format=%s|grep \#)
+  HASH=$(git log -n 1 --format="%H")
 fi
 STATUS=""
 if [ ! -z "$LINE" ] ; then
   echo "Line: $LINE"
-  ID=`echo $LINE|sed -e 's/.*#\([0-9a-zA-Z,]*\).*/\1/g'`
+  ID=$(echo $LINE|sed -e 's/.*#\([0-9a-zA-Z,]*\).*/\1/g')
   echo "ID: $ID"
-  MARKER=`echo $LINE|grep -i "refs #$ID"`
+  MARKER=$(echo $LINE|grep -i "refs #$ID")
   if [ ! -z "$MARKER" ] ; then
     STATUS="in progress"
   fi
-  MARKER=`echo $LINE|grep -i "fixes #$ID"`
+  MARKER=$(echo $LINE|grep -i "fixes #$ID")
   if [ ! -z "$MARKER" ] ; then
     STATUS="resolved"
   fi
-  MARKER=`echo $LINE|grep -i "resolves #$ID"`
+  MARKER=$(echo $LINE|grep -i "resolves #$ID")
   if [ ! -z "$MARKER" ] ; then
     STATUS="resolved"
   fi
-  MARKER=`echo $LINE|grep -i "resolve #$ID"`
+  MARKER=$(echo $LINE|grep -i "resolve #$ID")
   if [ ! -z "$MARKER" ] ; then
     STATUS="resolved"
   fi
 fi
 echo "TrackDown-$VCS: $ID $STATUS"
 if [ ! -z "$STATUS" ] ; then
-  for TID in `echo "$ID"|sed -e 's/,/\ /g'`; do
-    HASID=`grep "^##\s${TID}" $ISSUES`
+  for TID in $(echo "$ID"|sed -e 's/,/\ /g'); do
+    HASID=$(grep "^##\s${TID}" $ISSUES)
     if [ ! -z "$HASID" ] ; then
       echo "TrackDown: Issue $TID"
       sed -i.remove -e "s/##\ $TID\ \(.*\)\ (.*)/## $TID \1/g" $ISSUES
       sed -i.remove -e "s/##\ $TID\ \(.*\)/## $TID \1 ($STATUS)/g" $ISSUES
       rm $ISSUES.remove
-      ISLAST=`grep -n "^##\s" $ISSUES|grep -A1 "${TID}.*$STATUS" |tail -1|grep $TID`
+      ISLAST=$(grep -n "^##\s" $ISSUES|grep -A1 "${TID}.*$STATUS" |tail -1|grep $TID)
       # echo "last: $ISLAST"
       if [ -z "$ISLAST" ] ; then
-        SECTION=`grep -n "^##\s" $ISSUES|grep -A1 "${TID}.*$STATUS"|tail -1|cut -d ':' -f 1`
-        LINES=`cat $ISSUES|wc -l`
+        SECTION=$(grep -n "^##\s" $ISSUES|grep -A1 "${TID}.*$STATUS"|tail -1|cut -d ':' -f 1)
+        LINES=$(cat $ISSUES|wc -l)
         # echo "SECTION $SECTION - LINES $LINES"
         FILE=$ISSUES.remove
         head -$[ $SECTION - 1 ] $ISSUES >>$FILE
@@ -95,7 +95,7 @@ if [ ! -z "$STATUS" ] ; then
       fi
       if [ $VCS = "git" ] ; then
         git log -n 1 --format="    %s" >>$FILE
-        BODY=`git log -n 1 --format="%b"`
+        BODY=$(git log -n 1 --format="%b")
         if [ ! -z "$BODY" ] ; then
           git log -n 1 --format="    %b" >>$FILE
         fi
@@ -112,16 +112,16 @@ if [ ! -z "$STATUS" ] ; then
 
   writeRoadmap
 
-  AUTOCOMMIT=`grep autocommit=true $TDCONFIG`
+  AUTOCOMMIT=$(grep autocommit=true $TDCONFIG)
   # echo "AUTOCOMMIT: $AUTOCOMMIT"
   if [ ! -z "$AUTOCOMMIT" ] ; then
-    WD=`pwd`
-    TRACKDOWN=`dirname $ISSUES`
+    WD=$(pwd)
+    TRACKDOWN=$(dirname $ISSUES)
     # TODO: Why do we re-discover the VCS here?
-    VCS=`test -d $TRACKDOWN/.hg && echo hg || echo git`
+    VCS=$(test -d $TRACKDOWN/.hg && echo hg || echo git)
     echo "TrackDown: committing with $VCS in $TRACKDOWN"
     ( cd $TRACKDOWN ; ${VCS} commit -m "Committed for issue(s) #$ID" issues.md roadmap.md > /dev/null)
-    AUTOPUSH=`grep autopush=true $TDCONFIG`
+    AUTOPUSH=$(grep autopush=true $TDCONFIG)
     # echo "AUTOPUSH: $AUTOPUSH"
     if [ ! -z "$AUTOPUSH" ] ; then
       echo "TrackDown: pushing"
