@@ -130,7 +130,7 @@ Martin Goellnitz / Tue, 28 May 2019 22:15:50 [c17d427c4c0b5f4c00a993c29a4eff9c29
     refs #GITLAB remote commands fixed
 
 
-## GITHUB offline mirror (in progress)
+## GITHUB offline mirror (resolved)
 
 *mirror*
 
@@ -338,7 +338,10 @@ Martin Goellnitz / Sat, 10 Oct 2020 21:09:35 [fb572db97462503f232e834ae3e73b5f74
 
 ## BACKSLASHES in some regular expressions should be removed (in progress)
 
-Scattered around the code, we find regular expressions using backslashes at places where they must not be present. GNU grep ignores these, but produces a warning message. Debian again hides this error message. We should fix the regular expressions instead of relying on the hiding of the messages.
+Scattered around the code, we find regular expressions using backslashes at
+places where they must not be present. GNU grep ignores these, but produces a
+warning message. Debian again hides this error message. We should fix the
+regular expressions instead of relying on the hiding of the messages.
 
 Martin Goellnitz / Sun, 28 Jul 2024 21:29:55 [36b3f195707e9516b9b00ee4162b25bbb362109a](https://github.com/mgoellnitz/trackdown/commit/36b3f195707e9516b9b00ee4162b25bbb362109a)
 
