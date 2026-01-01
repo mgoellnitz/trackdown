@@ -136,7 +136,7 @@ if [ "$CMD" = copy ] ; then
   ISSUES=$3
   discoverIssues
   ISSUEDIR=`dirname $ISSUES`
-  LINES=`cat $ISSUES|wc -l`
+  LINECOUNT=`cat $ISSUES|wc -l`
   MILESTONE=$ISSUEDIR/$2
   echo "# Issues resolved in $2" > "$MILESTONE.md"
   echo "" >> "$MILESTONE.md"
@@ -144,7 +144,7 @@ if [ "$CMD" = copy ] ; then
   COPY=$ISSUEDIR/$2-issues.md
   cp $ISSUES $COPY
   for START in `grep -n -B2 "^\*$2\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1` ; do 
-    REST=$[ $LINES - $START + 1 ]
+    REST=$[ $LINECOUNT - $START + 1 ]
     SIZE=`tail -$REST $COPY|grep -n "^##\s"|head -2|tail -1|cut -d ':' -f 1`
     # tail -$REST $ISSUES|head -1
     # echo "Starting at line $START with $SIZE lines."
