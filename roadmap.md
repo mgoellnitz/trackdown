@@ -2,11 +2,11 @@
 
 ## clean:
 
-![0%](https://di.9f8.de/1x30/eeeeee/808080.png&text=0%25)
+![100%](https://di.9f8.de/700x30/606060/FFFFFF.png&text=100%25)
 
-0% completed (0/1) - 0% in progress (0/1)
+0% completed (0/1) - 100% in progress (1/1)
 
-* PORTABILITY of shell code
+* PORTABILITY of shell code (in progress)
 
 ## nth:
 

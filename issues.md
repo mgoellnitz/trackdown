@@ -72,10 +72,14 @@ Martin Goellnitz / Sun, 28 Jul 2024 21:43:22 [d504d06e74afea9461f0e4bca44bf8a2ba
     refs #BACKSLASHES fix regular expressions when using grep
 
 
-## PORTABILITY of shell code
+## PORTABILITY of shell code (in progress)
 
 *clean*
 
 The code explicitly and silently relies on some bash features, which is not
 necessary and could be replaced by code relying on less resource hungry shell
 implementation especially for implicitly called scripts like the hook.
+
+Martin Goellnitz / Thu, 1 Jan 2026 22:22:20 [8dbe2633e98a7fc525386b02e66256190f779a4e](https://codeberg.org/backendzeit/trackdown/commit/8dbe2633e98a7fc525386b02e66256190f779a4e)
+
+    refs #PORTABILITY - replace backticks
