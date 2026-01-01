@@ -143,19 +143,19 @@ roadmap() {
     TOTAL=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l)
     RESOLVED=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(resolved)'|wc -l)
     PROGRESS=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(in progress)'|wc -l)
-    RESPERC=$[$RESOLVED * 100 / $TOTAL]
-    PROPERC=$[$PROGRESS * 100 / $TOTAL]
-    RESTPERC=$[ 100 - $PROPERC - $RESPERC ]
+    RESPERC=$(( $RESOLVED * 100 / $TOTAL ))
+    PROPERC=$(( $PROGRESS * 100 / $TOTAL ))
+    RESTPERC=$(( 100 - $PROPERC - $RESPERC ))
     echo "## ${r}:"
     echo ""
     if [ $RESPERC -gt 0 ] ; then
-      echo -n "![$RESPERC%](https://di.9f8.de/$[ $RESPERC * 7 ]x30/000000/FFFFFF.png&text=$RESPERC%25)"
+      echo -n "![$RESPERC%](https://di.9f8.de/$(( $RESPERC * 7 ))x30/000000/FFFFFF.png&text=$RESPERC%25)"
     fi
     if [ $PROPERC -gt 0 ] ; then
-      echo -n "![$PROPERC%](https://di.9f8.de/$[ $PROPERC * 7 ]x30/606060/FFFFFF.png&text=$PROPERC%25)"
+      echo -n "![$PROPERC%](https://di.9f8.de/$(( $PROPERC * 7 ))x30/606060/FFFFFF.png&text=$PROPERC%25)"
     fi
     if [ $RESTPERC -gt 0 ] ; then
-      echo -n "![$RESTPERC%](https://di.9f8.de/$[ $RESTPERC * 7 ]x30/eeeeee/808080.png&text=$RESTPERC%25)"
+      echo -n "![$RESTPERC%](https://di.9f8.de/$(( $RESTPERC * 7 ))x30/eeeeee/808080.png&text=$RESTPERC%25)"
     fi
     echo ""
     echo ""

@@ -146,25 +146,25 @@ if [ "$CMD" = copy ] ; then
   COPY=$ISSUEDIR/$2-issues.md
   cp $ISSUES $COPY
   for START in $(grep -n -B2 "^\*$2\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1) ; do 
-    REST=$[ $LINECOUNT - $START + 1 ]
+    REST=$(( $LINECOUNT - $START + 1 ))
     SIZE=$(tail -$REST $COPY|grep -n "^##\s"|head -2|tail -1|cut -d ':' -f 1)
     # tail -$REST $ISSUES|head -1
     # echo "Starting at line $START with $SIZE lines."
     if [ $SIZE = 1 ] ; then
       tail -$REST $COPY >> "$MILESTONE.md"
     else 
-      tail -$REST $COPY | head -$[ $SIZE - 1 ] >> "$MILESTONE.md"
+      tail -$REST $COPY | head -$(( $SIZE - 1 )) >> "$MILESTONE.md"
     fi
-    CSTART=$[ $START - $TOTALSIZE ]
+    CSTART=$(( $START - $TOTALSIZE ))
     # tail -$REST $COPY|head -1
     # echo "Starting at line $CSTART with $SIZE lines."
     CUT=$(date +%s%N).md
-    head -$[ $CSTART - 1 ] $COPY >$CUT
+    head -$(( $CSTART - 1 )) $COPY >$CUT
     if [ $SIZE != 1 ] ; then
-      tail -$[ $REST - $SIZE + 1 ] $COPY >>$CUT  
+      tail -$(( $REST - $SIZE + 1 )) $COPY >>$CUT
     fi
     mv $CUT $COPY
-    TOTALSIZE=$[ $TOTALSIZE + $SIZE - 1 ]
+    TOTALSIZE=$(( $TOTALSIZE + $SIZE - 1 ))
   done
 
 fi
@@ -520,7 +520,7 @@ if [ "$CMD" = mirror ] ; then
           done
         fi
       done
-      PAGE=$[ $PAGE + 1 ]
+      PAGE=$(( $PAGE + 1 ))
     done
   fi
 
@@ -699,7 +699,7 @@ if [ "$CMD" = mirror ] ; then
       fi
       if [ -z "$ISSUENUMBER" ] ; then
         ISSUENUMBER=$(jq '.total' $EXPORT)
-        PAGES=$[ $ISSUENUMBER / 200 + 1 ]
+        PAGES=$(( $ISSUENUMBER / 200 + 1 ))
         echo "$ISSUENUMBER total issues"
       fi
       for id in $(jq  -c '.issues[]|.id' $EXPORT|sed -e 's/"//g') ; do
@@ -768,8 +768,8 @@ if [ "$CMD" = mirror ] ; then
 
         # jq  '.issues[]|select(.id == "'$id'")' $EXPORT
       done
-      PAGE=$[ $PAGE + 1 ]
-      START=$[ $START + 200 ]
+      PAGE=$(( $PAGE + 1 ))
+      START=$(( $START + 200 ))
     done
   fi
 
@@ -791,7 +791,7 @@ if [ "$CMD" = mirror ] ; then
         URL="${BASEURL}/projects/$PROJECT/issues.json?page=$PAGE"'&limit=100&f\[\]=status_id&op\[status_id\]=*&set_filter=1'
         curl -H "X-Redmine-API-Key: $KEY" "$URL" 2> /dev/null >$EXPORT
         checkExport $EXPORT
-        PAGE=$[ $PAGE + 1 ]
+        PAGE=$(( $PAGE + 1 ))
         COUNT=$(jq  -c '.total_count' $EXPORT)
         OFFSET=$(jq  -c '.offset' $EXPORT)
         test $OFFSET -lt $COUNT && echo "continue $OFFSET - $COUNT"

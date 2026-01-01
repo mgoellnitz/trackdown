@@ -79,7 +79,7 @@ if [ ! -z "$STATUS" ] ; then
         LINES=$(cat $ISSUES|wc -l)
         # echo "SECTION $SECTION - LINES $LINES"
         FILE=$ISSUES.remove
-        head -$[ $SECTION - 1 ] $ISSUES >>$FILE
+        head -$(( $SECTION - 1 )) $ISSUES >>$FILE
       else
         FILE=$ISSUES
         echo "" >>$FILE
@@ -102,7 +102,7 @@ if [ ! -z "$STATUS" ] ; then
       fi
       if [ -z "$ISLAST" ] ; then
         echo "" >>$ISSUES.remove
-        tail -$[ $LINES - $SECTION + 1 ] $ISSUES >>$ISSUES.remove
+        tail -(( $LINES - $SECTION + 1 )) $ISSUES >>$ISSUES.remove
         mv $ISSUES.remove $ISSUES
       fi
     else
