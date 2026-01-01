@@ -284,13 +284,13 @@ if [ "$CMD" = use ] ; then
     if [ "$TDBASE" != "$ID" ] ; then
       ln -sf $ISSUES issues.md
       ln -sf $(dirname $ISSUES)/roadmap.md roadmap.md
-      CHECK=$(grep -c -s roadmap.md $IGNOREFILE)
+      CHECK=$(grep -c roadmap.md $IGNOREFILE)
       if [ $CHECK = 0 ] ; then
        echo "${IFBEGIN}roadmap.md${IFEND}" >> $IGNOREFILE
       fi
     fi
     if [ -h issues.md ] ; then
-      CHECK=$(grep -c -s issues.md $IGNOREFILE)
+      CHECK=$(grep -c issues.md $IGNOREFILE)
       if [ $CHECK = 0 ] ; then
         echo "${IFBEGIN}issues.md${IFEND}" >> $IGNOREFILE
       fi

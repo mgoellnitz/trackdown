@@ -90,7 +90,7 @@ ignoreFileHelper() {
     IFEND="\$"
   fi
   if [ -n "$IGNOREFILE" ] ; then
-    CHECK=$(grep -c -s \\.trackdown $IGNOREFILE)
+    CHECK=$(grep -s \\.trackdown $IGNOREFILE|wc -l)
     if [ $CHECK = 0 ] ; then
       echo "${IFBEGIN}.trackdown${IFEND}" >> $IGNOREFILE
     fi
@@ -106,11 +106,11 @@ setupCollectionReference() {
   echo "location=$COLLECTION" >> $TDCONFIG
   ignoreFileHelper
   if [ -n "$IGNOREFILE" ] ; then
-    CHECK=$(grep -c -s $COLLECTION $IGNOREFILE)
+    CHECK=$(grep -c $COLLECTION $IGNOREFILE)
     if [ $CHECK = 0 ] ; then
       echo "${IFBEGIN}$COLLECTION${IFEND}" >> $IGNOREFILE
     fi
-    CHECK=$(grep -c -s roadmap.md $IGNOREFILE)
+    CHECK=$(grep -c roadmap.md $IGNOREFILE)
     if [ $CHECK = 0 ] ; then
      echo "${IFBEGIN}roadmap.md${IFEND}" >> $IGNOREFILE
     fi
