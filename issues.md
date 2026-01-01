@@ -87,3 +87,7 @@ Martin Goellnitz / Thu, 1 Jan 2026 22:22:20 [8dbe2633e98a7fc525386b02e66256190f7
 Martin Goellnitz / Thu, 1 Jan 2026 23:22:14 [55da149aded1e6cbb93b973ebae215241c26b204](https://codeberg.org/backendzeit/trackdown/commit/55da149aded1e6cbb93b973ebae215241c26b204)
 
     refs #PORTABILITY - figure current branch easier and remove unused code
+
+Martin Goellnitz / Thu, 1 Jan 2026 23:50:11 [52b0c2742e2956ff0b6e5a059d79bf908669d687](https://codeberg.org/backendzeit/trackdown/commit/52b0c2742e2956ff0b6e5a059d79bf908669d687)
+
+    refs #PORTABILITY - fix ignore file handling
