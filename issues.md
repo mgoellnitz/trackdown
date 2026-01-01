@@ -83,3 +83,7 @@ implementation especially for implicitly called scripts like the hook.
 Martin Goellnitz / Thu, 1 Jan 2026 22:22:20 [8dbe2633e98a7fc525386b02e66256190f779a4e](https://codeberg.org/backendzeit/trackdown/commit/8dbe2633e98a7fc525386b02e66256190f779a4e)
 
     refs #PORTABILITY - replace backticks
+
+Martin Goellnitz / Thu, 1 Jan 2026 23:22:14 [55da149aded1e6cbb93b973ebae215241c26b204](https://codeberg.org/backendzeit/trackdown/commit/55da149aded1e6cbb93b973ebae215241c26b204)
+
+    refs #PORTABILITY - figure current branch easier and remove unused code
