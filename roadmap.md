@@ -1,18 +1,5 @@
 # Roadmap
 
-## mirror:
-
-![83%](https://di.9f8.de/581x30/000000/FFFFFF.png&text=83%25)![16%](https://di.9f8.de/112x30/606060/FFFFFF.png&text=16%25)![1%](https://di.9f8.de/7x30/eeeeee/808080.png&text=1%25)
-
-83% completed (5/6) - 16% in progress (1/6)
-
-* GITHUB offline mirror (in progress)
-* BITBUCKET issue tracker offline mirror (resolved)
-* GITLAB offline mirror (resolved)
-* GOGS offline mirror (resolved)
-* JIRA offline mirror (resolved)
-* REDMINE offline mirror (resolved)
-
 ## nth:
 
 ![50%](https://di.9f8.de/350x30/000000/FFFFFF.png&text=50%25)![50%](https://di.9f8.de/350x30/eeeeee/808080.png&text=50%25)
