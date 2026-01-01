@@ -71,16 +71,16 @@ TDCONFIG=$TDBASE/.trackdown/config
 echo "TrackDown-$VCS: base directory $TDBASE"
 cd $CWD
 if [ "$VCS" = "git" ] ; then
-  if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
+  if [ $(git remote | grep -c origin) -eq 1 ] ; then
     REMOTE=$(git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g')
   fi
 fi
 if [ "$VCS" = "hg" ] ; then
-  if [ $(hg paths | grep defaut | wc -l) -eq 1 ] ; then
+  if [ $(hg paths | grep -c defaut) -eq 1 ] ; then
     REMOTE=$(hg paths default|cut -d '@' -f 2)
   fi
 fi
-if [ ! -z "$REMOTE" ] ; then
+if [ -n "$REMOTE" ] ; then
   CASE=$(echo $REMOTE|cut -d '/' -f 1)
   REMOTEUSER=$(echo $REMOTE|cut -d '/' -f 2)
   REMOTEPROJECT=$(echo $REMOTE|cut -d '/' -f 3)
@@ -185,13 +185,13 @@ if [ "$CMD" = use ] ; then
     ln -s $DIR/trackdown-lib.sh $TDBASE/.git/hooks/
     test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
     if [ -z "$ISSUES" ] ; then
-      if [ $((git branch -r;git branch -l)|grep trackdown|wc -l) = 0 ] ; then
+      if [ $( (git branch -r;git branch -l)|grep -c trackdown) = 0 ] ; then
         echo "GIT repository doesn't contain a trackdown branch. Did you issue the init command? Exiting."
         exit
       fi
       ISSUES=".git/trackdown/issues.md"
       cd $TDBASE
-      if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
+      if [ $(git remote | grep -c origin) -eq 1 ] ; then
         git fetch origin trackdown:trackdown
       fi
       NAME=$(git config -l|grep user.name|cut -d '=' -f 2)
@@ -199,7 +199,7 @@ if [ "$CMD" = use ] ; then
       echo "prepare local"
       test -z $(git branch|grep trackdown|sed -e 's/\ /_/g') && git branch trackdown
       AUTOPUSH=true
-      if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
+      if [ $(git remote | grep -c origin) -eq 1 ] ; then
         git branch --set-upstream-to=origin/trackdown trackdown
       else
         AUTOPUSH=false
@@ -220,7 +220,7 @@ if [ "$CMD" = use ] ; then
       echo "autopush=false" >> $TDCONFIG
     fi
 
-    if [ $(git remote | grep origin | wc -l) -eq 1 ] ; then
+    if [ $(git remote | grep -c origin) -eq 1 ] ; then
       REMOTE=$(git remote get-url origin|cut -d '@' -f 2|sed -e 's/[a-z]+:\/\///g'|sed -e 's/.git$//g'|sed -e 's/:/\//g')
       CASE=$(echo $REMOTE|cut -d '/' -f 1)
       test ! -z "$REMOTE" && echo "Remote system host is $CASE."
@@ -245,7 +245,7 @@ if [ "$CMD" = use ] ; then
   if [ -d $TDBASE/.hg ] ; then
     test ! -d .trackdown && mkdir .trackdown
     if [ -z "$ISSUES" ] ; then
-      if [ $(hg branches|grep trackdown|wc -l) = 0 ] ; then
+      if [ $(hg branches|grep -c trackdown) = 0 ] ; then
         echo "Mercurial repository missing trackdown branch. Did you issue the init command? Exiting."
         exit
       fi
@@ -264,7 +264,7 @@ if [ "$CMD" = use ] ; then
     echo "commit=$DIR/trackdown-hook.sh" >> .hg/hgrc
     cd $CWD
 
-    if [ $(hg paths | grep defaut | wc -l) -eq 1 ] ; then
+    if [ $(hg paths | grep -c defaut) -eq 1 ] ; then
       REMOTE=$(hg paths default|cut -d '@' -f 2)
       CASE=$(echo $REMOTE|cut -d '/' -f 1)
       echo "Remote system is $CASE."
@@ -283,13 +283,13 @@ if [ "$CMD" = use ] ; then
     if [ "$TDBASE" != "$ID" ] ; then
       ln -sf $ISSUES issues.md
       ln -sf $(dirname $ISSUES)/roadmap.md roadmap.md
-      CHECK=$(grep -s roadmap.md $IGNOREFILE|wc -l)
+      CHECK=$(grep -c -s roadmap.md $IGNOREFILE)
       if [ $CHECK = 0 ] ; then
        echo "${IFBEGIN}roadmap.md${IFEND}" >> $IGNOREFILE
       fi
     fi
     if [ -h issues.md ] ; then
-      CHECK=$(grep issues.md $IGNOREFILE|wc -l)
+      CHECK=$(grep -c -s issues.md $IGNOREFILE)
       if [ $CHECK = 0 ] ; then
         echo "${IFBEGIN}issues.md${IFEND}" >> $IGNOREFILE
       fi
@@ -390,7 +390,7 @@ if [ "$CMD" = init ] ; then
       echo "GIT repository missing commits. Exiting."
       exit
     fi
-    if [ $((git branch -r;git branch -l)|sed -e s/^.\ //g|grep trackdown|wc -l) != 0 ] ; then
+    if [ $( (git branch -r;git branch -l)|sed -e s/^.\ //g|grep -c trackdown) != 0 ] ; then
       echo "TrackDown branch already present. Exiting."
       exit
     fi
@@ -414,7 +414,7 @@ if [ "$CMD" = init ] ; then
       echo "Mercurial repository missing commits. Exiting."
       exit
     fi
-    if [ $(hg branches|grep trackdown|wc -l) != 0 ] ; then
+    if [ $(hg branches|grep -c trackdown) != 0 ] ; then
       echo "TrackDown branch already present. Exiting."
       exit
     fi
@@ -502,7 +502,7 @@ if [ "$CMD" = mirror ] ; then
           echo "" >>$ISSUES
           echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g' >>$ISSUES
         fi
-        COMMENTS_URL=$(echo ${URL}/${IID}/notes)
+        COMMENTS_URL="${URL}/${IID}/notes"
         curl -H "$TOKEN" "$COMMENTS_URL" 2> /dev/null >$COMMENTS_EXPORT
         COMMENTSNO=$(jq  -c '.|length' $COMMENTS_EXPORT)
         # echo "${USERCOMMENTSNO}/${COMMENTSNO}: $COMMENTS_URL"
@@ -536,7 +536,7 @@ if [ "$CMD" = mirror ] ; then
     curl -H "Authorization: token $TOKEN" $URL 2> /dev/null >$EXPORT
     checkExport $EXPORT
     RESULT=$(jq '.message?' $EXPORT)
-    if [ ! -z "$RESULT" ] ; then
+    if [ -n "$RESULT" ] ; then
       echo "Cannot mirror issues for github project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
@@ -733,13 +733,13 @@ if [ "$CMD" = mirror ] ; then
           LINEBREAK="true"
         fi
         if [ "$ASSIGNEE" != "null" ] ; then
-          if [ ! -z $LINEBREAK ] ; then
+          if [ -n "$LINEBREAK" ] ; then
             echo -n " - " >>$ISSUES
           fi
           echo -n "Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
           LINEBREAK="true"
         fi
-        if [ ! -z $LINEBREAK ] ; then
+        if [ -n "$LINEBREAK" ] ; then
           echo "" >>$ISSUES
         fi
         if [ "$AUTHOR" != "" ] ; then
@@ -856,7 +856,7 @@ if [ "$CMD" = mirror ] ; then
     curl -H "Authorization: token $TOKEN" "${URL}?state=all" 2> /dev/null >$EXPORT
     checkExport $EXPORT
     RESULT=$(jq '.message?' $EXPORT)
-    if [ ! -z "$RESULT" ] ; then
+    if [ -n "$RESULT" ] ; then
       echo "Cannot mirror issues for gitea (or gogs) project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
@@ -897,7 +897,7 @@ if [ "$CMD" = mirror ] ; then
       fi
       COMMENTSNO=$(jq  -c "${JQ}.comments" $EXPORT)
       if [ "$COMMENTSNO" != "0" ] ; then
-        COMMENTS_URL=$(echo ${URL}/${IID}/comments)
+        COMMENTS_URL="${URL}/${IID}/comments"
         curl -H "Authorization: token $TOKEN" $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
         echo "" >>$ISSUES
         echo "### Comments" >>$ISSUES
@@ -1269,7 +1269,7 @@ if [ "$CMD" = gitea ] ; then
   echo "gitea.project=$P" >> $TDCONFIG
   echo "gitea.key=$2" >> $TDCONFIG
   ME=$(curl -H "Authorization: token $2" ${URL}/api/v1/user 2> /dev/null|jq .login|sed -e 's/"//g')
-  if [ ! -z "$ME" ] ; then
+  if [ -n "$ME" ] ; then
     if [ "$ME" != "null" ] ; then
       echo "me=$ME" >> $TDCONFIG
     fi

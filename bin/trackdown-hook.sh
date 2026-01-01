@@ -45,24 +45,24 @@ if [ $VCS = "git" ] ; then
   HASH=$(git log -n 1 --format="%H")
 fi
 STATUS=""
-if [ ! -z "$LINE" ] ; then
+if [ -n "$LINE" ] ; then
   echo "Line: $LINE"
   ID=$(echo $LINE|sed -e 's/.*#\([0-9a-zA-Z,]*\).*/\1/g')
   echo "ID: $ID"
   MARKER=$(echo $LINE|grep -i "refs #$ID")
-  if [ ! -z "$MARKER" ] ; then
+  if [ -n "$MARKER" ] ; then
     STATUS="in progress"
   fi
   MARKER=$(echo $LINE|grep -i "fixes #$ID")
-  if [ ! -z "$MARKER" ] ; then
+  if [ -n "$MARKER" ] ; then
     STATUS="resolved"
   fi
   MARKER=$(echo $LINE|grep -i "resolves #$ID")
-  if [ ! -z "$MARKER" ] ; then
+  if [ -n "$MARKER" ] ; then
     STATUS="resolved"
   fi
   MARKER=$(echo $LINE|grep -i "resolve #$ID")
-  if [ ! -z "$MARKER" ] ; then
+  if [ -n "$MARKER" ] ; then
     STATUS="resolved"
   fi
 fi
@@ -70,7 +70,7 @@ echo "TrackDown-$VCS: $ID $STATUS"
 if [ ! -z "$STATUS" ] ; then
   for TID in $(echo "$ID"|sed -e 's/,/\ /g'); do
     HASID=$(grep "^##\s${TID}" $ISSUES)
-    if [ ! -z "$HASID" ] ; then
+    if [ -n "$HASID" ] ; then
       echo "TrackDown: Issue $TID"
       sed -i.remove -e "s/##\ $TID\ \(.*\)\ (.*)/## $TID \1/g" $ISSUES
       sed -i.remove -e "s/##\ $TID\ \(.*\)/## $TID \1 ($STATUS)/g" $ISSUES
@@ -99,7 +99,7 @@ if [ ! -z "$STATUS" ] ; then
       if [ $VCS = "git" ] ; then
         git log -n 1 --format="    %s" >>$FILE
         BODY=$(git log -n 1 --format="%b")
-        if [ ! -z "$BODY" ] ; then
+        if [ -n "$BODY" ] ; then
           git log -n 1 --format="    %b" >>$FILE
         fi
       fi
@@ -117,7 +117,7 @@ if [ ! -z "$STATUS" ] ; then
 
   AUTOCOMMIT=$(grep autocommit=true $TDCONFIG)
   # echo "AUTOCOMMIT: $AUTOCOMMIT"
-  if [ ! -z "$AUTOCOMMIT" ] ; then
+  if [ -n "$AUTOCOMMIT" ] ; then
     WD=$(pwd)
     TRACKDOWN=$(dirname $ISSUES)
     # TODO: Why do we re-discover the VCS here?
@@ -126,7 +126,7 @@ if [ ! -z "$STATUS" ] ; then
     ( cd $TRACKDOWN ; ${VCS} commit -m "Committed for issue(s) #$ID" issues.md roadmap.md > /dev/null)
     AUTOPUSH=$(grep autopush=true $TDCONFIG)
     # echo "AUTOPUSH: $AUTOPUSH"
-    if [ ! -z "$AUTOPUSH" ] ; then
+    if [ -n "$AUTOPUSH" ] ; then
       echo "TrackDown: pushing"
       ( cd $TRACKDOWN ; ${VCS} pull ; ${VCS} push > /dev/null )
     fi

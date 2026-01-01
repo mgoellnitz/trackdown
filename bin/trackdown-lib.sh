@@ -71,7 +71,7 @@ discoverIssues() {
 # Prevent mirror setup to occur repeatedly
 preventRepeatedMirrorInit() {
   MIRROR=$(test -f $TDCONFIG && grep mirror.type= $TDCONFIG|cut -d '=' -f 2)
-  if [ ! -z $MIRROR ] ; then
+  if [ -n "$MIRROR" ] ; then
     echo "Mirror setup already done in this repository with type $MIRROR."
     exit
   fi
@@ -89,8 +89,8 @@ ignoreFileHelper() {
     IFBEGIN="^"
     IFEND="\$"
   fi
-  if [ ! -z "$IGNOREFILE" ] ; then
-    CHECK=$(grep -s .trackdown $IGNOREFILE|wc -l)
+  if [ -n "$IGNOREFILE" ] ; then
+    CHECK=$(grep -c -s \\.trackdown $IGNOREFILE)
     if [ $CHECK = 0 ] ; then
       echo "${IFBEGIN}.trackdown${IFEND}" >> $IGNOREFILE
     fi
@@ -105,12 +105,12 @@ setupCollectionReference() {
   echo "autopush=false" >> $TDCONFIG
   echo "location=$COLLECTION" >> $TDCONFIG
   ignoreFileHelper
-  if [ ! -z "$IGNOREFILE" ] ; then
-    CHECK=$(grep -s $COLLECTION $IGNOREFILE|wc -l)
+  if [ -n "$IGNOREFILE" ] ; then
+    CHECK=$(grep -c -s $COLLECTION $IGNOREFILE)
     if [ $CHECK = 0 ] ; then
       echo "${IFBEGIN}$COLLECTION${IFEND}" >> $IGNOREFILE
     fi
-    CHECK=$(grep -s roadmap.md $IGNOREFILE|wc -l)
+    CHECK=$(grep -c -s roadmap.md $IGNOREFILE)
     if [ $CHECK = 0 ] ; then
      echo "${IFBEGIN}roadmap.md${IFEND}" >> $IGNOREFILE
     fi
@@ -140,12 +140,11 @@ issueCollectionHeader() {
 roadmap() {
   echo "# Roadmap"
   echo ""
-  IC=$(basename $ISSUES .md)
   for rr in $(grep -A2 "^##\s" $ISSUES|grep "^\*[A-Za-z0-9][A-Za-z0-9\._\ -]*\*"|cut -d '*' -f 2|sort|uniq|sed -e 's/\ /__/g') ; do
     r=$(echo $rr|sed -e 's/__/ /g')
     TOTAL=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|wc -l)
-    RESOLVED=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(resolved)'|wc -l)
-    PROGRESS=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -i '(in progress)'|wc -l)
+    RESOLVED=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -c -i '(resolved)')
+    PROGRESS=$(grep -B2 "^\*$r\*" $ISSUES|grep "^##\s"|sed -e 's/^\#\#\ /\#\#\# /g'|grep -c -i '(in progress)')
     RESPERC=$(( RESOLVED * 100 / TOTAL ))
     PROPERC=$(( PROGRESS * 100 / TOTAL ))
     RESTPERC=$(( 100 - PROPERC - RESPERC ))
