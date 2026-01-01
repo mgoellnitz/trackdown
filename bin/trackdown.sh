@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
+# shellcheck disable=SC2046
 # shellcheck disable=SC2086
 # shellcheck disable=SC2129
 # shellcheck disable=SC2164
@@ -348,7 +349,7 @@ if [ "$CMD" = sync ] ; then
   discoverIssues
   DIR=$(dirname $ISSUES)
   if [ -d $DIR/.git ] ; then
-    if [ $(cd $DIR ; git branch -l|grep ^*|cut -d ' ' -f 2) != "trackdown" ] ; then
+    if [ $(cd $DIR ; git branch --show-current) != "trackdown" ] ; then
       echo "Not working on a special trackdown branch. Exiting."
       exit
     fi
@@ -395,7 +396,7 @@ if [ "$CMD" = init ] ; then
       exit
     fi
     git stash
-    BRANCH=$(git branch|grep '*'|cut -d ' ' -f 2)
+    BRANCH=$(git branch --show-current)
     git checkout --orphan trackdown
     git rm -rf .
     echo "# Issues" > issues.md
@@ -497,7 +498,6 @@ if [ "$CMD" = mirror ] ; then
         fi
         echo "" >>$ISSUES
         DESCRIPTION=$(jq  -c "${JQ}.description" $EXPORT)
-        USERCOMMENTSNO=$(jq  -c "${JQ}.user_notes_count" $EXPORT)
         if [ "$DESCRIPTION" != "null" ] ; then
           echo "" >>$ISSUES
           echo "$DESCRIPTION" |sed -e 's/\\"/\`/g'|sed -e 's/"//g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g' >>$ISSUES
@@ -505,7 +505,6 @@ if [ "$CMD" = mirror ] ; then
         COMMENTS_URL="${URL}/${IID}/notes"
         curl -H "$TOKEN" "$COMMENTS_URL" 2> /dev/null >$COMMENTS_EXPORT
         COMMENTSNO=$(jq  -c '.|length' $COMMENTS_EXPORT)
-        # echo "${USERCOMMENTSNO}/${COMMENTSNO}: $COMMENTS_URL"
         if [ "$COMMENTSNO" != "0" ] ; then
           echo "" >>$ISSUES
           echo "### Comments" >>$ISSUES
@@ -563,7 +562,7 @@ if [ "$CMD" = mirror ] ; then
       fi
       echo "" >>$ISSUES
       AUTHOR=$(jq  -c "${JQ}.user.login" $EXPORT|sed -e 's/"//g')
-      AUTHOR_URL=$(jq  -c "${JQ}.user.html_url" $EXPORT|sed -e 's/"//g')
+      # AUTHOR_URL=$(jq  -c "${JQ}.user.html_url" $EXPORT|sed -e 's/"//g')
       if [ "$AUTHOR" != "null" ] ; then
         echo "" >>$ISSUES
         echo "Author: \`$AUTHOR\`" >>$ISSUES
