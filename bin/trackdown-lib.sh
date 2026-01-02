@@ -16,12 +16,10 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # shellcheck disable=SC2086
-# shellcheck disable=SC2129
-# shellcheck disable=SC2164
 
 # wind up the directory tree until we find a hidden folder of the given name $1
 windUp() {
-  while [ $(pwd) != "/"  -a ! -d .$1 ] ; do
+  while [ "$(pwd)" != "/" ] && [ ! -d .$1 ] ; do
     cd ..
   done
 }
@@ -128,12 +126,14 @@ checkExport() {
 }
 
 # Create issue collection header with title $1 in issue collection file
+# or append if $2 is not empty
 issueCollectionHeader() {
-  test -z "$2" && echo -n "" > $ISSUES
-  echo "# $1" >>$ISSUES
-  echo "" >>$ISSUES
-  echo "" >>$ISSUES
-  echo "[Roadmap](roadmap)" >>$ISSUES
+  if [ -z "$2" ] ; then
+    echo "# $1" >$ISSUES
+  else
+    echo "# $1" >>$ISSUES
+  fi
+  (echo ""  ; echo "" ; echo "[Roadmap](roadmap)") >>$ISSUES
 }
 
 # Generate a roadmap from the issue collection
@@ -150,16 +150,17 @@ roadmap() {
     RESTPERC=$(( 100 - PROPERC - RESPERC ))
     echo "## ${r}:"
     echo ""
+    PROGRESSBAR=""
     if [ $RESPERC -gt 0 ] ; then
-      echo -n "![$RESPERC%](https://di.9f8.de/$(( RESPERC * 7 ))x30/000000/FFFFFF.png&text=$RESPERC%25)"
+      PROGRESSBAR="![$RESPERC%](https://di.9f8.de/$(( RESPERC * 7 ))x30/000000/FFFFFF.png&text=$RESPERC%25)"
     fi
     if [ $PROPERC -gt 0 ] ; then
-      echo -n "![$PROPERC%](https://di.9f8.de/$(( PROPERC * 7 ))x30/606060/FFFFFF.png&text=$PROPERC%25)"
+      PROGRESSBAR="$PROGRESSBAR![$PROPERC%](https://di.9f8.de/$(( PROPERC * 7 ))x30/606060/FFFFFF.png&text=$PROPERC%25)"
     fi
     if [ $RESTPERC -gt 0 ] ; then
-      echo -n "![$RESTPERC%](https://di.9f8.de/$(( RESTPERC * 7 ))x30/eeeeee/808080.png&text=$RESTPERC%25)"
+      PROGRESSBAR="$PROGRESSBAR![$RESTPERC%](https://di.9f8.de/$(( RESTPERC * 7 ))x30/eeeeee/808080.png&text=$RESTPERC%25)"
     fi
-    echo ""
+    echo "$PROGRESSBAR"
     echo ""
     echo "$RESPERC% completed ($RESOLVED/$TOTAL) - $PROPERC% in progress ($PROGRESS/$TOTAL)"
     echo ""
