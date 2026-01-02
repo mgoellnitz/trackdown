@@ -17,9 +17,7 @@
 #
 # shellcheck disable=SC2046
 # shellcheck disable=SC2086
-# shellcheck disable=SC2129
 # shellcheck disable=SC2164
-
 CMD=$1
 ISSUES=$2
 DIR=$(dirname $(readlink -f $0))
@@ -336,7 +334,7 @@ if [ "$CMD" = status ] ; then
     if [ -d $DIR/.hg ] ; then
       (cd $DIR ; hg status)
     else
-      (cd $DIR ; ls -l *.md)
+      (cd $DIR ; ls -l -- *.md)
     fi
   fi
 
@@ -469,8 +467,7 @@ if [ "$CMD" = mirror ] ; then
       curl -H "$TOKEN" "$URL?per_page=100&page=$PAGE" 2> /dev/null >$EXPORT
       checkExport $EXPORT
       for id in $(jq  -c '.[]|.id' $EXPORT) ; do
-        echo "" >>$ISSUES
-        echo "" >>$ISSUES
+        ( echo "" ; echo "" ) >>$ISSUES
         JQ='.[]|select(.id == '$id')|'
         TITLE=$(jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
         IID=$(jq  -c "${JQ}.iid" $EXPORT|sed -e 's/"//g')
@@ -479,9 +476,11 @@ if [ "$CMD" = mirror ] ; then
         MILESTONE=$(jq  -c "${JQ}.milestone|.title" $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g')
         ASSIGNEE=$(jq  -c "${JQ}.assignee.username" $EXPORT|sed -e 's/"//g')
         ASSIGNEE_NAME=$(jq  -c "${JQ}.assignee.name" $EXPORT|sed -e 's/"//g')
-        echo "## $IID $TITLE ($s)"  >>$ISSUES
-        echo "" >>$ISSUES
-        echo -n "*${MILESTONE}*"  >>$ISSUES
+        {
+          echo "## $IID $TITLE ($s)"
+          echo ""
+          echo -n "*${MILESTONE}*"
+        } >>$ISSUES
         LABELS=$(jq  -c "${JQ}.labels" $EXPORT|sed -e 's/"/\`/g'|sed -e 's/,/][/g')
         if [ ! "$LABELS" = "[]" ] ; then
           echo -n " $LABELS" >>$ISSUES
@@ -506,17 +505,18 @@ if [ "$CMD" = mirror ] ; then
         curl -H "$TOKEN" "$COMMENTS_URL" 2> /dev/null >$COMMENTS_EXPORT
         COMMENTSNO=$(jq  -c '.|length' $COMMENTS_EXPORT)
         if [ "$COMMENTSNO" != "0" ] ; then
-          echo "" >>$ISSUES
-          echo "### Comments" >>$ISSUES
+          ( echo "" ; echo "### Comments" ) >>$ISSUES
           for cid in $(jq  -c '.[]|.id' $COMMENTS_EXPORT) ; do
             echo "" >>$ISSUES
             BODY=$(jq  -c '.[]|select(.id == '$cid')|.body' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
             COMMENT_DATE=$(jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g')
             COMMENTER=$(jq  -c '.[]|select(.id == '$cid')|.author.username' $COMMENTS_EXPORT|sed -e 's/"//g')
             COMMENTER_NAME=$(jq  -c '.[]|select(.id == '$cid')|.author.name' $COMMENTS_EXPORT|sed -e 's/"//g')
-            echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE" >>$ISSUES
-            echo "" >>$ISSUES
-            echo "$BODY" >>$ISSUES
+            { 
+              echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE"
+              echo ""
+              echo "$BODY"
+            } >>$ISSUES
           done
         fi
       done
@@ -541,8 +541,7 @@ if [ "$CMD" = mirror ] ; then
     fi
     issueCollectionHeader "Issues"
     for id in $(jq  -c '.[]|.id' $EXPORT) ; do
-      echo "" >>$ISSUES
-      echo "" >>$ISSUES
+      ( echo "" ; echo "" ) >>$ISSUES
       JQ='.[]|select(.id == '$id')|'
       TITLE=$(jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
       IID=$(jq  -c "${JQ}.number" $EXPORT|sed -e 's/"//g')
@@ -551,9 +550,11 @@ if [ "$CMD" = mirror ] ; then
       MILESTONE=$(jq  -c "${JQ}.milestone.title" $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g')
       ASSIGNEE=$(jq  -c "${JQ}.assignee" $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g')
       LABELS=$(jq  -c "${JQ}.labels" $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g')
-      echo "## $IID $TITLE ($s)"  >>$ISSUES
-      echo "" >>$ISSUES
-      echo -n "*${MILESTONE}*"  >>$ISSUES
+      {
+        echo "## $IID $TITLE ($s)"
+        echo ""
+        echo -n "*${MILESTONE}*"
+      } >>$ISSUES
       if [ ! "$LABELS" = "[]" ] ; then
         echo -n " $LABELS" >>$ISSUES
       fi
@@ -564,8 +565,7 @@ if [ "$CMD" = mirror ] ; then
       AUTHOR=$(jq  -c "${JQ}.user.login" $EXPORT|sed -e 's/"//g')
       # AUTHOR_URL=$(jq  -c "${JQ}.user.html_url" $EXPORT|sed -e 's/"//g')
       if [ "$AUTHOR" != "null" ] ; then
-        echo "" >>$ISSUES
-        echo "Author: \`$AUTHOR\`" >>$ISSUES
+        ( echo "" ; echo "Author: \`$AUTHOR\`" ) >>$ISSUES
       fi
       DESCRIPTION=$(jq  -c "${JQ}.body" $EXPORT)
       if [ "$DESCRIPTION" != "null" ] ; then
@@ -576,16 +576,17 @@ if [ "$CMD" = mirror ] ; then
       if [ "$COMMENTSNO" != "0" ] ; then
         COMMENTS_URL=$(jq  -c "${JQ}.comments_url" $EXPORT|sed -e 's/"//g')
         curl -H "Authorization: token $TOKEN" $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
-        echo "" >>$ISSUES
-        echo "### Comments" >>$ISSUES
+        ( echo "" ; echo "### Comments" ) >>$ISSUES
         for cid in $(jq  -c '.[]|.id' $COMMENTS_EXPORT) ; do
           echo "" >>$ISSUES
           BODY=$(jq  -c '.[]|select(.id == '$cid')|.body' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
           COMMENT_DATE=$(jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g')
           COMMENTER=$(jq  -c '.[]|select(.id == '$cid')|.user.login' $COMMENTS_EXPORT|sed -e 's/"//g')
-          echo "$COMMENTER ($COMMENT_DATE)" >>$ISSUES
-          echo "" >>$ISSUES
-          echo "$BODY" >>$ISSUES
+          {
+            echo "$COMMENTER ($COMMENT_DATE)"
+            echo ""
+            echo "$BODY"
+          } >>$ISSUES
         done
       fi
     done
@@ -621,8 +622,7 @@ if [ "$CMD" = mirror ] ; then
       s=$(echo $STATE|sed -e 's/open/in progress/g'|sed -e 's/closed/resolved/g')
       ASSIGNEE=$(jq  -c "${JQ}.assignee|.username" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       ASSIGNEE_NAME=$(jq  -c "${JQ}.assignee|.display_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
-      echo "## $id $TITLE ($s)"  >>$ISSUES
-      echo "" >>$ISSUES
+      ( echo "## $id $TITLE ($s)" ; echo "" ) >>$ISSUES
       # Priority used as milestone
       echo -n "*${PRIORITY}* ${TYPE}"  >>$ISSUES
       if [ "$ASSIGNEE" != "null" ] ; then
@@ -647,18 +647,15 @@ if [ "$CMD" = mirror ] ; then
       curl --basic -u $USER $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
       COMMENTSNO=$(jq  -c '.values|length' $COMMENTS_EXPORT)
       if [ "$COMMENTSNO" != "0" ] ; then
-        echo "" >>$ISSUES
-        echo "### Comments" >>$ISSUES
+        ( echo "" ; echo "### Comments" ) >>$ISSUES
         for cid in $(jq  -c '.values[]|.id' $COMMENTS_EXPORT) ; do
           BODY=$(jq  -c '.values[]|select(.id == '$cid')|.content.raw' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
           if [ "$BODY" != "null" ] ; then
             COMMENT_DATE=$(jq  -c '.values[]|select(.id == '$cid')|.created_on' $COMMENTS_EXPORT|sed -e 's/"//g')
             COMMENTER=$(jq  -c '.values[]|select(.id == '$cid')|.user.username' $COMMENTS_EXPORT|sed -e 's/"//g')
             COMMENTER_NAME=$(jq  -c '.values[]|select(.id == '$cid')|.user.display_name' $COMMENTS_EXPORT|sed -e 's/"//g')
-            echo "" >>$ISSUES
-            echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE" >>$ISSUES
-            echo "" >>$ISSUES
-            echo "$BODY" >>$ISSUES
+            ( echo "" ; echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE" ) >>$ISSUES
+            ( echo "" ; echo "$BODY" ) >>$ISSUES
           fi
         done
       fi
@@ -742,28 +739,29 @@ if [ "$CMD" = mirror ] ; then
           echo "" >>$ISSUES
         fi
         if [ "$AUTHOR" != "" ] ; then
-          echo "" >>$ISSUES
-          echo "Author: \`$AUTHOR\`" >>$ISSUES
+          ( echo "" ; echo "Author: \`$AUTHOR\`" ) >>$ISSUES
         fi
         ## severity / priority
-        echo "" >>$ISSUES
-        echo "### Priority: $PRIORITY" >>$ISSUES
+        ( echo "" ; echo "### Priority: $PRIORITY" ) >>$ISSUES
         if [ "$VERSIONS" != "" ] ; then
-          echo "" >>$ISSUES
-          echo "affected versions: $VERSIONS" >>$ISSUES
+          ( echo "" ; echo "affected versions: $VERSIONS" ) >>$ISSUES
         fi
         if [ "$DESCRIPTION" != "" ] ; then
-          echo "" >>$ISSUES
-          echo "### Description" >>$ISSUES
-          echo "" >>$ISSUES
-          echo "$DESCRIPTION"|sed -e 's/\\r//g'|sed -e 's/\\n/\n/g' >>$ISSUES
+          { 
+            echo ""
+            echo "### Description"
+            echo ""
+            echo "$DESCRIPTION"|sed -e 's/\\r//g'|sed -e 's/\\n/\n/g'
+          } >>$ISSUES
         fi
         ## comments
         if [ "$COMMENTS" != "" ] ; then
-          echo "" >>$ISSUES
-          echo "### Comments" >>$ISSUES
-          echo "" >>$ISSUES
-          echo "$COMMENTS" >>$ISSUES
+          { 
+            echo ""
+            echo "### Comments"
+            echo ""
+            echo "$COMMENTS"
+          } >>$ISSUES
         fi
 
         # jq  '.issues[]|select(.id == "'$id'")' $EXPORT
@@ -796,8 +794,7 @@ if [ "$CMD" = mirror ] ; then
         OFFSET=$(jq  -c '.offset' $EXPORT)
         test $OFFSET -lt $COUNT && echo "continue $OFFSET - $COUNT"
         for id in $(jq  -c '.issues[]|.id' $EXPORT) ; do
-          echo "" >>$ISSUES
-          echo "" >>$ISSUES
+          ( echo "" ; echo "" ) >>$ISSUES
           SUBJECT=$(jq  -c '.issues[]|select(.id == '$id')|.subject' $EXPORT|sed -e 's/"//g')
           STATUS=$(jq  -c '.issues[]|select(.id == '$id')|.status' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g')
           s=$(echo $STATUS|sed -e 's/In\ Bearbeitung/In Progress/g'|sed -e 's/Umgesetzt/Resolved/g'|sed -e 's/Erledigt/Resolved/g')
@@ -810,12 +807,14 @@ if [ "$CMD" = mirror ] ; then
           if [ "$ASSIGNEE" != "null" ] ; then
             echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
           fi
-          echo "" >>$ISSUES
-          echo "" >>$ISSUES
-          echo "### Priority: $PRIORITY" >>$ISSUES
-          echo "" >>$ISSUES
-          echo "### Description" >>$ISSUES
-          echo "" >>$ISSUES
+          {
+            echo ""
+            echo ""
+            echo "### Priority: $PRIORITY"
+            echo ""
+            echo "### Description"
+            echo ""
+          } >>$ISSUES
           AUTHOR=$(jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g')
           if [ "$AUTHOR" != "null" ] ; then
             echo "Author: \`$AUTHOR\`" >>$ISSUES
@@ -872,9 +871,11 @@ if [ "$CMD" = mirror ] ; then
       ASSIGNEE=$(jq  -c "${JQ}.assignee|.login" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       ASSIGNEE_NAME=$(jq  -c "${JQ}.assignee|.full_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       LABELS=$(jq  -c "${JQ}.labels" $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g')
-      echo "## $IID $TITLE ($s)"  >>$ISSUES
-      echo "" >>$ISSUES
-      echo -n "*${MILESTONE}*"  >>$ISSUES
+      {
+        echo "## $IID $TITLE ($s)"
+        echo ""
+        echo -n "*${MILESTONE}*"
+      } >>$ISSUES
       if [ ! "$LABELS" = "[]" ] ; then
         echo -n " $LABELS" >>$ISSUES
       fi
@@ -906,9 +907,11 @@ if [ "$CMD" = mirror ] ; then
           COMMENT_DATE=$(jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g')
           COMMENTER=$(jq  -c '.[]|select(.id == '$cid')|.user.login' $COMMENTS_EXPORT|sed -e 's/"//g')
           COMMENTER_NAME=$(jq  -c '.[]|select(.id == '$cid')|.user.full_name' $COMMENTS_EXPORT|sed -e 's/"//g')
-          echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE" >>$ISSUES
-          echo "" >>$ISSUES
-          echo "$BODY" >>$ISSUES
+          {
+            echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE"
+            echo ""
+            echo "$BODY" 
+          } >>$ISSUES
         done
       fi
     done
@@ -1140,9 +1143,11 @@ if [ "$CMD" = gitlab ] ; then
   fi
   echo "Setting up TrackDown to mirror from $P ($PID) on $URL"
   setupCollectionReference gitlab
-  echo "gitlab.url=$URL" >> $TDCONFIG
-  echo "gitlab.project=$PID" >> $TDCONFIG
-  echo "gitlab.key=$2" >> $TDCONFIG
+  {
+    echo "gitlab.url=$URL"
+    echo "gitlab.project=$PID"
+    echo "gitlab.key=$2"
+  } >> $TDCONFIG
   ME=$(curl -H "PRIVATE-TOKEN: $2" ${URL}/api/v4/user 2> /dev/null|jq .username|sed -e 's/"//g')
   if [ "$ME" != "null" ] ; then
     echo "me=$ME" >> $TDCONFIG
@@ -1164,10 +1169,12 @@ if [ "$CMD" = github ] ; then
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror $P owned by $U from github.com"
   setupCollectionReference github
-  echo "prefix=https://github.com/$U/$P/commit/" >> $TDCONFIG
-  echo "github.owner=$U" >> $TDCONFIG
-  echo "github.project=$P" >> $TDCONFIG
-  echo "github.key=$TOKEN" >> $TDCONFIG
+  {
+    echo "prefix=https://github.com/$U/$P/commit/"
+    echo "github.owner=$U"
+    echo "github.project=$P"
+    echo "github.key=$TOKEN"
+  } >> $TDCONFIG
 
 fi
 
@@ -1240,9 +1247,11 @@ if [ "$CMD" = redmine ] ; then
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror from $3 on $4"
   setupCollectionReference redmine
-  echo "redmine.url=$4" >> $TDCONFIG
-  echo "redmine.project=$3" >> $TDCONFIG
-  echo "redmine.key=$2" >> $TDCONFIG
+  {
+    echo "redmine.url=$4"
+    echo "redmine.project=$3"
+    echo "redmine.key=$2" 
+  } >> $TDCONFIG
 
 fi
 
@@ -1263,10 +1272,12 @@ if [ "$CMD" = gitea ] ; then
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror from $P on $URL"
   setupCollectionReference gitea
-  echo "prefix=$URL/$P/commit/" >> $TDCONFIG
-  echo "gitea.url=$URL" >> $TDCONFIG
-  echo "gitea.project=$P" >> $TDCONFIG
-  echo "gitea.key=$2" >> $TDCONFIG
+  {
+    echo "prefix=$URL/$P/commit/"
+    echo "gitea.url=$URL"
+    echo "gitea.project=$P"
+    echo "gitea.key=$2"
+  } >> $TDCONFIG
   ME=$(curl -H "Authorization: token $2" ${URL}/api/v1/user 2> /dev/null|jq .login|sed -e 's/"//g')
   if [ -n "$ME" ] ; then
     if [ "$ME" != "null" ] ; then
