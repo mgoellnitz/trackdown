@@ -16,9 +16,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # shellcheck disable=SC2086
-# shellcheck disable=SC2129
 # shellcheck disable=SC2164
-DIR=$(dirname $(readlink -f $0))
+DIR=$(dirname "$(readlink -f $0)")
 . $DIR/trackdown-lib.sh
 CWD=$(pwd)
 windUp trackdown
@@ -67,7 +66,7 @@ if [ -n "$LINE" ] ; then
   fi
 fi
 echo "TrackDown-$VCS: $ID $STATUS"
-if [ ! -z "$STATUS" ] ; then
+if [ -n "$STATUS" ] ; then
   for TID in $(echo "$ID"|sed -e 's/,/\ /g'); do
     HASID=$(grep "^##\s${TID}" $ISSUES)
     if [ -n "$HASID" ] ; then
@@ -118,7 +117,6 @@ if [ ! -z "$STATUS" ] ; then
   AUTOCOMMIT=$(grep autocommit=true $TDCONFIG)
   # echo "AUTOCOMMIT: $AUTOCOMMIT"
   if [ -n "$AUTOCOMMIT" ] ; then
-    WD=$(pwd)
     TRACKDOWN=$(dirname $ISSUES)
     # TODO: Why do we re-discover the VCS here?
     VCS=$(test -d $TRACKDOWN/.hg && echo hg || echo git)
