@@ -33,7 +33,7 @@ discoverIssues
 PREFIX=$(grep prefix= $TDCONFIG|cut -d '=' -f 2)
 # echo "ISSUES $ISSUES"
 if [ $VCS = "hg" ] ; then
-  AUTHOR$(hg log -l 1 --template "{person(author)}\n")
+  AUTHOR=$(hg log -l 1 --template "{person(author)}\n")
   DATE=$(hg log -l 1 --template "{localdate(date)|date}\n")
   LINE=$(hg log -l 1 --template "{desc}\n"|grep \#)
   HASH=$(hg log -l 1 --template "{node}\n")
