@@ -106,6 +106,10 @@ Martin Goellnitz / Sat, 3 Jan 2026 03:58:53 [b48212ab4a2d4f7a7275569bc966b2b3049
 
     Refs #ENHANCE readability of output for sync command
 
+Martin Goellnitz / Sat, 3 Jan 2026 04:00:50 [052f60e0ff3741d1ae67b01019869842b650f522](https://codeberg.org/backendzeit/trackdown/commit/052f60e0ff3741d1ae67b01019869842b650f522)
+
+    Refs #ENHANCE readability of output for sync command
+
 
 ## NUMBER of empty lines between tickets should be preserved (resolved)
 
