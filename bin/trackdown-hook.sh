@@ -73,7 +73,7 @@ if [ -n "$STATUS" ] ; then
       echo "TrackDown: Issue $TID"
       sed -i.remove -e "s/##\ $TID\ \(.*\)\ (.*)/## $TID \1/g" $ISSUES
       sed -i.remove -e "s/##\ $TID\ \(.*\)/## $TID \1 ($STATUS)/g" $ISSUES
-      rm $ISSUES.remove
+      rm -f $ISSUES.remove
       ISLAST=$(grep -n "^##\s" $ISSUES|grep -A1 "${TID}.*$STATUS" |tail -1|grep $TID)
       # echo "last: $ISLAST"
       if [ -z "$ISLAST" ] ; then
@@ -81,7 +81,9 @@ if [ -n "$STATUS" ] ; then
         LINES=$(cat $ISSUES|wc -l)
         # echo "SECTION $SECTION - LINES $LINES"
         FILE=$ISSUES.remove
-        head -$(( SECTION - 1 )) $ISSUES >>$FILE
+        head -$(( SECTION - 2 )) $ISSUES >>$FILE
+        DOUBLE="$(tail -1 $FILE)"
+        test -n "$DOUBLE" && echo "" >> $FILE
       else
         FILE=$ISSUES
         echo "" >>$FILE
@@ -103,9 +105,9 @@ if [ -n "$STATUS" ] ; then
         fi
       fi
       if [ -z "$ISLAST" ] ; then
-        echo "" >>$ISSUES.remove
-        tail -$(( LINES - SECTION + 1 )) $ISSUES >>$ISSUES.remove
-        mv $ISSUES.remove $ISSUES
+        test -z "$DOUBLE" && echo "" >> $FILE
+        tail -$(( LINES - SECTION + 2 )) $ISSUES >>$FILE
+        mv $FILE $ISSUES
       fi
     else
       echo "TrackDown: ID $TID not found in issues collection"
