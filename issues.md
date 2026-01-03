@@ -59,6 +59,8 @@ Martin Goellnitz / Wed, 28 Dec 2016 01:14:37 [30444b0522236166b34660802f12938b04
 
 ## BACKSLASHES in some regular expressions should be removed (in progress)
 
+*clean*
+
 Scattered around the code, we find regular expressions using backslashes at
 places where they must not be present. GNU grep ignores these, but produces a
 warning message. Debian again hides this error message. We should fix the
@@ -92,3 +94,13 @@ Martin Goellnitz / Thu, 1 Jan 2026 23:22:14 [55da149aded1e6cbb93b973ebae215241c2
 Martin Goellnitz / Thu, 1 Jan 2026 23:50:11 [52b0c2742e2956ff0b6e5a059d79bf908669d687](https://codeberg.org/backendzeit/trackdown/commit/52b0c2742e2956ff0b6e5a059d79bf908669d687)
 
     refs #PORTABILITY - fix ignore file handling
+
+
+## NUMBER of empty lines between tickets shoudl be preserved
+
+*fix*
+
+Mostly we like to have two empty lines between ticket blocks in the issues file
+regardsless which parts of the supported details and features of the file format
+are in use. But of course, the overall code most also deal with situation where
+there is only one empty line.
