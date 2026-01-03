@@ -354,18 +354,18 @@ if [ "$CMD" = sync ] ; then
       exit
     fi
     echo "fetch"
-    (cd $DIR ; git fetch)
+    (cd $DIR ; git fetch 2> /dev/null )
     echo "stash"
-    (cd $DIR ; git stash)
+    (cd $DIR ; git stash > /dev/null )
     echo "rebase"
-    (cd $DIR ; git rebase)
+    (cd $DIR ; git rebase > /dev/null )
     echo "apply"
-    (cd $DIR ; git stash apply)
+    (cd $DIR ; git stash apply > /dev/null )
     roadmap >$DIR/roadmap.md
     echo "commit"
     (cd $DIR ; git commit -m "Issue collection and roadmap update" $ISSUES roadmap.md)
     echo "push"
-    (cd $DIR ; git gc ; git push)
+    (cd $DIR ; git gc ; git push) > /dev/null
   fi
   if [ -d $DIR/.hg ] ; then
     if [ $(cd $DIR ; hg branch) != "trackdown" ] ; then
