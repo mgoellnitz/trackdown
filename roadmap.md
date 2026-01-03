@@ -11,11 +11,11 @@
 
 ## fix:
 
-![100%](https://di.9f8.de/700x30/eeeeee/808080.png&text=100%25)
+![100%](https://di.9f8.de/700x30/000000/FFFFFF.png&text=100%25)
 
-0% completed (0/1) - 0% in progress (0/1)
+100% completed (1/1) - 0% in progress (0/1)
 
-* NUMBER of empty lines between tickets shoudl be preserved
+* NUMBER of empty lines between tickets shoudl be preserved (resolved)
 
 ## nth:
 

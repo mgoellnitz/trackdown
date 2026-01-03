@@ -96,7 +96,7 @@ Martin Goellnitz / Thu, 1 Jan 2026 23:50:11 [52b0c2742e2956ff0b6e5a059d79bf90866
     refs #PORTABILITY - fix ignore file handling
 
 
-## NUMBER of empty lines between tickets shoudl be preserved
+## NUMBER of empty lines between tickets shoudl be preserved (resolved)
 
 *fix*
 
@@ -104,3 +104,7 @@ Mostly we like to have two empty lines between ticket blocks in the issues file
 regardsless which parts of the supported details and features of the file format
 are in use. But of course, the overall code most also deal with situation where
 there is only one empty line.
+
+Martin Goellnitz / Sat, 3 Jan 2026 03:38:52 [48c4fe69e63df53d60d25a7cb3c618b5aed13abf](https://codeberg.org/backendzeit/trackdown/commit/48c4fe69e63df53d60d25a7cb3c618b5aed13abf)
+
+    Resolves #NUMBER of empty lines preserving
