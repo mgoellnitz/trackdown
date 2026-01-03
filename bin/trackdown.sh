@@ -181,9 +181,9 @@ if [ "$CMD" = use ] ; then
   fi
   if [ -d $TDBASE/.git ] ; then
     rm -f $TDBASE/.git/hooks/post-commit
-    ln -s $DIR/trackdown-hook.sh $TDBASE/.git/hooks/post-commit
+    cp $DIR/trackdown-hook.sh $TDBASE/.git/hooks/post-commit
     rm -f $TDBASE/.git/hooks/trackdown-lib.sh
-    ln -s $DIR/trackdown-lib.sh $TDBASE/.git/hooks/
+    cp $DIR/trackdown-lib.sh $TDBASE/.git/hooks/
     test ! -d $TDBASE/.trackdown && mkdir $TDBASE/.trackdown
     if [ -z "$ISSUES" ] ; then
       if [ $( (git branch -r;git branch -l)|grep -c trackdown) = 0 ] ; then
@@ -312,8 +312,8 @@ if [ "$CMD" = update ] ; then
     if [ -z $TYPE ] ; then
       rm -f $TDBASE/.git/hooks/post-commit
       rm -f $TDBASE/.git/hooks/trackdown-lib.sh
-      ln -s $DIR/trackdown-hook.sh $TDBASE/.git/hooks/post-commit
-      ln -s $DIR/trackdown-lib.sh $TDBASE/.git/hooks/
+      cp $DIR/trackdown-hook.sh $TDBASE/.git/hooks/post-commit
+      cp $DIR/trackdown-lib.sh $TDBASE/.git/hooks/
       chmod 755 $TDBASE/.git/hooks/post-commit
     else
       echo "This repository is set up as a mirror - no hoook update needed."
