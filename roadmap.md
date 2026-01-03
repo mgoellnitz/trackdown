@@ -15,7 +15,7 @@
 
 100% completed (1/1) - 0% in progress (0/1)
 
-* NUMBER of empty lines between tickets shoudl be preserved (resolved)
+* NUMBER of empty lines between tickets should be preserved (resolved)
 
 ## nth:
 

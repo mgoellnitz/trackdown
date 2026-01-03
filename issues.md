@@ -96,11 +96,15 @@ Martin Goellnitz / Thu, 1 Jan 2026 23:50:11 [52b0c2742e2956ff0b6e5a059d79bf90866
     refs #PORTABILITY - fix ignore file handling
 
 
-## ENHANCE signal-to-noise-ration of output
+## ENHANCE signal-to-noise-ration of output (in progress)
 
 Since TrackDown is in part a wrapper for some compilations of DVCS commands,
 some of the product output, which is not helpful from the outside perspective.
 Thus, hiding those output doesn't lose information but enhances focus.
+
+Martin Goellnitz / Sat, 3 Jan 2026 03:58:53 [b48212ab4a2d4f7a7275569bc966b2b304917484](https://codeberg.org/backendzeit/trackdown/commit/b48212ab4a2d4f7a7275569bc966b2b304917484)
+
+    Refs #ENHANCE readability of output for sync command
 
 
 ## NUMBER of empty lines between tickets should be preserved (resolved)
