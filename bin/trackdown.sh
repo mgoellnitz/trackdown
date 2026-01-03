@@ -18,6 +18,8 @@
 # shellcheck disable=SC2046
 # shellcheck disable=SC2086
 # shellcheck disable=SC2164
+# ##
+# shellcheck disable=SC3037
 CMD=$1
 ISSUES=$2
 DIR=$(dirname $(readlink -f $0))
@@ -476,26 +478,24 @@ if [ "$CMD" = mirror ] ; then
         MILESTONE=$(jq  -c "${JQ}.milestone|.title" $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g')
         ASSIGNEE=$(jq  -c "${JQ}.assignee.username" $EXPORT|sed -e 's/"//g')
         ASSIGNEE_NAME=$(jq  -c "${JQ}.assignee.name" $EXPORT|sed -e 's/"//g')
-        {
-          echo "## $IID $TITLE ($s)"
-          echo ""
-          echo -n "*${MILESTONE}*"
-        } >>$ISSUES
         LABELS=$(jq  -c "${JQ}.labels" $EXPORT|sed -e 's/"/\`/g'|sed -e 's/,/][/g')
+        (echo "## $IID $TITLE ($s)" ; echo "" ) >>$ISSUES
+        STATELINE="*${MILESTONE}*"
         if [ ! "$LABELS" = "[]" ] ; then
-          echo -n " $LABELS" >>$ISSUES
+          STATELINE="$STATELINE $LABELS"
         fi
         if [ "$ASSIGNEE" != "null" ] ; then
-          echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
+          STATELINE="$STATELINE - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME"
         fi
-        echo "" >>$ISSUES
+        echo "$STATELINE" >>$ISSUES
         AUTHOR=$(jq  -c "${JQ}.author.username" $EXPORT|sed -e 's/"//g')
         AUTHOR_NAME=$(jq  -c "${JQ}.author.name" $EXPORT|sed -e 's/"//g')
         echo "" >>$ISSUES
+        AUTHORLINE=""
         if [ "$AUTHOR" != "null" ] ; then
-          echo -n "Author: \`$AUTHOR\` $AUTHOR_NAME " >>$ISSUES
+          AUTHORLINE="Author: \`$AUTHOR\` $AUTHOR_NAME " >>$ISSUES
         fi
-        echo "" >>$ISSUES
+        echo "$AUTHORLINE" >>$ISSUES
         DESCRIPTION=$(jq  -c "${JQ}.description" $EXPORT)
         if [ "$DESCRIPTION" != "null" ] ; then
           echo "" >>$ISSUES
@@ -550,18 +550,15 @@ if [ "$CMD" = mirror ] ; then
       MILESTONE=$(jq  -c "${JQ}.milestone.title" $EXPORT|sed -e 's/"//g'|sed -e 's/null/No Milestone/g')
       ASSIGNEE=$(jq  -c "${JQ}.assignee" $EXPORT|sed -e 's/.*"name"..\(.*\)","username.*id":\([0-9]*\).*/\1 (\2)/g')
       LABELS=$(jq  -c "${JQ}.labels" $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g')
-      {
-        echo "## $IID $TITLE ($s)"
-        echo ""
-        echo -n "*${MILESTONE}*"
-      } >>$ISSUES
+      (echo "## $IID $TITLE ($s)" ; echo "" ) >>$ISSUES
+      STATELINE="*${MILESTONE}*"
       if [ ! "$LABELS" = "[]" ] ; then
-        echo -n " $LABELS" >>$ISSUES
+        STATELINE="$STATELINE $LABELS"
       fi
       if [ "$ASSIGNEE" != "null" ] ; then
-        echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+        STATELINE="$STATELINE - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME"
       fi
-      echo "" >>$ISSUES
+      echo "$STATELINE" >>$ISSUES
       AUTHOR=$(jq  -c "${JQ}.user.login" $EXPORT|sed -e 's/"//g')
       # AUTHOR_URL=$(jq  -c "${JQ}.user.html_url" $EXPORT|sed -e 's/"//g')
       if [ "$AUTHOR" != "null" ] ; then
@@ -612,8 +609,7 @@ if [ "$CMD" = mirror ] ; then
     fi
     issueCollectionHeader "Issues"
     for id in $(jq  -c '.values[].id' $EXPORT) ; do
-      echo "" >>$ISSUES
-      echo "" >>$ISSUES
+      ( echo "" ; echo "" )>>$ISSUES
       JQ='.values[]|select(.id == '$id')|'
       TITLE=$(jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
       STATE=$(jq  -c "${JQ}.state" $EXPORT|sed -e 's/"//g')
@@ -624,11 +620,11 @@ if [ "$CMD" = mirror ] ; then
       ASSIGNEE_NAME=$(jq  -c "${JQ}.assignee|.display_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       ( echo "## $id $TITLE ($s)" ; echo "" ) >>$ISSUES
       # Priority used as milestone
-      echo -n "*${PRIORITY}* ${TYPE}"  >>$ISSUES
+      STATELINE="*${PRIORITY}* ${TYPE}"
       if [ "$ASSIGNEE" != "null" ] ; then
-        echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
+        STATELINE="$STATELINE - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME"
       fi
-      echo "" >>$ISSUES
+      echo "$STATELINE" >>$ISSUES
       AUTHOR=$(jq  -c "${JQ}.reporter|.username" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       AUTHOR_NAME=$(jq  -c "${JQ}.reporter|.display_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       echo "" >>$ISSUES
@@ -701,8 +697,7 @@ if [ "$CMD" = mirror ] ; then
       fi
       for id in $(jq  -c '.issues[]|.id' $EXPORT|sed -e 's/"//g') ; do
         echo $id
-        echo "" >>$ISSUES
-        echo "" >>$ISSUES
+        ( echo "" ; echo "" ) >>$ISSUES
         jq '.issues[]|select(.id == "'$id'")|{key: .key, title: .fields.summary, state: .fields.status.statusCategory.key, priority: .fields.priority.name, milestone: .fields.fixVersions[0].name, labels: .fields.labels, author: .fields.creator.displayName, assignee: .fields.assignee.displayName, description: .fields.description, versions: .fields.versions}' $EXPORT > $ITEM
         KEY=$(jq  -c ".key" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
         TITLE=$(jq  -c ".title" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
@@ -717,26 +712,22 @@ if [ "$CMD" = mirror ] ; then
         DESCRIPTION=$(jq  -c ".description" $ITEM|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
         COMMENTS=""
 
-        echo "## $KEY $TITLE ($s)"  >>$ISSUES
-        echo "" >>$ISSUES
-        LINEBREAK=
+        (echo "## $IID $TITLE ($s)" ; echo "" ) >>$ISSUES
+        STATELINE=""
         if [ "$MILESTONE" != "" ] ; then
-          echo -n "*${MILESTONE}*"  >>$ISSUES
-          LINEBREAK="true"
+          STATELINE="*${MILESTONE}*"
         fi
         if [ ! "$LABELS" = "[]" ] ; then
-          echo -n " $LABELS" >>$ISSUES
-          LINEBREAK="true"
+          STATELINE="$STATELINE $LABELS"
         fi
         if [ "$ASSIGNEE" != "null" ] ; then
-          if [ -n "$LINEBREAK" ] ; then
-            echo -n " - " >>$ISSUES
+          if [ -n "$STATELINE" ] ; then
+            STATELINE="$STATELINE - "
           fi
-          echo -n "Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
-          LINEBREAK="true"
+          STATELINE="${STATELINE}Currently assigned to: \`$ASSIGNEE\`"
         fi
-        if [ -n "$LINEBREAK" ] ; then
-          echo "" >>$ISSUES
+        if [ -n "$STATELINE" ] ; then
+          echo "$STATELINE" >>$ISSUES
         fi
         if [ "$AUTHOR" != "" ] ; then
           ( echo "" ; echo "Author: \`$AUTHOR\`" ) >>$ISSUES
@@ -803,12 +794,12 @@ if [ "$CMD" = mirror ] ; then
           VERSION=$(jq  -c '.issues[]|select(.id == '$id')|.fixed_version' $EXPORT|sed -e 's/null/*No Milestone*/g'|sed -e 's/.*name...\(.*\)"./*\1*/g')
           ASSIGNEE=$(jq  -c '.issues[]|select(.id == '$id')|.assigned_to' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g')
           PRIORITY=$(jq  -c '.issues[]|select(.id == '$id')|.priority' $EXPORT|sed -e 's/.*id..\([0-9]*\).*name...\(.*\)"./\2 (\1)/g')
-          echo -n "${VERSION}"  >>$ISSUES
+          VERSION_AND_ASSIGNEE="${VERSION}"  >>$ISSUES
           if [ "$ASSIGNEE" != "null" ] ; then
-            echo -n " - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
+            VERSION_AND_ASSIGNEE="$VERSION_AND_ASSIGNEE - Currently assigned to: \`$ASSIGNEE\`" >>$ISSUES
           fi
           {
-            echo ""
+            echo "$VERSION_AND_ASSIGNEE"
             echo ""
             echo "### Priority: $PRIORITY"
             echo ""
@@ -817,8 +808,7 @@ if [ "$CMD" = mirror ] ; then
           } >>$ISSUES
           AUTHOR=$(jq  -c '.issues[]|select(.id == '$id')|.author' $EXPORT|sed -e 's/.*name...\(.*\)"./\1/g')
           if [ "$AUTHOR" != "null" ] ; then
-            echo "Author: \`$AUTHOR\`" >>$ISSUES
-            echo "" >>$ISSUES
+            (echo "Author: \`$AUTHOR\`" ; echo "" ) >>$ISSUES
           fi
           jq  -c '.issues[]|select(.id == '$id')|.description' $EXPORT \
             |sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g' \
@@ -860,8 +850,7 @@ if [ "$CMD" = mirror ] ; then
     fi
     issueCollectionHeader "Issues"
     for id in $(jq  -c '.[]|.id' $EXPORT) ; do
-      echo "" >>$ISSUES
-      echo "" >>$ISSUES
+      ( echo "" ; echo "" ) >>$ISSUES
       JQ='.[]|select(.id == '$id')|'
       TITLE=$(jq  -c "${JQ}.title" $EXPORT|sed -e 's/\\\"/\`/g'|sed -e 's/"//g')
       IID=$(jq  -c "${JQ}.number" $EXPORT|sed -e 's/"//g')
@@ -871,25 +860,23 @@ if [ "$CMD" = mirror ] ; then
       ASSIGNEE=$(jq  -c "${JQ}.assignee|.login" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       ASSIGNEE_NAME=$(jq  -c "${JQ}.assignee|.full_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       LABELS=$(jq  -c "${JQ}.labels" $EXPORT|sed -e 's/.*"name"..\(.*\)","color.*/[\`\1\`] /g')
-      {
-        echo "## $IID $TITLE ($s)"
-        echo ""
-        echo -n "*${MILESTONE}*"
-      } >>$ISSUES
+      (echo "## $IID $TITLE ($s)" ; echo "" ) >>$ISSUES
+      STATELINE="*${MILESTONE}*"
       if [ ! "$LABELS" = "[]" ] ; then
-        echo -n " $LABELS" >>$ISSUES
+        STATELINE="$STATELINE $LABELS"
       fi
       if [ "$ASSIGNEE" != "null" ] ; then
-        echo -n " - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME" >>$ISSUES
+        STATELINE="$STATELINE - Currently assigned to: \`$ASSIGNEE\` $ASSIGNEE_NAME"
       fi
-      echo "" >>$ISSUES
+      echo "$STATELINE" >>$ISSUES
       AUTHOR=$(jq  -c "${JQ}.user|.login" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       AUTHOR_NAME=$(jq  -c "${JQ}.user|.full_name" $EXPORT|sed -e s/^\"//g|sed -e s/\"$//g)
       echo "" >>$ISSUES
+      AUTHORLINE=""
       if [ "$AUTHOR" != "null" ] ; then
-        echo -n "Author: \`$AUTHOR\` $AUTHOR_NAME  " >>$ISSUES
+        AUTHORLINE="Author: \`$AUTHOR\` $AUTHOR_NAME  "
       fi
-      echo "Remote ID $id" >>$ISSUES
+      echo "${AUTHORLINE}Remote ID $id" >>$ISSUES
       DESCRIPTION=$(jq  -c "${JQ}.body" $EXPORT)
       if [ "$DESCRIPTION" != "null" ] ; then
         echo "" >>$ISSUES
@@ -899,15 +886,14 @@ if [ "$CMD" = mirror ] ; then
       if [ "$COMMENTSNO" != "0" ] ; then
         COMMENTS_URL="${URL}/${IID}/comments"
         curl -H "Authorization: token $TOKEN" $COMMENTS_URL 2> /dev/null >$COMMENTS_EXPORT
-        echo "" >>$ISSUES
-        echo "### Comments" >>$ISSUES
+        ( echo "" ; echo "### Comments" ) >>$ISSUES
         for cid in $(jq  -c '.[]|.id' $COMMENTS_EXPORT) ; do
-          echo "" >>$ISSUES
           BODY=$(jq  -c '.[]|select(.id == '$cid')|.body' $COMMENTS_EXPORT|sed -e 's/"//g'|sed -e 's/\\t/    /g'|sed -e 's/\\r\\n/\n&/g'|sed -e 's/\\r\\n//g'|sed -e 's/\\n/\n/g')
           COMMENT_DATE=$(jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g')
           COMMENTER=$(jq  -c '.[]|select(.id == '$cid')|.user.login' $COMMENTS_EXPORT|sed -e 's/"//g')
           COMMENTER_NAME=$(jq  -c '.[]|select(.id == '$cid')|.user.full_name' $COMMENTS_EXPORT|sed -e 's/"//g')
           {
+            echo ""
             echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE"
             echo ""
             echo "$BODY" 
