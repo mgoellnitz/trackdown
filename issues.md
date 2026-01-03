@@ -2,8 +2,8 @@
 
 Right now, we have four areas/iterations/sprints in this issue list:
 
-- *nth*   This feature is nice to have but can be left out.
-- *clean* Clean up the code for portability, readabiliy and resource consumption.
+- *nth*   This feature is very nice to have, but also can be left out.
+- *clean* Clean up the code for portability, readability and resource consumption.
 - *oos*   This issue is relevant but out of the scope of this project.
 - *fix*   Bugfixing topics.
 
@@ -81,7 +81,7 @@ Martin Goellnitz / Sun, 28 Jul 2024 21:43:22 [d504d06e74afea9461f0e4bca44bf8a2ba
 
 The code explicitly and silently relies on some bash features, which is not
 necessary and could be replaced by code relying on less resource hungry shell
-implementation especially for implicitly called scripts like the hook.
+implementation, especially for implicitly called scripts like the hook.
 
 Martin Goellnitz / Thu, 1 Jan 2026 22:22:20 [8dbe2633e98a7fc525386b02e66256190f779a4e](https://codeberg.org/backendzeit/trackdown/commit/8dbe2633e98a7fc525386b02e66256190f779a4e)
 
@@ -96,12 +96,19 @@ Martin Goellnitz / Thu, 1 Jan 2026 23:50:11 [52b0c2742e2956ff0b6e5a059d79bf90866
     refs #PORTABILITY - fix ignore file handling
 
 
-## NUMBER of empty lines between tickets shoudl be preserved (resolved)
+## ENHANCE signal-to-noise-ration of output
+
+Since TrackDown is in part a wrapper for some compilations of DVCS commands,
+some of the product output, which is not helpful from the outside perspective.
+Thus, hiding those output doesn't lose information but enhances focus.
+
+
+## NUMBER of empty lines between tickets should be preserved (resolved)
 
 *fix*
 
-Mostly we like to have two empty lines between ticket blocks in the issues file
-regardsless which parts of the supported details and features of the file format
+Mostly, we like to have two empty lines between ticket blocks in the issues file
+regardless which parts of the supported details and features of the file format
 are in use. But of course, the overall code most also deal with situation where
 there is only one empty line.
 
