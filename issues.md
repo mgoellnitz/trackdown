@@ -14,13 +14,14 @@ Right now, we have four areas/iterations/sprints in this issue list:
 
 While some IDE integrations rely on the [GIT](http://git-scm.com/) command line
 tooling and thus work perfectly together with this project, NetBeans decided to
-use the [JGit](https://eclipse.org/jgit/) library, which only supports a subset
-of the [GIT](http://git-scm.com/) hooks - and not the ones we  use here.
+use the [JGit](https://eclipse.org/jgit/) library. Until this ticket git
+addressed, it only supported a subset of the [GIT](http://git-scm.com/) hooks -
+and not the one we use here.
 
-I already helped to add the post-commit hook which is needed by this project
-and it now is part of the latest nightly builds. Interoperation with TrackDown
-could not be tested so far. Output from recent NetBeans 11.3 suggests that
-TrackDown now works from within the IDE.
+I already helped in adding the post-commit hook which is needed by this project
+to [JGit](https://eclipse.org/jgit/). Some years later the respective version
+got integrated into NetBeans 11.3. Sadly JGIT [JGit](https://eclipse.org/jgit/)
+doesn't like symbolic links for the hook files, which we still would prefer.
 
 
 ## MIRRORHOOK for update of the local mirror and roadmap for mirrored issue collections
