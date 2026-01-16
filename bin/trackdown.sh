@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Copyright 2015-2026 Martin Goellnitz
 #
@@ -32,7 +32,7 @@ if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
   MYNAME=$(basename $0)
-MSG=$(echo -e H4sIAAAAAAACA6WVTW/aQBCG7/yKuRWklNxzqxKpStVIlZr0gjis7QFvbO+6+wGiv77v7K4JNERV \
+  echo H4sIAAAAAAACA6WVTW/aQBCG7/yKuRWklNxzqxKpStVIlZr0gjis7QFvbO+6+wGiv77v7K4JNERV \
 lAsGz8c+887s8OTVlm9ms9uHO3JWNYMaaVXbvuc6aGtoo3tez4h+OG3C5JHde0+7i77ftQ+kvY/s \
 aWMd7dh5se9yXG3HwxuRt2IKLZOxoQSrvr+Yi4IllQLJqIFptxyanH/Qhmk18Pq/cPtW1y0pxzQo \
 13EjOStOCXKq4vdmHoEbgWqCVhNmjoyeL4b95BBHqnsLRqknxVBwqu602dLcjuKOvAfa69BCCPO5 \
@@ -45,8 +45,8 @@ gri6qdcnyp21/iLuHFOIARgoLDK63BncLXwk7LkaRzTT+7116PPiw9DP2imcGylQPHJ+gTbea2Xo \
 m5hfgc79YpL2El+wHeRGBShGGx9whzh7J6XPmI99ZVVGLSbB/NRYvJ/jDLkdi/d2mNX1dJGuJcFJ \
 uz8sXLm3aRbjEXh6+x7QKeatWcznQcYQvbSotXssJs0bwED+QaWFqyobQ9qBr7aYhLLcTbHmtXCy \
 qfOOk4hGO7zDTi0nYs+Vddc6a/QfTgnK7jjZwKkwMT3K+rvDBpj+SFJ55V92c8aEH+Cc/QUyPzzU \
-jwcAAA==)
-  echo $MSG|sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
+jwcAAA== | \
+  sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 
 fi
