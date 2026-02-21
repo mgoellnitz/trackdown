@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright 2016-2025 Martin Goellnitz
+# Copyright 2016-2026 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,19 +23,19 @@ MYDIR=`dirname $0`
 # setup test
 before
 
-git init 2> /dev/null
+git init > /dev/null
 git config --local user.name "Mr Tester"
 git config --local user.email "test@provocon.eu"
 cp -r $CWD/README.md .
 cp -r $CWD/bin/t*sh .
 
 # test trackdown init
-OUTPUT=`$CWD/bin/trackdown.sh init|tail -1`
+OUTPUT=`$CWD/bin/trackdown.sh init |tail -1`
 # echo "$OUTPUT"
 assertEquals "Unexpected init output" "$OUTPUT" "GIT repository missing commits. Exiting."
 
 git add README.md
-git commit -m "First commit" README.md
+git commit -m "First commit" README.md > /dev/null
 OUTPUT=`$CWD/bin/trackdown.sh init|tail -1`
 assertEquals "Unexpected init output" "$OUTPUT" " create mode 100644 roadmap.md"
 
