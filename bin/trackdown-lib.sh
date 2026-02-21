@@ -16,6 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # shellcheck disable=SC2086
+#
 
 # wind up the directory tree until we find a hidden folder of the given name $1
 windUp() {

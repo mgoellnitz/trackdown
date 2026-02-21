@@ -15,8 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
+# shellcheck disable=SC1091
 # shellcheck disable=SC2086
 # shellcheck disable=SC2164
+#
 DIR=$(dirname "$(readlink -f $0)")
 . $DIR/trackdown-lib.sh
 CWD=$(pwd)
