@@ -1,5 +1,5 @@
 #
-# Copyright 2024-2025 Martin Goellnitz
+# Copyright 2024-2026 Martin Goellnitz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ name: Test and Package Trackdown
 on:
   push:
     branches: [ master ]
+    tags: [ 2.* ]
   pull_request:
     branches: [ master ]
 
@@ -34,26 +35,46 @@ jobs:
         run: apt update ; apt install -yq nodejs docker.io jq file curl unzip mercurial git bash bash-completion
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up JDK 17
-        uses: https://github.com/actions/setup-java@v4
+        uses: https://github.com/actions/setup-java@v6
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: https://github.com/gradle/actions/setup-gradle@v3
+        uses: https://github.com/gradle/actions/setup-gradle@v6
 
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Extract Package
-        run: unzip build/distributions/*.zip
+      - name: Upload Packages
+        if: startsWith(github.ref_name, '2.')
+        env:
+          REGISTRY: ${{ github.server_url }}/api/packages/${{ github.repository_owner }}
+        run: |
+          set -eu
 
-# Not working on codeberg.org for us right now
-#      - name: Archive Package
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: trackdown
-#          path: trackdown*
+          upload() {
+            echo "Uploading $1 to $2"
+            curl --fail-with-body -sS \
+              --user "${{vars.CODEBERG_USER}}:${{secrets.CODEBERG_TOKEN}}" \
+              --upload-file "$1" "$2"
+            echo
+          }
+
+          # ZIP as generic package
+          for f in build/distributions/*.zip ; do
+            upload "$f" "$REGISTRY/generic/jfilesync3/${{ github.ref_name }}/$(basename "$f")"
+          done
+
+          # Debian package: distribution "stable", component "main"
+          for f in build/distributions/*.deb ; do
+            upload "$f" "$REGISTRY/debian/pool/stable/main/upload"
+          done
+
+          # RPM package
+          for f in build/distributions/*.rpm ; do
+            upload "$f" "$REGISTRY/rpm/upload"
+          done

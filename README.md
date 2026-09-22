@@ -1,9 +1,10 @@
 # TrackDown
 
-[![Latest Release](https://img.shields.io/github/release/mgoellnitz/trackdown.svg)](https://github.com/mgoellnitz/trackdown/releases/latest)
-[![License](https://img.shields.io/github/license/mgoellnitz/trackdown.svg)](https://github.com/mgoellnitz/trackdown/blob/master/LICENSE)
+[![Latest Release](https://codeberg.org/backendzeit/trackdown/badges/release.svg)](https://codeberg.org/backendzeit/trackdown/releases/latest)
+[![License](https://img.shields.io/github/license/mgoellnitz/trackdown.svg)](https://codeberg.org/backendzeit/trackdown/raw/branch/master/LICENSE)
+[![Build Status](https://codeberg.org/backendzeit/trackdown/badges/workflows/gradle.yml/badge.svg)](https://codeberg.org/backendzeit/trackdown/actions)
 [![Build](https://img.shields.io/gitlab/pipeline/mgoellnitz/trackdown.svg)](https://gitlab.com/mgoellnitz/trackdown/pipelines)
-[![Download](https://img.shields.io/badge/Download-Snapshot-blue)](https://gitlab.com/mgoellnitz/trackdown/-/jobs/artifacts/master/download?job=trackdown)
+[![Snapshot](https://img.shields.io/badge/Download-Snapshot-orange)](https://gitlab.com/mgoellnitz/trackdown/-/jobs/artifacts/master/download?job=trackdown)
 
 Issue Tracking with plain [Markdown][markdown] for [GIT][git] and
 [Mercurial][hg].
@@ -572,7 +573,7 @@ project.
 Also, there is only poor IDE support for [Fossil][fossil] right now, with the
 exception of support for [Idea](https://plugins.jetbrains.com/plugin/7479)
 and my own small [plug-in for NetBeans](http://chiselapp.com/user/backendzeit/repository/netbeans-fossil-plugin/index)
-mirrored [here](https://github.com/mgoellnitz/netbeans-fossil-plugin).
+mirrored [here](https://codeberg.org/backendzeit/netbeans-fossil-plugin).
 
 
 ## Forgejo (Gitea and Gogs)
