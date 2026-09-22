@@ -814,31 +814,31 @@ Adding comment "Just a comment" to issue 68
 * `milestone` to put issues into milestones
 
 
-## Gitea Offline Mirror
+## ForgeJO Offline Mirror (Gitea, Gogs)
 
 For disconnected situations which TrackDown is supposed to support, it is
-possible to connect a workspace to its [Gitea][gitea] issue tracker and mirror
-tickets for offline use.
+possible to connect a workspace to its [ForgeJO][forgejo] issue tracker and
+mirror tickets for offline use.
 
 Setup parameters default to values from the [Git][git] repository your current
 local directory points to.
 
 The mirror - of course - is not intended for changing the issues in the issue
-collection file. State changes will most likely be triggered on the [Gitea][gitea]
-instance in use by your commit messages or manually, after which a call of the
-mirroring script can be helpful.
+collection file. State changes will most likely be triggered on the
+[ForgeJO][forgejo] instance in use by your commit messages or manually, after
+which a call of the mirroring script can be helpful.
 
-Instead of `trackdown.sh use` issue `trackdown.sh gitea` to set up the mirror
+Instead of `trackdown.sh use` issue `trackdown.sh forgejo` to set up the mirror
 connection.
 
 ```
-trackdown.sh gitea <apitoken> <projectname> [https://<gitea.host>]
+trackdown.sh forgejo <apitoken> <projectname> [https://<forgejo.host>]
 ```
 
 If you omit the URL prefix and no values can be derived from your current
 working directory, `https://codeberg.org` is used.
 
-Afterwards, anytime you can connect to the [Gitea][gitea] system, collect the
+Afterwards, anytime you can connect to the [ForgeJO][forgejo] system, collect the
 current mirror state to your local issue collection file and the roadmap.
 
 ```
@@ -868,7 +868,8 @@ trackdown.sh remote comment 68 "Just a comment"
 Adding comment "Just a comment" to issue 68
 ```
 
-It is expected that this also works for [Gogs](gogs) backends as well.
+It is expected that this also works for [Giea][gitea] and [Gogs][gogs] backends
+as well.
 
 
 ## Bitbucket.org Offline Mirror

@@ -35,20 +35,20 @@ if [ -z "$CMD" ] ; then
 
   # see encodeMessage task in build script
   MYNAME=$(basename $0)
-  echo H4sIAAAAAAACA6WVTW/aQBCG7/yKuRWklNxzqxKpStVIlZr0gjis7QFvbO+6+wGiv77v7K4JNERV \
-lAsGz8c+887s8OTVlm9ms9uHO3JWNYMaaVXbvuc6aGtoo3tez4h+OG3C5JHde0+7i77ftQ+kvY/s \
-aWMd7dh5se9yXG3HwxuRt2IKLZOxoQSrvr+Yi4IllQLJqIFptxyanH/Qhmk18Pq/cPtW1y0pxzQo \
-13EjOStOCXKq4vdmHoEbgWqCVhNmjoyeL4b95BBHqnsLRqknxVBwqu602dLcjuKOvAfa69BCCPO5 \
-4Y2KfUg5FiX92KjAyPeUvpDj0XodrDuU3KhEdOxhBOdWB8g+DHi01nalOKMDMtzj8S+GHK0Nfb1/ \
-JDA+sKujkworp0zdTjI7Z52UdDB1hh0d77SNHvA+1XlMOCgf2BG852DpVXUlTG3Es9KhinXHYWnd \
-9gqVNKI/7HbrkxerK8A3XLHb0mcyzI2n599FCccDGkA1aRqlmlTI9BIlK9PAiA7kEnUhVQ5DI0ij \
-2Ip/Lkl4vY2uZvIHYA/5oMxLHa1wQ+z6pZnF8BI8OvuMtkvqDdm9wSk2H7vVOzakRt3xgbqlyHEs \
-B6X9Ur2M29Rv9DA1szlmPNj4CdOqzfLIBC3BBKR4RiSvLxFdwCCRqIRUCnMbXU/x43DHxtJqFa7X \
-gri6qdcnyp21/iLuHFOIARgoLDK63BncLXwk7LkaRzTT+7116PPiw9DP2imcGylQPHJ+gTbea2Xo \
-m5hfgc79YpL2El+wHeRGBShGGx9whzh7J6XPmI99ZVVGLSbB/NRYvJ/jDLkdi/d2mNX1dJGuJcFJ \
-uz8sXLm3aRbjEXh6+x7QKeatWcznQcYQvbSotXssJs0bwED+QaWFqyobQ9qBr7aYhLLcTbHmtXCy \
-qfOOk4hGO7zDTi0nYs+Vddc6a/QfTgnK7jjZwKkwMT3K+rvDBpj+SFJ55V92c8aEH+Cc/QUyPzzU \
-jwcAAA== | \
+  echo H4sIAAAAAAACA6WVTW8aMRCG7/yKuRWkhNxzqxKpStVIlZr0gjiY3YE1u2tv/QGiv77v2F4CDVEU \
+5cLCzoefd8YzPHu14dvJ5O7xnpxVda8GWlS267gK2hpa646XE6KfTpswemT3ztPuou8P7QNp7yN7 \
+WltHO3Ze7LscV9nh8EbknZhCw2RsKMGq6y7momBJpUAyqmfazfs65++1YVr0vHwXbt/oqiHlmHrl \
+Wq4l54pTgpyq+L2ZR+AGoJqg1YiZI6Pni2G/OMSBqs6CUfSkGApOVa02G5raQdyR90B7HRoUwlzX \
+vFaxCynHrKQfahUY+Z7TF3I8WK+DdYeSG0qkjh2M4NzogLL3PR6NtW0RZ3RAhgc8/seQo7Whbw9P \
+BMZHdlV0onDllKmasczOWSeSDqbKsIPjnbbRA94nnceEvfKBxXkK0Rve2ith6tQqPZuI50qHVaxa \
+DnN4XEFRLX2A3W588mJF12SYa0/bP6UOjnuUnyrSNIiWJGN8CcHK1DCi/lmgLpzK4coAiAaxFf8s \
+SGi9ja5i8gdA9/mgTEktLTAfdvnSymJ4CR6c3aLpknpNdm9wis3HbvSODalBt3ygdi7VOMqBtN+q \
+k8s2dhsdTK2sjxkPNn7BXdVmfmRCBcEEpHhGJK8vEV3AIClRCVkp3NroOoqfhzu2kxaLcLMUxMVt \
+tTyp3FnDL+JOcQfR9p7CLKPLxGCy8JGwp2oY0Ezv99ahz7NPQ2+1Uzg3UqB45PyK2nivlaHvYn4F \
+OvWzsbSX+IJtUW4ogBhtfMAEcfZOlT5jzhRlRMpli6lkeZ5GyxTnpInI4zH7ULNLkpuU4EbiTxr/ \
+6RKWuU23Mh7Bx7cf4Rxj3rqV+TwUNEQvzWrsHgtK8xow0NirtHjVysaQduGrbSahLFMq1rwgTjZ2 \
+3nUSUWuHd9it5UTsu7L2GmeN/sspQdkiJ5s4CRPTk6zBe+yC8Q8lySv/tuszJvwA5+Qfz4zMkpcH \
+AAA= | \
   sed -e 's/\ /\n/g'|base64 -d|gunzip -c|sed -e s/CMD/$MYNAME/g
   exit
 
@@ -150,14 +150,14 @@ if [ "$CMD" = copy ] ; then
   TOTALSIZE=0
   COPY=$ISSUEDIR/$2-issues.md
   cp $ISSUES $COPY
-  for START in $(grep -n -B2 "^\*$2\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1) ; do 
+  for START in $(grep -n -B2 "^\*$2\*" $ISSUES|grep -e-\#\#\ |cut -d '-' -f 1) ; do
     REST=$(( LINECOUNT - START + 1 ))
     SIZE=$(tail -$REST $COPY|grep -n "^##\s"|head -2|tail -1|cut -d ':' -f 1)
     # tail -$REST $ISSUES|head -1
     # echo "Starting at line $START with $SIZE lines."
     if [ $SIZE = 1 ] ; then
       tail -$REST $COPY >> "$MILESTONE.md"
-    else 
+    else
       tail -$REST $COPY | head -$(( SIZE - 1 )) >> "$MILESTONE.md"
     fi
     CSTART=$(( START - TOTALSIZE ))
@@ -241,7 +241,7 @@ if [ "$CMD" = use ] ; then
         echo "prefix=https://$REMOTE/commits/" >> $TDCONFIG
       fi
       if [ "$CASE" = "codeberg.org" ] ; then
-        echo "Discovered codeberg gitea remote"
+        echo "Discovered codeberg forgejo remote"
         echo "prefix=https://$REMOTE/commit/" >> $TDCONFIG
       fi
     fi
@@ -443,7 +443,7 @@ fi
 
 # command to mirror the issue collection file from a remote system and calculate roadmap accordingly
 if [ "$CMD" = mirror ] ; then
- 
+
   checkTrackdown
   TYPE=$(grep mirror.type= $TDCONFIG|cut -d '=' -f 2)
   bailOnZero "No mirror setup done for this repository." $TYPE
@@ -515,7 +515,7 @@ if [ "$CMD" = mirror ] ; then
             COMMENT_DATE=$(jq  -c '.[]|select(.id == '$cid')|.updated_at' $COMMENTS_EXPORT|sed -e 's/"//g')
             COMMENTER=$(jq  -c '.[]|select(.id == '$cid')|.author.username' $COMMENTS_EXPORT|sed -e 's/"//g')
             COMMENTER_NAME=$(jq  -c '.[]|select(.id == '$cid')|.author.name' $COMMENTS_EXPORT|sed -e 's/"//g')
-            { 
+            {
               echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE"
               echo ""
               echo "$BODY"
@@ -741,7 +741,7 @@ if [ "$CMD" = mirror ] ; then
           ( echo "" ; echo "affected versions: $VERSIONS" ) >>$ISSUES
         fi
         if [ "$DESCRIPTION" != "" ] ; then
-          { 
+          {
             echo ""
             echo "### Description"
             echo ""
@@ -750,7 +750,7 @@ if [ "$CMD" = mirror ] ; then
         fi
         ## comments
         if [ "$COMMENTS" != "" ] ; then
-          { 
+          {
             echo ""
             echo "### Comments"
             echo ""
@@ -836,19 +836,19 @@ if [ "$CMD" = mirror ] ; then
     done
   fi
 
-  if [ $TYPE = "gitea" ] ; then
-    URL=$(grep gitea.url= $TDCONFIG|cut -d '=' -f 2)
-    bailOnZero "No gitea source url configured. $Q" $URL
-    TOKEN=$(grep gitea.key= $TDCONFIG|cut -d '=' -f 2)
-    bailOnZero "No gitea api token configured. $Q" $TOKEN
-    PROJECT=$(grep gitea.project= $TDCONFIG|cut -d '=' -f 2)
-    bailOnZero "No gitea (or gogs) project. $Q" $PROJECT
+  if [ $TYPE = "forgejo" ] ; then
+    URL=$(grep forgejo.url= $TDCONFIG|cut -d '=' -f 2)
+    bailOnZero "No forgejo source url configured. $Q" $URL
+    TOKEN=$(grep forgejo.key= $TDCONFIG|cut -d '=' -f 2)
+    bailOnZero "No forgejo api token configured. $Q" $TOKEN
+    PROJECT=$(grep forgejo.project= $TDCONFIG|cut -d '=' -f 2)
+    bailOnZero "No forgejo (or gitea, gogs) project. $Q" $PROJECT
     URL="${URL}/api/v1/repos/${PROJECT}/issues"
     curl -H "Authorization: token $TOKEN" "${URL}?state=all" 2> /dev/null >$EXPORT
     checkExport $EXPORT
     RESULT=$(jq '.message?' $EXPORT)
     if [ -n "$RESULT" ] ; then
-      echo "Cannot mirror issues for gitea (or gogs) project ${OWNER}/${PROJECT}: ${RESULT}"
+      echo "Cannot mirror issues for forgejo (or gitea, gogs) project ${OWNER}/${PROJECT}: ${RESULT}"
       exit
     fi
     issueCollectionHeader "Issues"
@@ -899,7 +899,7 @@ if [ "$CMD" = mirror ] ; then
             echo ""
             echo "$COMMENTER_NAME ($COMMENTER) $COMMENT_DATE"
             echo ""
-            echo "$BODY" 
+            echo "$BODY"
           } >>$ISSUES
         done
       fi
@@ -908,7 +908,7 @@ if [ "$CMD" = mirror ] ; then
   # rm -f $EXPORT
 
   writeRoadmap
-  
+
 fi
 
 
@@ -994,7 +994,7 @@ if [ "$CMD" = remote ] ; then
       NU=$(curl https://api.github.com/users/$PARAM 2> /dev/null | jq -c .id | sed -e s/\"$//g)
       if [ "$NU" = "null" ] ; then
         echo "Unknown user $PARAM"
-      else 
+      else
         DATA="{\"assignees\": [ \"${PARAM}\" ]}\""
         # echo $DATA
         RESULT=$(curl -X POST -H "Authorization: token $TOKEN" -d "$DATA"\
@@ -1070,19 +1070,19 @@ if [ "$CMD" = remote ] ; then
       exit
     fi
   fi
-  if [ "$TYPE" = "gitea" ] ; then
-    URL=$(grep gitea.url= $TDCONFIG|cut -d '=' -f 2)
-    bailOnZero "No gitea (or gogs) source url configured. $Q" $URL
-    TOKEN=$(grep gitea.key= $TDCONFIG|cut -d '=' -f 2)
-    bailOnZero "No gitea (or gogs) api token configured. $Q" $TOKEN
-    PROJECT=$(grep gitea.project= $TDCONFIG|cut -d '=' -f 2)
-    bailOnZero "No gitea (or gogs) project. $Q" $PROJECT
+  if [ "$TYPE" = "forgejo" ] ; then
+    URL=$(grep forgejo.url= $TDCONFIG|cut -d '=' -f 2)
+    bailOnZero "No forgejo (or gitea, gogs) source url configured. $Q" $URL
+    TOKEN=$(grep forgejo.key= $TDCONFIG|cut -d '=' -f 2)
+    bailOnZero "No forgejo (or gitea, gogs) api token configured. $Q" $TOKEN
+    PROJECT=$(grep forgejo.project= $TDCONFIG|cut -d '=' -f 2)
+    bailOnZero "No forgejo (or gitea, gogs) project. $Q" $PROJECT
     if [ "$REMOTE" = "comment" ] ; then
       RESULT=$(curl -X POST -H "Authorization: token $TOKEN" --data "body=${PARAM}" \
            ${URL}/api/v1/repos/${PROJECT}/issues/${ISSUE}/comments 2> /dev/null | jq .id)
       if [ "$RESULT" = "null" ] ; then
         echo "Error"
-      else 
+      else
         echo "Added comment \"$PARAM\" to issue $ISSUE"
       fi
       exit
@@ -1239,14 +1239,14 @@ if [ "$CMD" = redmine ] ; then
   {
     echo "redmine.url=$4"
     echo "redmine.project=$3"
-    echo "redmine.key=$2" 
+    echo "redmine.key=$2"
   } >> $TDCONFIG
 
 fi
 
 
-# gitea command to setup a gitea system like codeberg or a gogs backend as a remote mirror source
-if [ "$CMD" = gitea ] ; then
+# forgejo command to setup a forgejo system like codeberg or a gitea or gogs backend as a remote mirror source
+if [ "$CMD" = forgejo ] ; then
 
   checkJq
   bailOnZero "No api token given as the first parameter" $2
@@ -1260,12 +1260,12 @@ if [ "$CMD" = gitea ] ; then
   URL=${4:-https://$HOST}
   preventRepeatedMirrorInit
   echo "Setting up TrackDown to mirror from $P on $URL"
-  setupCollectionReference gitea
+  setupCollectionReference forgejo
   {
     echo "prefix=$URL/$P/commit/"
-    echo "gitea.url=$URL"
-    echo "gitea.project=$P"
-    echo "gitea.key=$2"
+    echo "forgejo.url=$URL"
+    echo "forgejo.project=$P"
+    echo "forgejo.key=$2"
   } >> $TDCONFIG
   ME=$(curl -H "Authorization: token $2" ${URL}/api/v1/user 2> /dev/null|jq .login|sed -e 's/"//g')
   if [ -n "$ME" ] ; then

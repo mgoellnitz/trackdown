@@ -25,8 +25,8 @@ CMD init
   Init issue tracking within GIT or Mercurial branch
 
 CMD mirror
-  Sync with previously setup tracking master 
-  (gitlab, github, bitbucket.org, redmine, gogs, gitea, codeberg - needs jq)
+  Sync with previously setup tracking master
+  (forgejo, gitlab, github, bitbucket.org, redmine, gogs, gitea - needs jq)
 
 CMD remote c i p
   Issue remote command c on issue i with parameter p on remote mirroring source system
@@ -47,8 +47,8 @@ CMD jira p u t u
   Setup Atlassian Jira mirroring project(s) p with for user u and (app token t) in instance with url u
   (needs jq)
 
-CMD gitea k [p [u]]
-  setup gitea (or gogs) mirroring project p with given apikey k and gitea/codeberg/gogs base url u
+CMD forgejo k [p [u]]
+  setup forgejo (or gitea, gogs) mirroring project p with given apikey k and forgejo/gitea/gogs base url u
   (needs jq) - Values default to cloned project you're in.
 
 CMD redmine k p u
